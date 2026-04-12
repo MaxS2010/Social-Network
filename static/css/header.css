@@ -1,0 +1,80 @@
+header{
+    position: fixed;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    width: 100vw;
+    height: 5.3vh;
+    padding: 1.46vh 5.6vw 1.46vh 5.6vw;
+    
+    background-color: #FFFFFF;
+}
+
+.logo-icon{
+    width: 10.1vw;
+    height: 1.1vh;
+}
+
+nav{
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    align-items: center;
+    
+    width: 53.8vw;
+    height: 2.4vh;
+    gap: 1.7vw;
+    
+    /* background-color: #0000ff; */
+}
+
+nav div{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    width: fit-content;
+    height: max-content; /* 1.7vh */
+    gap: 0.5vw;
+    padding: 0.2vh 0.5vw 0.2vh 0.5vw;
+    
+    /* background-color: #ff0000; */
+}
+
+nav div a{
+    size: 1rem;
+}
+
+nav div:hover{
+    background-color: #E9E5EE;
+}
+
+.icons{
+    width: 1.4vw;
+    height: 1.2vh;
+}
+
+/* nav div .icons img{
+    height: 100%;
+} */
+
+nav div .button-exit{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    width: 5vw;
+    height: 2.4vh;
+    padding: 0.6vh 1.1vw 0.6vh 1.1vw;
+    gap: 0.5vw;
+
+    background-color: transparent;
+    color: #543C52;
+
+    border-radius: 1234px;
+    border: 1px solid #543C52;
+}

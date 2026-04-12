@@ -1,0 +1,91 @@
+.profile-container {
+    position: fixed;
+    top: 8.3vh;
+    left: 8.6vw;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+
+    width: 24.3vw;
+    height: 16.5vh;
+    gap: 1.4vh;
+    
+    background-color: white;
+
+    /* overflow: hidden; */
+}
+
+.profile-head {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    
+    width: 22vw;
+    height: 10.6vh;
+    gap: 1.6vw;
+    
+    /* background-color: red; */
+}
+
+.profile-picture {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    width: 6.7vw;
+    height: 5.8vh;
+
+    /* background-color: green; */
+}
+
+.profile-picture img {
+    height: 100%;
+}
+
+.profile-name {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    width: 6.7vw;
+    height: 3vh;
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;    
+
+    width: 24vw;
+    height: 3vh;
+}
+
+.info-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+    width: 8vw;
+    height: 3vh;
+
+    border-right: 1px solid #CDCED2;
+}
+
+.info-container:last-child {
+    border-right: none;
+}
+
+.info-container h3{
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #000000;
+    margin: 0;
+    line-height: 1.2;
+}
