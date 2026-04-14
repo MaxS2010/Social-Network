@@ -12,72 +12,54 @@
     </head>
     <body>
         <header>
-            <div class="logo-icon">
-                <img src="{% static 'icons/logo.svg' %}" alt="logo.svg">
-            </div>
+            <img src="{% static 'icons/logo.svg' %}" alt="logo.svg" class="logo">
             <nav>
                 <div>
-                    <div class="icons">
-                        <img src="{% static 'icons/home.svg' %}" alt="home.svg">
-                    </div>
-                    <a href= "{% url 'home' %}">Home</a>
+                    <img src="{% static 'icons/home.svg' %}" alt="home.svg" class="icons">
+                    <a href= "{% url 'home' %}">Головна</a>
                 </div>
                 <div>
-                    <div class="icons">
-                        <img src="{% static 'icons/friend.svg' %}" alt="friend.svg">
-                    </div>
-                    <a href= "{% url 'friends' %}">Friends</a>
+                    <img src="{% static 'icons/post.svg' %}" alt="post.svg" class="icons">
+                    <a href= "{% url 'post' %}">Мої публікації</a>
                 </div>
                 <div>
-                    <div class="icons">
-                        <img src="{% static 'icons/post.svg' %}" alt="post.svg">
-                    </div>
-                    <a href= "{% url 'post' %}">Posts</a>
+                    <img src="{% static 'icons/friend.svg' %}" alt="friend.svg" class="icons">
+                    <a href= "{% url 'friends' %}">Друзі</a>
                 </div>
                 <div>
-                    <div class="icons">
-                        <img src="{% static 'icons/user.svg' %}" alt="user.svg">
-                    </div>
-                    <a href= "{% url 'user' %}">Users</a>
+                    <img src="{% static 'icons/user.svg' %}" alt="user.svg" class="icons">
+                    <a href= "{% url 'user' %}">Налаштування</a>
                 </div>
                 <div>
-                    <button class="button-exit">
-                        <div class="icons">
-                            <img src="{% static 'icons/exit.svg' %}" alt="exit.svg">
-                            Вихід
-                        </div>
-                    </button>
+                    <div class="button-div">
+                        <img src="{% static 'icons/exit.svg' %}" alt="exit.svg" class="icons">
+                        <button class="button-exit">Вихід</button>
+                    </div>
                 </div>  
             </nav>
         </header>
-        
+
         <main>
             <div class="side-panel">
-                
                 <div class="profile-container">
                     <div class="profile-head">
                         <div class= "profile-picture">
                             <img src= "{% static  'icons/example-photo.png' %}" alt="example-photo.png">
                         </div>
-
-
                         <div class="profile-name">
                             <h3>Lina Li</h3>
                             <p>@thelili</p>
                         </div>
                     </div>
-                    
                     <div class="profile-info">
                         <div class="info-container">
                             <h3>566</h3>                       
                             <p>Дописи</p>
                         </div>
-                        
                         <div class="info-container">
                             <h3>12.1K</h3>                                
                             <p>Читачі</p>
                         </div>
-                        
                         <div class="info-container">
                             <h3>222</h3>                   
                             <p>Друзі</p>
@@ -86,8 +68,9 @@
                 </div>
                 {% block side_panel %}{% endblock side_panel %}
             </div>
-
-            {% block content %} {% endblock content %}            
+            <div class="div-container">
+                {% block content %} {% endblock content %}
+            </div>
         </main>
         <footer></footer>
         {% block scripts %} {% endblock scripts %}

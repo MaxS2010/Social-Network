@@ -9,7 +9,17 @@ body{
     background-color: #FAF8FF;
 }
 
+.div-container{
+    position: fixed;
+
+    top: 10.2vh;
+    left: 35vw;
+
+    width: 64vw;
+    height: fit-content;
+}
+
 /* 
 width: 1440
-height: 1645
+height: 1024
 */
