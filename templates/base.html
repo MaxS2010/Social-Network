@@ -3,76 +3,62 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% block meta %} {% endblock meta %}
         <title>{% block title %} {% endblock title %}</title>
         {% block links %} {% endblock links %}
 
         <link rel="stylesheet" href="{% static 'css/base.css' %}">
         <link rel="stylesheet" href="{% static 'css/header.css' %}">
-        <link rel="stylesheet" href="{% static 'css/side_panel.css' %}">
     </head>
     <body>
         <header>
-            <img src="{% static 'icons/logo.svg' %}" alt="logo.svg" class="logo">
-            <nav>
-                <div>
-                    <img src="{% static 'icons/home.svg' %}" alt="home.svg" class="icons">
-                    <a href= "{% url 'home' %}">Головна</a>
-                </div>
-                <div>
-                    <img src="{% static 'icons/post.svg' %}" alt="post.svg" class="icons">
-                    <a href= "{% url 'post' %}">Мої публікації</a>
-                </div>
-                <div>
-                    <img src="{% static 'icons/friend.svg' %}" alt="friend.svg" class="icons">
-                    <a href= "{% url 'friends' %}">Друзі</a>
-                </div>
-                <div>
-                    <img src="{% static 'icons/user.svg' %}" alt="user.svg" class="icons">
-                    <a href= "{% url 'user' %}">Налаштування</a>
-                </div>
-                <div>
-                    <div class="button-div">
-                        <img src="{% static 'icons/exit.svg' %}" alt="exit.svg" class="icons">
-                        <button class="button-exit">Вихід</button>
-                    </div>
-                </div>  
-            </nav>
+            <div class="container">
+                <nav>
+                    <a href="/">
+                        <img src="{% static 'icons/logo.svg' %}" alt="logo.svg" class="logo">
+                    </a>
+                    {% if request.path != '/user/auth/' %}
+                        <div>
+                            <a href= "{% url 'home' %}" class="url">
+                                <img src="{% static 'icons/home.svg' %}" alt="home.svg" class="icons">
+                                <span>Головна</span>
+                            </a>
+                            <a href= "{% url 'post' %}" class="url">
+                                <img src="{% static 'icons/post.svg' %}" alt="post.svg" class="icons">
+                                <span>Мої публікації</span>
+                            </a>
+                            <a href= "{% url 'friends' %}" class="url">
+                                <img src="{% static 'icons/friend.svg' %}" alt="friend.svg" class="icons">
+                                <span>Друзі</span>
+                            </a>
+                            <a href= "{% url 'auth' %}" class="url">
+                                <img src="{% static 'icons/group.svg' %}" alt="user.svg" class="icons">
+                                <span>Чати</span>
+                            </a>
+                            <a href= "{% url 'settings' %}" class="url">
+                                <img src="{% static 'icons/user.svg' %}" alt="user.svg" class="icons">
+                                <span>Налаштування</span>
+                            </a>
+                            <a class="button-exit">
+                                <img src="{% static 'icons/exit.svg' %}" alt="exit.svg" class="icons">
+                                <span>Вихід</p>
+                            </a>
+                        </div>
+                    {% endif %}
+                </nav>
+            </div>
         </header>
 
         <main>
-            <div class="side-panel">
-                <div class="profile-container">
-                    <div class="profile-head">
-                        <div class= "profile-picture">
-                            <img src= "{% static  'icons/example-photo.png' %}" alt="example-photo.png">
-                        </div>
-                        <div class="profile-name">
-                            <h3>Lina Li</h3>
-                            <p>@thelili</p>
-                        </div>
-                    </div>
-                    <div class="profile-info">
-                        <div class="info-container">
-                            <h3>566</h3>                       
-                            <p>Дописи</p>
-                        </div>
-                        <div class="info-container">
-                            <h3>12.1K</h3>                                
-                            <p>Читачі</p>
-                        </div>
-                        <div class="info-container">
-                            <h3>222</h3>                   
-                            <p>Друзі</p>
-                        </div>
-                    </div>
-                </div>
-                {% block side_panel %}{% endblock side_panel %}
+            <div class="side-panel-container">                
+                {% block side_panel %} {% endblock side_panel %}
             </div>
+            
             <div class="div-container">
                 {% block content %} {% endblock content %}
             </div>
         </main>
-        <footer></footer>
+        <script src="{% static 'js/base.js' %}"></script>
         {% block scripts %} {% endblock scripts %}
     </body>
 </html>

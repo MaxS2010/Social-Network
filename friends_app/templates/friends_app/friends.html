@@ -6,8 +6,20 @@
 {% endblock title %}
 
 {% block links %}
-
+    <link rel="stylesheet" href="{% static 'css/side_panel.css' %}">
 {% endblock links %}
+
+{% block side_panel %}
+    <div class="friends-panel">
+        <h3>
+            Головна
+            <hr>
+        </h3>
+        <p>Запити</p>
+        <p>Рекомендації</p>
+        <p>Всі друзі</p>
+    </div>
+{% endblock side_panel %}
 
 {% block content %}
 

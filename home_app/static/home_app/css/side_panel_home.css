@@ -1,0 +1,51 @@
+.container-requests{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    width: 24.4vw;
+    height: 25.9vh;
+    gap: 2.5vh;
+
+    background-color: #FFFFFF;
+    border: 0.1vw solid #CDCED2;
+    border-radius: 0.7vw;
+}
+
+.container-requests .name-requests{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    width: 22.2vw;
+    height: 2.4vh;
+
+    color: #81818D;
+}
+
+.container-requests .users-block{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: right;
+
+    width: 22.1vw;
+    height: 17.7vh;
+}
+
+.chats{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+
+    width: 24.4vw;
+    height: 25.9vh;
+    gap: 2.5vh;
+
+    background-color: #FFFFFF;
+    border: 0.1vw solid #CDCED2;
+    border-radius: 0.7vw;
+}

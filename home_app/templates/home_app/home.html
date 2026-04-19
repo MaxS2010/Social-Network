@@ -6,11 +6,76 @@
 {% endblock title %}
 
 {% block links %}
-
+    <link rel="stylesheet" href="{% static 'css/side_panel.css' %}">
+    <link rel="stylesheet" href="{% static 'home_app/css/side_panel_home.css' %}">
 {% endblock links %}
 
+{% block side_panel %}
+    {% include 'particles/header_content.html' %}
+
+    <div class="container-requests">
+        <div class="name-requests">
+            <h4>
+                <img src="{% static 'icons/friend.svg' %}" alt="">
+                <span>Запити</span>
+            </h4>
+            <h4>
+                Дивитися всі
+            </h4>
+        </div>
+
+        <div class="users-block">
+            <div class="request">
+                <img src="{% static  'icons/Avatar1.png' %}" alt="">
+                <div class="text-request">
+                    <h3>Yehor Aung</h3>
+                    <p>4.3k subscribers</p>
+                </div>
+            </div>
+            <div class="request">
+                <img src="{% static  'icons/Avatar2.png' %}" alt="">
+                <div class="text-request">
+                    <h3>Ann Ann</h3>
+                    <p>1.6k subscribers</p>
+                </div>
+            </div>
+            <div class="request">
+                <img src="{% static  'icons/Avatar3.png' %}" alt="">
+                <div class="text-request">
+                    <h3>Yeugen Jenua</h3>
+                    <p>10.3k subscribers</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="chats">
+        <h3>
+            <img src="{% static 'icons/group.svg' %}" alt="">
+            <span>Повідомлення</span>
+        </h3>
+        <div class="users-block">
+            <div class="chat">
+                <img src="{% static  'icons/Avatar4.png' %}" alt="">
+                <h3>Mona Lisa</h3>
+                <p>Привіт! Як справи ?</p>
+            </div>
+            <div class="chat">
+                <img src="{% static  'icons/Avatar5.png' %}" alt="">
+                <h3>Ann Ti</h3>
+                <p>Привіт!</p>
+            </div>
+            <div class="chat">
+                <img src="{% static  'icons/Avatar6.png' %}" alt="">
+                <h3>Ness Ty</h3>
+                <p>Привіт!</p>
+            </div>
+        </div>
+    </div>
+{% endblock side_panel %}
+
 {% block content %}
-    Home Page
+    <h1>group</h1>
 {% endblock content %}
 
 {% block scripts %}

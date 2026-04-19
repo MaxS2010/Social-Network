@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block meta %}
+    <meta>
+{% endblock %}
+
+{% block title %}
+    Auth
+{% endblock %}
+
+{% block links %}
+    <link rel="stylesheet" href="">
+{% endblock %}
+
+{% block content %}
+    <div>
+        {% include 'user_app/particles/form_register.html' %}
+        {% include 'user_app/particles/form_login.html' %}
+        {% include 'user_app/particles/form_confirm_email.html' %}
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    
+{% endblock %}

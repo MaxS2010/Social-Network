@@ -6,8 +6,13 @@
 {% endblock title %}
 
 {% block links %}
-
+    <link rel="stylesheet" href="{% static 'css/side_panel.css' %}">
+    
 {% endblock links %}
+
+{% block side_panel %}
+    {% include 'particles/header_content.html' %}
+{% endblock side_panel %}
 
 {% block content %}
 
