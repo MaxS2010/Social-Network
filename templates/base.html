@@ -14,10 +14,10 @@
         <header>
             <div class="container">
                 <nav>
-                    <a href="/">
-                        <img src="{% static 'icons/logo.svg' %}" alt="logo.svg" class="logo">
-                    </a>
                     {% if request.path != '/user/auth/' %}
+                        <a href="/">
+                            <img src="{% static 'icons/logo.svg' %}" alt="logo.svg" class="logo">
+                        </a>
                         <div>
                             <a href= "{% url 'home' %}" class="url">
                                 <img src="{% static 'icons/home.svg' %}" alt="home.svg" class="icons">
@@ -41,10 +41,17 @@
                             </a>
                             <a class="button-exit">
                                 <img src="{% static 'icons/exit.svg' %}" alt="exit.svg" class="icons">
-                                <span>Вихід</p>
+                                <span>Вихід</span>
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="logo-auth-container">
+                            <a href="/">
+                                <img src="{% static 'icons/logo.svg' %}" alt="logo.svg" class="logo">
                             </a>
                         </div>
                     {% endif %}
+                    
                 </nav>
             </div>
         </header>

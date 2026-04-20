@@ -10,12 +10,21 @@ header{
     background-color: #FFFFFF;
 }
 
-nav{
+header nav{
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
     
+    width: 94vw;
+}
+
+.logo-auth-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
     width: 94vw;
 }
 
@@ -51,15 +60,9 @@ nav div a{
 }
 
 nav div a span{
-    font-size: 1rem;
+    font-size: 1.8vh;
     color: #070A1C;
 }
- 
-/* 
-.icons{
-    width: 1.4vw;
-    height: 1.2vh;
-} */
 
 nav div .icons{
     width: 1.4vw;
@@ -80,9 +83,11 @@ nav div .button-exit{
 
     border-radius: 1234px;
     border: 0.1vw solid #543C52;
+
+    cursor: pointer;
 }
 
-nav div .button-exit p{
+nav div .button-exit span{
     font-size: 1vw;
     line-height: 1.4vw;
     letter-spacing: -0.6%;

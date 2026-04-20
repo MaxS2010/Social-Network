@@ -1,10 +1,11 @@
 <div class="section-login">
     <nav>
-        <p id="register">Реєстрація</p>
-        <p id="login">Авторизація</p>
+        <p class="register">Реєстрація</p>
+        <p class="login">Авторизація</p>
     </nav>
     <p>Раді тебе знову бачити!</p>
     <form action="" method="post">
+        {% csrf_token %}
         {{ form_login.as_p }}
         <button type="submit">Увійти</button>
     </form>

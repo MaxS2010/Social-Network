@@ -1,0 +1,134 @@
+nav{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    width: 28vw;
+    gap: 1.7vw;
+}
+
+nav p{
+    font-size: 3.5vh;
+    font-style: Bold;
+}
+
+.select{
+    color: #070A1C !important;
+
+    border-bottom: 2px solid #070A1C;
+    padding-bottom: 0.5vh;
+}
+
+.text-content{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    
+    width: 18vw;
+    height: 2.7vh;
+    
+    color: #070A1C;
+    
+    
+    /* style: Medium; */
+    /* weight: 500; */
+}
+
+div form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    width: 27.7vw;
+    gap: 1.7vh;
+
+    /* border: 0.1vw solid #070A1C;
+    border-radius: 1234px; */
+}
+
+form p{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: start;
+}
+
+div form button{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    width: 27.7vw;
+    height: 5.4vh;
+    /* padding: 1.7vh 1.7vw 1.7vh 1.7vw; */
+    gap: 0.8vh;
+
+    color: #FFFFFF;
+    background-color: #543C52;
+    border-radius: 1234px;
+}
+
+div form label{
+    font-size: 1.1vw;
+    color: #070A1C;
+}
+
+div form input{
+    width: 27.7vw;
+    height: 4.4vh;
+    padding-left: 1.1vw;
+    gap: 1.04vh;
+
+    border-radius: 10px;
+    border: 1px solid #CDCED2;
+}
+
+form ::placeholder{
+    color: #81818D;
+}
+
+/* form button{
+
+} */
+
+nav .login, nav .register{
+    color: #81818D;
+}
+
+.section-register, .section-login, .section-confirm{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    width: 33.9vw;
+    height: 56vh;
+    background-color: #FFFFFF;
+    gap: 3.7vh;
+}
+
+
+
+
+/* ----- Login form ----- */
+
+.section-login{
+    display: none;
+}
+
+/* ----- Confirm email form ----- */
+
+.section-confirm{
+    display: none;
+}
+
+
+.section-confirm p{
+    font-size: 1.1vw;
+    color: #070A1C;
+}
+

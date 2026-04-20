@@ -13,8 +13,8 @@
 {% block side_panel %}
     {% include 'particles/header_content.html' %}
 
-    <div class="container-requests">
-        <div class="name-requests">
+    <div class="container-info">
+        <div class="name-info">
             <h4>
                 <img src="{% static 'icons/friend.svg' %}" alt="">
                 <span>Запити</span>
@@ -25,22 +25,28 @@
         </div>
 
         <div class="users-block">
-            <div class="request">
-                <img src="{% static  'icons/Avatar1.png' %}" alt="">
+            <div class="user">
+                <div class="img">
+                    <img src="{% static 'icons/Avatar1.png' %}" alt="" class="">
+                </div>
                 <div class="text-request">
                     <h3>Yehor Aung</h3>
                     <p>4.3k subscribers</p>
                 </div>
             </div>
-            <div class="request">
-                <img src="{% static  'icons/Avatar2.png' %}" alt="">
+            <div class="user">
+                <div class="img">
+                    <img src="{% static 'icons/Avatar2.png' %}" alt="">
+                </div>
                 <div class="text-request">
                     <h3>Ann Ann</h3>
                     <p>1.6k subscribers</p>
                 </div>
             </div>
-            <div class="request">
-                <img src="{% static  'icons/Avatar3.png' %}" alt="">
+            <div class="user">
+                <div class="img">
+                    <img src="{% static 'icons/Avatar3.png' %}" alt="">
+                </div>
                 <div class="text-request">
                     <h3>Yeugen Jenua</h3>
                     <p>10.3k subscribers</p>
@@ -49,33 +55,51 @@
         </div>
     </div>
 
-    <div class="chats">
-        <h3>
-            <img src="{% static 'icons/group.svg' %}" alt="">
-            <span>Повідомлення</span>
-        </h3>
+    <div class="container-info">
+        <div class="name-info">
+            <h4>
+                <img src="{% static 'icons/group.svg' %}" alt="">
+                <span>Повідомлення</span>
+            </h4>
+            <h4>
+                Дивитися всі
+            </h4>
+        </div>
+
         <div class="users-block">
-            <div class="chat">
-                <img src="{% static  'icons/Avatar4.png' %}" alt="">
-                <h3>Mona Lisa</h3>
-                <p>Привіт! Як справи ?</p>
+            <div class="user">
+                <div class="img">
+                    <img src="{% static 'icons/Avatar4.png' %}" alt="">
+                </div>
+                <div class="text-request">
+                    <h3>Mona Lisa</h3>
+                    <p>Привіт! Як справи ?</p>
+                </div>
             </div>
-            <div class="chat">
-                <img src="{% static  'icons/Avatar5.png' %}" alt="">
-                <h3>Ann Ti</h3>
-                <p>Привіт!</p>
+            <div class="user">
+                <div class="img">
+                    <img src="{% static 'icons/Avatar5.png' %}" alt="">
+                </div>
+                <div class="text-request">
+                    <h3>Ann Ti</h3>
+                    <p>Привіт!</p>
+                </div>
             </div>
-            <div class="chat">
-                <img src="{% static  'icons/Avatar6.png' %}" alt="">
-                <h3>Ness Ty</h3>
-                <p>Привіт!</p>
+            <div class="user">
+                <div class="img">
+                    <img src="{% static 'icons/Avatar6.png' %}" alt="">
+                </div>
+                <div class="text-request">
+                    <h3>Ness Ty</h3>
+                    <p>Привіт!</p>
+                </div>
             </div>
         </div>
     </div>
 {% endblock side_panel %}
 
 {% block content %}
-    <h1>group</h1>
+
 {% endblock content %}
 
 {% block scripts %}
