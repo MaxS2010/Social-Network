@@ -4,7 +4,7 @@
         <p class="login">Авторизація</p>
     </nav>
     <p class="text-content">Приєднуйся до World IT</p>
-    <form action="" method="post">
+    <form action="{% url 'register' %}" method="post">
         {% csrf_token %}
         {{ form_register.as_p }}
         <button type="submit" class="button-register">Створити акаунт</button>

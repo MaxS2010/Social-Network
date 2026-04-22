@@ -145,7 +145,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: start;
+    align-items: flex-start;
 
     height: 15.8vh;
     width: 17.6vw;
@@ -156,7 +156,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: start;
+    align-items: flex-start;
 
     font-size: 1rem;
     color: #070A1C;

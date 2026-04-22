@@ -3,8 +3,11 @@
     <p>Ми надіслали 6-значний код на вашу пошту (you@example.com). Введіть його нижче, щоб підтвердити акаунт</p>
     <form action="" method="post">
         {% csrf_token %}
-        {{ form_confirm_email.as_p }}
-        <button type="submit"Підтвердити</button>
+        <p class="code-label">Код підтвердження</p>
+        <div class="code-inputs">
+            {{ form_confirm_email.as_p }}
+        </div>
+        <button type="submit">Підтвердити</button>
     </form>
     <p class="back">Назад</p>
 </div>

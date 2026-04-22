@@ -16,8 +16,15 @@ nav p{
 .select{
     color: #070A1C !important;
 
-    border-bottom: 2px solid #070A1C;
+    border-bottom: 0.3vh solid #070A1C;
     padding-bottom: 0.5vh;
+
+    font-weight: 700;
+    font-style: Bold;
+    font-size: 3.5vh;
+    line-height: 100%;
+    letter-spacing: -1%;
+    text-align: center;
 }
 
 .text-content{
@@ -30,10 +37,7 @@ nav p{
     height: 2.7vh;
     
     color: #070A1C;
-    
-    
-    /* style: Medium; */
-    /* weight: 500; */
+    font-size: 1.6vw;
 }
 
 div form{
@@ -64,12 +68,13 @@ div form button{
 
     width: 27.7vw;
     height: 5.4vh;
-    /* padding: 1.7vh 1.7vw 1.7vh 1.7vw; */
     gap: 0.8vh;
-
-    color: #FFFFFF;
-    background-color: #543C52;
+    
     border-radius: 1234px;
+    background-color: #543C52;
+    
+    color: #FFFFFF;
+    font-size: 1.6vh;
 }
 
 div form label{
@@ -84,19 +89,16 @@ div form input{
     gap: 1.04vh;
 
     border-radius: 10px;
-    border: 1px solid #CDCED2;
+    border: 0.1vh solid #CDCED2;
 }
 
 form ::placeholder{
     color: #81818D;
 }
 
-/* form button{
-
-} */
-
 nav .login, nav .register{
     color: #81818D;
+    cursor: pointer;
 }
 
 .section-register, .section-login, .section-confirm{
@@ -105,13 +107,18 @@ nav .login, nav .register{
     justify-content: center;
     align-items: center;
 
-    width: 33.9vw;
-    height: 56vh;
-    background-color: #FFFFFF;
+    width: 31vw;
+    height: fit-content; /* 56vh */
+    padding: 3vw;
+
     gap: 3.7vh;
+    z-index: 5;
+
+    border-radius: 20px;
+
+    background-color: #FFFFFF;
+
 }
-
-
 
 
 /* ----- Login form ----- */
@@ -126,9 +133,56 @@ nav .login, nav .register{
     display: none;
 }
 
+.section-confirm h2{
+    color: #070A1C;
+    font-size: 3.5vh;
+}
 
-.section-confirm p{
+.section-confirm>p{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+
+    width: 24vw;
+
     font-size: 1.1vw;
     color: #070A1C;
 }
 
+.section-confirm form{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.section-confirm form .code-label{
+    font-weight: 400;
+    font-size: 1vw;
+    line-height: 100%;
+    letter-spacing: -0.7%;
+}
+
+.code-inputs{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    gap: 1vw;
+}
+
+.code-input {
+    padding-left: 0.75vw;
+
+    width: 3.5vw;
+    height: 5.1vh;
+
+    font-size: 1.7vw;
+}
+
+.code-input::placeholder{
+    font-size: 1vw;
+}

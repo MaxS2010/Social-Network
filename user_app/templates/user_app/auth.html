@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block meta %}
-    <meta>
+    <meta name="csrf-token" content="{{ csrf_token }}">
 {% endblock %}
 
 {% block title %}
@@ -19,6 +19,9 @@
         {% include 'user_app/particles/form_register.html' %}
         {% include 'user_app/particles/form_login.html' %}
         {% include 'user_app/particles/form_confirm_email.html' %}
+        <div class="photo">
+            <img src="{% static 'user_app/icons/gadget-photo.png' %}" alt="">
+        </div>
     </div>
 {% endblock %}
 
