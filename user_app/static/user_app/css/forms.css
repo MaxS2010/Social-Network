@@ -11,10 +11,13 @@ nav{
 nav p{
     font-size: 3.5vh;
     font-style: Bold;
+    color: rgba(129, 129, 141, 1);
+    cursor: pointer;
 }
 
 .select{
     color: #070A1C !important;
+    cursor: default;
 
     border-bottom: 0.3vh solid #070A1C;
     padding-bottom: 0.5vh;
@@ -66,7 +69,9 @@ div form button{
     justify-content: center;
     align-items: center;
 
-    width: 27.7vw;
+    cursor: pointer;
+
+    width: 27vw;
     height: 5.4vh;
     gap: 0.8vh;
     
@@ -111,7 +116,7 @@ nav .login, nav .register{
     height: fit-content; /* 56vh */
     padding: 3vw;
 
-    gap: 3.7vh;
+    gap: 4vh;
     z-index: 5;
 
     border-radius: 20px;
@@ -138,7 +143,7 @@ nav .login, nav .register{
     font-size: 3.5vh;
 }
 
-.section-confirm>p{
+.section-confirm>p, form .back{
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -156,6 +161,8 @@ nav .login, nav .register{
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
+
+    gap: 3.6vh;
 }
 
 .section-confirm form .code-label{
@@ -167,9 +174,23 @@ nav .login, nav .register{
 
 .code-inputs{
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
+    align-items: flex-start;
+
+    width: 27.7vw;
+    height: 5.4vh;
+
+    gap: 1vw;
+}
+
+.code-inputs div{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     align-items: center;
+
+    width: 27.7vw;
 
     gap: 1vw;
 }
@@ -185,4 +206,19 @@ nav .login, nav .register{
 
 .code-input::placeholder{
     font-size: 1vw;
+}
+
+.buttons-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    width: 27.7vw;
+
+    gap: 1vw;
+}
+
+.back{
+    cursor: pointer;
 }

@@ -2,6 +2,8 @@ from typing import Any
 
 from django import forms
 from django.contrib.auth import get_user_model, authenticate
+from django.contrib.auth.forms import AuthenticationForm
+
 User = get_user_model()
 
 class UserRegisterForm(forms.ModelForm):
@@ -66,58 +68,61 @@ class UserRegisterForm(forms.ModelForm):
             user.save()
         return user
 
+class UserLoginForm(AuthenticationForm):
+    username = forms.EmailField(
+        max_length= 200,
+        label= 'Електронна пошта',
+        required= True,
+        widget= forms.EmailInput(
+            attrs={
+                'placeholder': "you@example.com",
+                'autocomplete': 'email',
+                'autofocus': True,
+                'class': "email-input",
+                
+            }
+        )
+    )
 
-class UserLoginForm(forms.ModelForm):
-    password1 = forms.CharField(
+    password = forms.CharField(
         max_length= 100,
-        label= 'Пароль', 
+        label= 'Пароль',
         required= True,
         widget= forms.PasswordInput(
             attrs={
                 'placeholder': 'Введи пароль',
+                'autocomplete': 'current-password',
                 'class': "password-input",
             }
         )
     )
 
-    class Meta:
-        model = User
-        fields = ('email',)
-        labels = {
-            'email': 'Електронна пошта'
-        }
-        widgets = {
-            'email': forms.EmailInput(attrs={
-                'placeholder': 'you@example.com',
-                'class': "email-input",
-            })
-        }
-    
-    def clean_email(self):
-        email = self.cleaned_data.get('email')
-        if not User.objects.filter(email=email).exists():
-            raise forms.ValidationError('Користувача з такою електронною поштою не знайдено')
-        return email
-    
-    def clean(self):
-        cleaned_data = super().clean()
+    error_messages = {
+        'invalid_login': 'Невірний email або пароль',
+        'inactive': 'Цей аккаунт не активний',
+    }
 
-        email = cleaned_data.get('email')
-        password = cleaned_data.get('password1')
+    def clean(self) -> dict[str, Any]:
+        email = self.cleaned_data.get('username')
+        password = self.cleaned_data.get('password')
 
         if email and password:
-            user = authenticate(username=email, password=password)
+            self.user_cache = authenticate(self.request, username=email, password=password)
+            if self.user_cache is None:
+                raise forms.ValidationError(
+                    self.error_messages['invalid_login'],
+                    code='invalid_login',
+                    params={
+                        'username': self.username_field.verbose_name,
+                    },
+                )
+            else:
+                self.confirm_login_allowed(self.user_cache)
 
-            if user is None:
-                raise forms.ValidationError('Невірний email або пароль')
-
-            self.user = user 
-
-        return cleaned_data
+        return self.cleaned_data
 
 
 class UserConfirmForm(forms.Form):
-
     def __init__(self, *args, confirm_code=None, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -126,6 +131,7 @@ class UserConfirmForm(forms.Form):
         for i in range(1, 7):
             self.fields[f'code{i}'] = forms.CharField(
                 max_length= 1,
+                min_length= 1,
                 required= True,
                 label= '',
                 widget=forms.TextInput(
@@ -159,5 +165,3 @@ class UserConfirmForm(forms.Form):
         cleaned_data['code'] = full_code
 
         return cleaned_data
-        
-

@@ -8,6 +8,7 @@
         {% block links %} {% endblock links %}
 
         <link rel="stylesheet" href="{% static 'css/base.css' %}">
+        <link rel="stylesheet" href="{% static 'fonts/font/stylesheet.css' %}">
         <link rel="stylesheet" href="{% static 'css/header.css' %}">
     </head>
     <body>
@@ -39,10 +40,10 @@
                                 <img src="{% static 'icons/user.svg' %}" alt="user.svg" class="icons">
                                 <span>Налаштування</span>
                             </a>
-                            <a class="button-exit">
+                            <button type="button" class="button-exit" id="button-exit">
                                 <img src="{% static 'icons/exit.svg' %}" alt="exit.svg" class="icons">
                                 <span>Вихід</span>
-                            </a>
+                            </button>
                         </div>
                     {% else %}
                         <div class="logo-auth-container">

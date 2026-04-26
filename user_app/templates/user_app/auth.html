@@ -1,10 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block meta %}
-    <meta name="csrf-token" content="{{ csrf_token }}">
-{% endblock %}
-
 {% block title %}
     Auth
 {% endblock %}
@@ -26,5 +22,5 @@
 {% endblock %}
 
 {% block scripts %}
-    <script src="{% static 'user_app/js/auth.js' %}"></script>
+    <script type="module" src="{% static 'user_app/js/main.js' %}" defer></script>
 {% endblock %}

@@ -78,7 +78,8 @@ nav div .button-exit{
     width: 5vw;
     height: 4vh;
     gap: 0.6vw;
-
+    
+    background-color: transparent;
     color: #543C52;
 
     border-radius: 1234px;

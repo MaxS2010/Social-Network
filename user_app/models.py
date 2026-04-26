@@ -7,12 +7,17 @@ class User(AbstractUser):
     username = models.CharField(
         max_length= 150,
         blank= True,
-        null= True
+        null= True,
+        unique= True
     )
     
     email = models.EmailField(
         unique= True
     )
-    
+
+    is_profile_complete = models.BooleanField(
+        default=False
+    )
+
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []

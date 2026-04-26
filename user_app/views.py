@@ -1,10 +1,17 @@
 from typing import Any
-from django.shortcuts import render
+from urllib import request
+from django.shortcuts import redirect, render
+from django.contrib.auth import authenticate, login, logout
 from django.views.generic.base import TemplateView
 from django.views import View
-from django.http import JsonResponse
+from django.http import HttpRequest, JsonResponse
+
+from .services import confirm_user
+
+from .models import User
 
 from .forms import UserRegisterForm, UserLoginForm, UserConfirmForm
+from .utils import generate_confirm_code, send_confirm_code
 
 # Create your views here.
 
@@ -22,77 +29,76 @@ class RegisterView(View):
     def post(self, request, *args, **kwargs):
         form = UserRegisterForm(request.POST)
         if form.is_valid():
-            # form.save()
+            user = form.save(commit=False)
+            user.is_active = False
+            user.save()
+
+            code = generate_confirm_code()
+
+            request.session['confirm_code'] = code
+            request.session['confirm_user_id'] = user.id
+            send_confirm_code(email=user.email, code=code)
+
             return JsonResponse({
-                'success': True, 
-                'message': 'Реєстрація успішна'
+                "success": True,
+                "message": "Код відправлено на email"
             })
-        else:
-            return JsonResponse({
-                'success': False, 
-                'errors': form.errors.get_json_data(),
-            }, status= 400)
+        return JsonResponse({
+            'success': False, 
+            'errors': form.errors.get_json_data(),
+        }, status= 400)
 
 
 class LoginView(View):
-    def post(self, request, *args, **kwargs):
-        form = UserLoginForm(request.POST)
+    def post(self, request: HttpRequest, *args, **kwargs):
+        form = UserLoginForm(request, data=request.POST)
+
         if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+
             return JsonResponse({
-                'success': True, 
-                'message': 'Вхід успішний'
-            })
+                'success': True,
+                'redirect_url': '/',
+                'is_profile_complete': user.is_profile_complete # type: ignore
+            })            
         else:
             return JsonResponse({
-                'success': False, 
+                'success': False,
                 'errors': form.errors.get_json_data(),
-            }, status= 400)
+            })
 
 
 class ConfirmView(View):
     def post(self, request, *args, **kwargs):
-
-        session_code = request.session.get("confirm_code")
-
-        if not session_code:
-            return JsonResponse({
-                "success": False,
-                "message": "Код підтвердження не знайдено"
-            }, status=400)
-
-        form = UserConfirmForm(request.POST, confirm_code=session_code)
+        form = UserConfirmForm(
+            request.POST,
+            confirm_code=request.session.get("confirm_code")
+        )
 
         if not form.is_valid():
             return JsonResponse({
                 "success": False,
-                "errors": form.errors.get_json_data(),
+                "errors": form.errors.get_json_data()
             }, status=400)
 
-        register_data = request.session.get("register_data")
+        try:
+            user = confirm_user(
+                session=request.session,
+                input_code=form.cleaned_data["code"]
+            )
 
-        if not register_data:
+        except ValueError as error:
             return JsonResponse({
                 "success": False,
-                "message": "Дані реєстрації відсутні"
+                "errors": str(error)
             }, status=400)
 
-        user_form = UserRegisterForm(register_data)
-
-        if user_form.is_valid():
-            user = user_form.save()
-
-            request.session.pop("confirm_code", None)
-            request.session.pop("register_data", None)
-
-            return JsonResponse({
-                "success": True,
-                "message": "Реєстрацію підтверджено"
-            })
-
         return JsonResponse({
-            "success": False,
-            "errors": user_form.errors.get_json_data(),
-        }, status=400)
+            "success": True,
+            "message": "Акаунт підтверджено",
+            "user_id": user.id # type: ignore
+        })
 
 
 class SettingsView(TemplateView):
@@ -100,8 +106,8 @@ class SettingsView(TemplateView):
 
 class LogoutView(View):
     def post(self, request, *args, **kwargs):
-        # logout(request)
+        logout(request)
+
         return JsonResponse({
-            'success': True, 
-            'message': 'Вихід успішний'
+            "success": True
         })

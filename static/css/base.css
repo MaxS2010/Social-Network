@@ -3,15 +3,8 @@
     margin: 0;
     box-sizing: border-box;
     text-decoration: none;
-    font-family: 'GT Walsheim Pro Medium';
-}
-
-@font-face {
-    font-family: 'GT Walsheim Pro Medium';
-    src: url('../fonts/GTWalsheimPro-Medium.woff2') format('woff2');
-    font-weight: 700; /* Bold */
-    font-style: normal;
-    font-display: swap;
+    font-family: 'GT Walsheim Pro';
+    font-weight: 500;
 }
 
 body{
@@ -53,6 +46,12 @@ main{
 }
 
 .div-container{
+    display: flex;
+    flex-direction: column;
+    justify-self: center;
+    align-items: center;
+
+
     width: 64vw;
     height: fit-content;
     min-height: 10vh;

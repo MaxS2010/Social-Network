@@ -7,6 +7,7 @@
 
 {% block links %}
     <link rel="stylesheet" href="{% static 'css/side_panel.css' %}">
+    <link rel="stylesheet" href="{% static 'user_app/css/settings.css' %}">
 {% endblock links %}
 
 {% block side_panel %}
@@ -20,7 +21,78 @@
 {% endblock side_panel %}
 
 {% block content %}
+    <div class="settings-container">
+        <div class="profile-panel">
+            <div class="edit-info">
+                <p>Картка профілю</p>
+                <p>
+                    <img src="" alt="">
+                    <span>Редагувати інформацію</span>
+                </p>
+            </div>
+            <div>
+                <img src="" alt="">
+                <h3>Lina Li</h3>
+                <p>@thelili</p>
+            </div>
+        </div>
+        <div class="setting-info">
+            <div>
+                <p>Особиста інформація</p>
+                <div class="edit-info">
+                    <p>
+                        <img src="" alt="">
+                        <span>Редагувати інформацію</span>
+                    </p>
+                </div>
+            </div>
 
+            <div>
+                <label for="first-name">Ім'я</label>
+                <input type="text" name="first-name" id="first-name">
+                <label for="second-name">Прізвище</label>
+                <input type="text" name="second-name" id="second-name">
+                <label for="born-date">Дата народження</label>
+                <input type="text" name="born-date" id="born-date">
+                <label for="email-adress"></label>
+                <input type="text" name="email-adress" id="email-adress">
+                
+                <div>
+                    <p>Пароль</p>
+                    <div class="edit-info">
+                        <p>
+                            <img src="" alt="">
+                            <span>Редагувати пароль</span>
+                        </p>
+                    </div>
+                </div>
+
+                <label for="password">Пароль</label>
+                <input type="text" name="password" id="password">               
+            </div>           
+        </div>
+        
+        <div class="settings-signature">
+            <div>
+                <p>Варіанти підпису</p>
+                <div class="edit-info">
+                    <p>
+                        <img src="" alt="">
+                        <span>Редагувати інформацію</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class= "author-info">
+                <input type="checkbox" id = "pseudonym" name="pseudonym">
+                <label for="pseudonym">Псевдонім автора</label>
+                <p>Lina Li</p>
+                <input type="checkbox" name = "signature" id="signature">
+                <label for="signature">Мій електронний підпис</label>
+                <img src="" alt="">
+            </div>
+        </div>
+    </div>
 {% endblock content %}
 
 {% block scripts %}

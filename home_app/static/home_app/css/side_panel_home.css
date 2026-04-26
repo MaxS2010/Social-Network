@@ -38,13 +38,18 @@ p{
     height: 1.6vh;
 }
 
+.container-info .name-info h4{
+    font-size: 1.6vh;
+}
+
+.container-info .name-info h4 img{
+    filter: invert(56%) sepia(8%) saturate(464%) hue-rotate(201deg) brightness(91%) contrast(85%);
+}
+
 .container-info .name-info h4 span{
     font-size: 2vh;
 }
 
-.container-info .name-info h4{
-    font-size: 1.6vh;
-}
 
 .container-info .users-block{
     display: flex;
@@ -71,6 +76,7 @@ p{
 .container-info .users-block .user .img{
     width: 3.2vw;
     height: 4.7vh;
+    
 }
 
 .container-info .users-block .user .img img{

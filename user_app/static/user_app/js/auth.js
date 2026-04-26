@@ -1,44 +1,75 @@
-let sectionRegister = document.querySelector('.section-register');
-let registerSwitches = document.querySelectorAll('.register');
-let buttonRegister = document.querySelector('.button-register');
+import { postForm } from './api_user.js'
+import { showErrors } from './utils.js'
+import {
+    showRegisterForm,
+    showLoginForm,
+    showConfirmForm,
+    hideConfirmForm,
+} from './ui/authViews.js'
 
-let sectionLogin = document.querySelector('.section-login');
-let loginSwitches = document.querySelectorAll('.login');
+import { initCodeInputs } from './ui/codeInputs.js'
 
-let sectionConfirm = document.querySelector('.section-confirm');
-let buttonBack = document.querySelector('.back');
+export function initAuth() {
+    const codeInputs = initCodeInputs()
 
+    // REGISTER
+    const registerForm = document.querySelector('.section-register form')
 
-registerSwitches.forEach(registerSwitch => {
-    registerSwitch.addEventListener('click', function() {
-        sectionLogin.style.display = "none";
-        sectionRegister.style.display = "flex";
-        
-        loginSwitches.forEach(login => login.classList.remove('select'));
-        registerSwitches.forEach(regiter => regiter.classList.add('select'));
-    });
-});
+    registerForm?.addEventListener('submit', async (event) => {
+        event.preventDefault()
 
-loginSwitches.forEach(loginSwitch => {
-    loginSwitch.addEventListener('click', function() {
-        sectionRegister.style.display = "none";
-        sectionLogin.style.display = "flex";
-        
-        registerSwitches.forEach(regiset => regiset.classList.remove('select'));
-        loginSwitches.forEach(login => login.classList.add('select'));
-    });
-});
+        const data = await postForm(registerForm.action, new FormData(registerForm))
 
+        if (data.success) {
+            console.log('register success')
+        } else {
+            showErrors(registerForm, data.errors)
+        }
+    })
 
-buttonRegister.addEventListener('click', function(event) {
-    event.preventDefault();
-    
-    sectionRegister.style.display = "none";
-    sectionConfirm.style.display = "flex";
-});
+    // CONFIRM
+    const confirmForm = document.querySelector('.section-confirm form')
 
-buttonBack.addEventListener('click', function() {
-    sectionConfirm.style.display = "none";
-    sectionRegister.style.display = "flex";
+    confirmForm?.addEventListener('submit', async (event) => {
+        event.preventDefault()
 
-});
+        const data = await postForm('/user/confirm/', new FormData(confirmForm))
+
+        if (data.success) {
+            hideConfirmForm()
+            showLoginForm()
+            codeInputs.clear()
+        } else {
+            console.log('confirm error')
+        }
+    })
+
+    // LOGIN
+    const loginForm = document.querySelector('.section-login form')
+
+    loginForm?.addEventListener('submit', async (event) => {
+        event.preventDefault()
+
+        const data = await postForm(loginForm.action, new FormData(loginForm))
+
+        if (data.success) {
+            window.location.href = '/'
+        } else {
+            showErrors(loginForm, data.errors)
+        }
+    })
+
+    // UI buttons
+    document.getElementById('register')?.addEventListener('click', showRegisterForm)
+    document.getElementById('login')?.addEventListener('click', showLoginForm)
+
+    document.querySelector('.button-register')
+        ?.addEventListener('click', showConfirmForm)
+
+    document.querySelector('.back')
+        ?.addEventListener('click', () => {
+            hideConfirmForm()
+            showRegisterForm()
+            codeInputs.clear()
+        })
+}
