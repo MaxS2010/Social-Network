@@ -12,7 +12,6 @@ import { initCodeInputs } from './ui/codeInputs.js'
 export function initAuth() {
     const codeInputs = initCodeInputs()
 
-    // REGISTER
     const registerForm = document.querySelector('.section-register form')
 
     registerForm?.addEventListener('submit', async (event) => {
@@ -23,11 +22,11 @@ export function initAuth() {
         if (data.success) {
             console.log('register success')
         } else {
-            showErrors(registerForm, data.errors)
+            log(registerForm, data.errors)
+            // showErrors(registerForm, data.errors)
         }
     })
 
-    // CONFIRM
     const confirmForm = document.querySelector('.section-confirm form')
 
     confirmForm?.addEventListener('submit', async (event) => {
@@ -44,7 +43,6 @@ export function initAuth() {
         }
     })
 
-    // LOGIN
     const loginForm = document.querySelector('.section-login form')
 
     loginForm?.addEventListener('submit', async (event) => {
@@ -55,11 +53,11 @@ export function initAuth() {
         if (data.success) {
             window.location.href = '/'
         } else {
-            showErrors(loginForm, data.errors)
+            log(registerForm, data.errors)
+            // showErrors(loginForm, data.errors)
         }
     })
 
-    // UI buttons
     document.getElementById('register')?.addEventListener('click', showRegisterForm)
     document.getElementById('login')?.addEventListener('click', showLoginForm)
 
@@ -73,3 +71,5 @@ export function initAuth() {
             codeInputs.clear()
         })
 }
+
+initAuth()

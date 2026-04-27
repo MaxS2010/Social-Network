@@ -43,6 +43,7 @@ class RegisterView(View):
                 "success": True,
                 "message": "Код відправлено на email"
             })
+        
         return JsonResponse({
             'success': False, 
             'errors': form.errors.get_json_data(),
@@ -59,9 +60,9 @@ class LoginView(View):
 
             return JsonResponse({
                 'success': True,
-                'redirect_url': '/',
-                'is_profile_complete': user.is_profile_complete # type: ignore
-            })            
+                'is_profile_complete': user.is_profile_complete, # type: ignore
+            })
+        
         else:
             return JsonResponse({
                 'success': False,
@@ -111,3 +112,15 @@ class LogoutView(View):
         return JsonResponse({
             "success": True
         })
+
+
+
+# class CheckNameView(View):
+#     def get(self, request, *args, **kwargs):
+#         if request.user.username_field is None:
+#             return JsonResponse({
+#                 "success": False,
+#                 "message": "Введіть ім'я користувача"
+#             }), 
+
+
