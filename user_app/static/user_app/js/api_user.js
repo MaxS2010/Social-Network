@@ -6,19 +6,20 @@ export async function postForm(url, formData) {
             method: 'POST',
             headers: {
                 'X-CSRFToken': getCSRFToken(),
+                'X-Requested-With': 'XMLHttpRequest',
             },
-            body: formData,
-            credentials: 'same-origin'
+            body: formData
         })
 
+        const data = await response.json().catch(() => ({}))
+
         if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`)
+            return { success: false, ...data }
         }
 
-        return await response.json()
+        return data
 
     } catch (err) {
-        console.error('Request failed:', err)
         return { success: false, error: 'network' }
     }
 }

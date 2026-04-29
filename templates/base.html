@@ -40,10 +40,13 @@
                                 <img src="{% static 'icons/user.svg' %}" alt="user.svg" class="icons">
                                 <span>Налаштування</span>
                             </a>
-                            <button type="button" class="button-exit" id="button-exit">
-                                <img src="{% static 'icons/exit.svg' %}" alt="exit.svg" class="icons">
-                                <span>Вихід</span>
-                            </button>
+                            <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                                {% csrf_token %}
+                                <button type="button" class="button-exit" id="button-exit">
+                                    <img src="{% static 'icons/exit.svg' %}" alt="exit.svg" class="icons">
+                                    <span>Вихід</span>
+                                </button>
+                            </form>
                         </div>
                     {% else %}
                         <div class="logo-auth-container">

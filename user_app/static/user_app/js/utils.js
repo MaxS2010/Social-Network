@@ -5,19 +5,17 @@ export function getCSRFToken() {
         ?.split('=')[1]
 }
 
-export function showErrors(form, errors) {
-    form.querySelectorAll('.error').forEach(e => e.remove())
+export function showErrors(containerId, errors) {
+    const errorsContainer = document.getElementById(containerId)
+    if (!errorsContainer) return
 
-    for (const field in errors) {
-        const input = form.querySelector(`[name="${field}"]`)
-        if (!input) continue
+    errorsContainer.innerHTML = ""
 
-        const message = errors[field]?.[0]?.message || 'Invalid value'
-
-        const error = document.createElement('div')
-        error.className = 'error'
-        error.textContent = message
-
-        input.parentNode.appendChild(error)
+    for (let fieldName in errors) {
+        errors[fieldName].forEach(errorObj => {
+            let p = document.createElement('p')
+            p.textContent = errorObj.message
+            errorsContainer.appendChild(p)
+        })
     }
 }

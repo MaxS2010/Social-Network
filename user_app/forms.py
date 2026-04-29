@@ -165,3 +165,29 @@ class UserConfirmForm(forms.Form):
         cleaned_data['code'] = full_code
 
         return cleaned_data
+
+
+class UserExpandInfoForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('username', 'first_name')
+        labels = {
+            'username': 'Псевдонім автора',
+            'first_name': 'Ім’я користувача'
+        }
+        widgets = {
+            'username': forms.TextInput(attrs={
+                'placeholder': 'Введіть Псевдонім автора'
+            }),
+            'first_name': forms.TextInput(attrs={
+                'placeholder': '@'
+            }),
+        }
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username')
+
+        if User.objects.filter(username=username).exists():
+            raise forms.ValidationError('Цей псевдонім вже зайнятий')
+
+        return username

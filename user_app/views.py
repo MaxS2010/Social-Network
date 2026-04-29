@@ -1,7 +1,5 @@
 from typing import Any
-from urllib import request
-from django.shortcuts import redirect, render
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login
 from django.views.generic.base import TemplateView
 from django.views import View
 from django.http import HttpRequest, JsonResponse
@@ -10,7 +8,7 @@ from .services import confirm_user
 
 from .models import User
 
-from .forms import UserRegisterForm, UserLoginForm, UserConfirmForm
+from .forms import UserExpandInfoForm, UserRegisterForm, UserLoginForm, UserConfirmForm
 from .utils import generate_confirm_code, send_confirm_code
 
 # Create your views here.
@@ -34,16 +32,15 @@ class RegisterView(View):
             user.save()
 
             code = generate_confirm_code()
-
             request.session['confirm_code'] = code
             request.session['confirm_user_id'] = user.id
             send_confirm_code(email=user.email, code=code)
 
             return JsonResponse({
                 "success": True,
-                "message": "Код відправлено на email"
+                "message": "Код відправлено"
             })
-        
+
         return JsonResponse({
             'success': False, 
             'errors': form.errors.get_json_data(),
@@ -97,30 +94,33 @@ class ConfirmView(View):
 
         return JsonResponse({
             "success": True,
-            "message": "Акаунт підтверджено",
-            "user_id": user.id # type: ignore
+            "message": "Акаунт підтверджено"
         })
+
+
+class ExpandInfoView(View):
+    def post(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return JsonResponse({
+                "success": False,
+                "message": "Не авторизований"
+            }, status=401)
+
+        form = UserExpandInfoForm(request.POST, instance=request.user)
+
+        if form.is_valid():
+            form.save()
+
+            return JsonResponse({
+                "success": True,
+                "message": "Дані оновлено"
+            })
+
+        return JsonResponse({
+            "success": False,
+            "errors": form.errors.get_json_data()
+        }, status=400)
 
 
 class SettingsView(TemplateView):
     template_name = 'user_app/settings.html'
-
-class LogoutView(View):
-    def post(self, request, *args, **kwargs):
-        logout(request)
-
-        return JsonResponse({
-            "success": True
-        })
-
-
-
-# class CheckNameView(View):
-#     def get(self, request, *args, **kwargs):
-#         if request.user.username_field is None:
-#             return JsonResponse({
-#                 "success": False,
-#                 "message": "Введіть ім'я користувача"
-#             }), 
-
-
