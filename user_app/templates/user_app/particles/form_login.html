@@ -5,7 +5,6 @@
     </nav>
     <p class="text-content">Раді тебе знову бачити!</p>
     <form action="{% url 'login' %}" method="post">
-        {% csrf_token %}
         {{ form_login.as_p }}
         <button type="submit">Увійти</button>
     </form>

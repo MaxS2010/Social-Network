@@ -1,0 +1,14 @@
+{% load static %}
+
+<div class="create-post-container" style="display: none;">
+    <div class="post-errors"></div>
+
+    <div class="close-cross-container"><img src="{% static 'post_app/icons/close-cross.svg' %}" alt="close-cross" class="close-cross"></div>
+    <h1>Створення публікації</h1>
+    <form id="post-create-form" method="post" action="{% url 'create_post' %}">
+        {{ form_create.as_p }}
+        <div>
+            <button class="publicate">Публікація</button>
+        </div>
+    </form>
+</div>

@@ -7,8 +7,7 @@ class User(AbstractUser):
     username = models.CharField(
         max_length= 150,
         blank= True,
-        null= True,
-        unique= True
+        null= True
     )
     
     email = models.EmailField(

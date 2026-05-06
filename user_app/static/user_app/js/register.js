@@ -24,11 +24,13 @@ document.querySelector('.section-register form').addEventListener('submit', func
         return data
     })
     .then(data => {
-        console.log('register success')
+        codeInputs.clear()
         document.querySelector('.section-register').style.display = 'none'
         showLoginForm()
+
     })
     .catch(data => {
+        console.log("REGISTER ERROR:", data)
         if (data?.errors) {
             showErrors('register-errors', data.errors)
         }

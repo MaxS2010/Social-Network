@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block meta %}
+    <meta name="csrf-token" content="{{ csrf_token }}">
+{% endblock meta %}
+
 {% block title %}
     Home page
 {% endblock title %}
@@ -8,6 +12,7 @@
 {% block links %}
     <link rel="stylesheet" href="{% static 'css/side_panel.css' %}">
     <link rel="stylesheet" href="{% static 'home_app/css/side_panel_home.css' %}">
+    <link rel="stylesheet" href="{% static 'user_app/css/form_info.css' %}">
 {% endblock links %}
 
 {% block side_panel %}
@@ -99,9 +104,9 @@
 {% endblock side_panel %}
 
 {% block content %}
-
+    {% include 'user_app/particles/form_info.html' %}
 {% endblock content %}
 
 {% block scripts %}
-
+    <script type="module" src="{% static 'user_app/js/expand_info.js' %}"></script>
 {% endblock scripts %}

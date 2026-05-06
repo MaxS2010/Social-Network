@@ -1,8 +1,7 @@
 <div class="section-confirm">
     <h2>Підтвердження пошти</h2>
     <p>Ми надіслали 6-значний код на вашу пошту (you@example.com). Введіть його нижче, щоб підтвердити акаунт</p>
-    <form action="" method="post">
-        {% csrf_token %}
+    <form action="{% url 'confirm_email' %}" method="post">
         <div class="code-inputs">
             <p class="code-label">Код підтвердження</p>
             <div>

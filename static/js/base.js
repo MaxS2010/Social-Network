@@ -46,18 +46,24 @@ async function logoutUser() {
     }
 }
 
-// document.querySelector("#button-exit").addEventListener(
-//     'click',
-//     logoutUser
-// )
 
-document.addEventListener('DOMContentLoaded', () => {
-    const btn = document.querySelector("#button-exit")
+const needModal = sessionStorage.getItem("showProfileModal")
 
-    if (btn) {
-        btn.addEventListener('click', logoutUser)
-    }
-    else {
-        console.error("no btn")
-    }
-})
+if (needModal == "true") {
+    const modal = document.querySelector('.form-info')
+    
+    const message = document.createElement('p')
+
+    message.className = 'modal-message'
+    message.innerHTML = `<span>Або оберіть:</span><span class="text-accent">Запропоновані варіанти відповідно до Ім’я та Прізвища</span>`
+    
+
+    document.querySelector('.form').appendChild(message)
+
+    modal.style.display = 'flex'
+
+    sessionStorage.removeItem("showProfileModal")
+}
+else{
+    // modal.remove()
+}

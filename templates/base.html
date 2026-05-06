@@ -42,10 +42,10 @@
                             </a>
                             <form action="{% url 'logout' %}" method="post" style="display:inline;">
                                 {% csrf_token %}
-                                <button type="button" class="button-exit" id="button-exit">
+                                <a href="{% url 'logout' %}" class="button-exit" id="button-exit">
                                     <img src="{% static 'icons/exit.svg' %}" alt="exit.svg" class="icons">
                                     <span>Вихід</span>
-                                </button>
+                                </a>
                             </form>
                         </div>
                     {% else %}

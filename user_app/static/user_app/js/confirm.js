@@ -1,4 +1,5 @@
 import { getCSRFToken, showErrors } from './utils.js'
+import { showLoginForm, hideConfirmForm } from './ui/authViews.js'
 
 document.querySelector('.section-confirm form')
         ?.addEventListener('submit', function (event) {
@@ -28,6 +29,7 @@ document.querySelector('.section-confirm form')
                 codeInputs.clear()
             })
             .catch(data => {
+                console.log("CONFIRM ERROR:", data)
                 if (data?.errors) {
                     showErrors('confirm-errors', data.errors)
                 }

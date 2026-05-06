@@ -1,22 +1,23 @@
-from .models import User
+from .forms import UserRegisterForm
+
 
 def confirm_user(session, input_code):
-    session_code = session.get("confirm_code")
-    user_id = session.get("confirm_user_id")
+    session_code = session.pop("confirm_code")
+    pending_user = session.pop("pending_user")
 
-    if not session_code or not user_id:
-        raise ValueError("Сессія не має необхідних даних для підтвердження")
+    if not session_code or not pending_user:
+        raise ValueError("Сесія не має необхідних даних для підтвердження")
 
     if input_code != session_code:
-        raise ValueError("Код підтвердження не вірний")
+        raise ValueError("Код підтвердження невірний")
 
-    user = User.objects.filter(id=user_id).first()
-    if not user:
-        raise ValueError("Користувача не знайдено")
+    form = UserRegisterForm(data=pending_user)
 
-    user.is_active = True
-    user.save()
+    if not form.is_valid():
+        raise ValueError("Дані користувача невалідні")
 
-    session.clear()
+    user = form.save()
+
+    session.pop("confirm_code_created_at", None)
 
     return user

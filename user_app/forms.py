@@ -128,8 +128,8 @@ class UserConfirmForm(forms.Form):
 
         self.confirm_code = confirm_code
 
-        for i in range(1, 7):
-            self.fields[f'code{i}'] = forms.CharField(
+        for index in range(1, 7):
+            self.fields[f'code{index}'] = forms.CharField(
                 max_length= 1,
                 min_length= 1,
                 required= True,
@@ -149,11 +149,11 @@ class UserConfirmForm(forms.Form):
 
         code_digits = []
 
-        for i in range(1, 7):
-            digit = cleaned_data.get(f'code{i}')
+        for index in range(1, 7):
+            digit = cleaned_data.get(f'code{index}')
 
             if not digit:
-                self.add_error(f'code{i}', 'Введіть цифру')
+                self.add_error(f'code{index}', 'Введіть цифру')
             else:
                 code_digits.append(digit)
 
@@ -177,12 +177,25 @@ class UserExpandInfoForm(forms.ModelForm):
         }
         widgets = {
             'username': forms.TextInput(attrs={
-                'placeholder': 'Введіть Псевдонім автора'
+                'placeholder': 'Введіть Псевдонім автора',
+                'autofocus': True,
             }),
             'first_name': forms.TextInput(attrs={
-                'placeholder': '@'
+                'placeholder': '@',
+                'autofocus': True,
             }),
         }
+
+    def clean(self):
+        cleaned_data = super().clean()
+
+        username = cleaned_data.get('username')
+        first_name = cleaned_data.get('first_name')
+
+        if not username or not first_name:
+            raise forms.ValidationError('Усі поля обов’язкові')
+
+        return cleaned_data
 
     def clean_username(self):
         username = self.cleaned_data.get('username')

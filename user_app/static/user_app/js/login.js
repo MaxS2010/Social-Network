@@ -23,6 +23,11 @@ document.querySelector('.section-login form')
                 return data
             })
             .then(data => {
+                sessionStorage.setItem(
+                    "showProfileModal",
+                    !data.is_profile_complete
+                )
+
                 window.location.href = '/'
             })
             .catch(data => {

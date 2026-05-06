@@ -1,8 +1,5 @@
 export function getCSRFToken() {
-    return document.cookie
-        .split('; ')
-        .find(row => row.startsWith('csrftoken='))
-        ?.split('=')[1]
+    return document.querySelector('meta[name="csrf-token"]').getAttribute('content')
 }
 
 export function showErrors(containerId, errors) {
