@@ -11,7 +11,7 @@
 
 {% block links %}
     <link rel="stylesheet" href="{% static 'css/side_panel.css' %}">
-    <link rel="stylesheet" href="{% static 'post_app/css/post.css' %}">
+    <link rel="stylesheet" href="{% static 'post_app/css/post_content.css' %}">
     <link rel="stylesheet" href="{% static 'post_app/css/create_post.css' %}">
 {% endblock links %}
 
@@ -21,16 +21,10 @@
 
 {% block content %}
     {% include 'post_app/particles/create_post.html' %}
-    <div class="write-post-container">
-        <div>
-            <textarea name="text-post" placeholder="Текст публікації" id="post-text" rows="5"></textarea>
-        </div>
-        <div>
-            <button type="button" id="create-post">Перейти до оформлення</button>
-        </div>
-    </div>
+    {% include 'post_app/particles/post_content.html' %}
 {% endblock content %}
 
 {% block scripts %}
     <script src="{% static 'post_app/js/post.js' %}"></script>
+    <script type="module" src="{% static 'post_app/js/create_post.js' %}"></script>
 {% endblock scripts %}

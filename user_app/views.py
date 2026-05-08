@@ -17,6 +17,11 @@ from .utils import generate_confirm_code, send_confirm_code
 
 
 class AuthView(TemplateView):
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect('home')
+        return super().dispatch(request, *args, **kwargs)
+
     template_name = 'user_app/auth.html'
     def get_context_data(self, **kwargs) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)

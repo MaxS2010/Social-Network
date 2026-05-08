@@ -40,6 +40,8 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'daphne',
+    'channels',
     "user_app",
     'django.contrib.admin',
     'django.contrib.auth',
@@ -47,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'chat_app',
     "friends_app",
     "post_app",
     "home_app",
@@ -75,6 +78,7 @@ TEMPLATES = [
             BASE_DIR / "user_app" / "templates",
             BASE_DIR / "friends_app" / "templates",
             BASE_DIR / "post_app" / "templates",
+            BASE_DIR / 'chat_app' / 'templates',
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -93,6 +97,15 @@ LOGOUT_REDIRECT_URL = '/'
 WSGI_APPLICATION = 'Social_Network.wsgi.application'
 
 ASGI_APPLICATION = 'Social_Network.asgi.application'
+
+# константа, що відповідає за те як django channels відповідають за обробку асинхронних повідомлень 
+CHANNEL_LAYERS = {
+    # основний канал, що використовується за замовчуванням
+    'default': {
+        # вказує, що канал працює в пам'яті, зберігається в оперативній пам'яті пк
+        'BACKEND': 'channels.layers.InMemoryChannelLayer'
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
@@ -145,7 +158,8 @@ STATICFILES_DIRS = [
     BASE_DIR / 'home_app' / 'static',
     BASE_DIR / 'user_app' / 'static',
     BASE_DIR / 'friends_app' / 'static',
-    BASE_DIR / 'post_app' / 'static'                  
+    BASE_DIR / 'post_app' / 'static',
+    BASE_DIR / 'chat_app' / 'static',                
 ]
 
 MEDIA_URL = 'media/'

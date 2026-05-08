@@ -15,7 +15,7 @@
         <header>
             <div class="container">
                 <nav>
-                    {% if request.path != '/user/auth/' %}
+                    {% if request.path != '/' %}
                         <a href="/">
                             <img src="{% static 'icons/logo.svg' %}" alt="logo.svg" class="logo">
                         </a>
@@ -32,7 +32,7 @@
                                 <img src="{% static 'icons/friend.svg' %}" alt="friend.svg" class="icons">
                                 <span>Друзі</span>
                             </a>
-                            <a href= "{% url 'auth' %}" class="url">
+                            <a href= "{% url 'chat' %}" class="url">
                                 <img src="{% static 'icons/group.svg' %}" alt="user.svg" class="icons">
                                 <span>Чати</span>
                             </a>

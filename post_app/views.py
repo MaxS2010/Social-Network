@@ -29,7 +29,7 @@ class PostCreateView(LoginRequiredMixin, FormView):
     
     template_name = "post_app/post.html"
     form_class = PostCreationForm
-    success_url = reverse_lazy("post_list")
+    success_url = reverse_lazy("post")
     login_url = reverse_lazy("auth")
 
     def get_form_kwargs(self):
@@ -43,7 +43,7 @@ class PostCreateView(LoginRequiredMixin, FormView):
         
         if self.request.method == "POST":
             kwargs["links"] = self.request.POST.getlist("links")
-            kwargs["photos"] = self.request.FILES.getlist("photos")
+            kwargs["images"] = self.request.FILES.getlist("images")
             
         return kwargs
 

@@ -38,18 +38,11 @@ class PostCreationForm(forms.ModelForm):
         widget= forms.CheckboxSelectMultiple,
     )
 
-    link = forms.URLField(
-        required= False,
-        label= 'Посилання',
-        widget= forms.URLInput(attrs={
-            'placeholder': 'Напишіть посилання до публікації',
-        })
-    )
-
     image = multipleFileField(
         required= False,
         label= '',
         widget= MultipleFieldInput(attrs={
+            'id': 'file-input',
             'class': 'file-input',
             'accept': 'image/*',
         })
@@ -76,6 +69,8 @@ class PostCreationForm(forms.ModelForm):
             'topic': 'Тема публікації',
             'content': '',
         }
+
+    field_order = ['title', 'topic', 'tags', 'content', 'image']
 
     def __init__(self, *args, links= None, images= None, **kwargs):
         '''
@@ -113,13 +108,13 @@ class PostCreationForm(forms.ModelForm):
             try:
                 url_field.clean(link)
             except forms.ValidationError:
-                self.add_error('links', f"Некоректне посилання: {link}")
+                self.add_error(None, f"Некоректне посилання: {link}") # 'links'
         
         for image in self.images_list:
             try:
                 image_field.clean(image)
             except forms.ValidationError:
-                self.add_error('images', f"Завантажте коректне зображення")
+                self.add_error(None, f"Завантажте коректне зображення") # 'images'
         
         return cleaned_data
     

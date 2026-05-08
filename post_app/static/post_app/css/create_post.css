@@ -1,4 +1,4 @@
-.create-post-container{
+.modal-container{
     position: fixed;
     top: 50%;
     left: 50%;
@@ -7,12 +7,27 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    height: 101%;
+
+    background-color: rgba(0, 0, 0, 0.5);
+    /* backdrop-filter: blur(27.2px); */
+    user-select: none;
+}
+
+.create-post-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     align-items: flex-start;
     
     width: 54vw;
-    height: 68vh;
+    /* height: 68vh; */
+    height: fit-content;
     
-    padding: 4.4vh;
+    padding: 2vh;
     gap: 2.5vh;
 
     border-radius: 20px;
@@ -25,7 +40,7 @@
     align-items: center;
     justify-content: flex-end;
 
-    width: 100%;
+    width: 47.7vw;
 }
 
 .create-post-container>form{
@@ -34,38 +49,68 @@
     align-items: flex-start;
     justify-content: center;
 
-    width: 48vh;
-    height: 51vh;
+    width: fit-content;
+    height: fit-content;
 
     gap: 1.6vh;
-    padding: 2.5vh 0;
 }
 
-form p{
+form div{
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
 
     gap: 0.6vh;
+    width: 100%;
 }
 
-form p input{
+form div input{
     width: 24vw;
     height: 4.2vh;
     
     border-radius: 20px;
 
     padding: 1.6vh;
+    border: 1px solid rgba(205, 206, 210, 1);
 }
 
-form p textarea{
-    width: 46vw;
+form .text-area-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+
+    width: 100%;
+    height: 13vh;
+    border: 1px solid rgba(205, 206, 210, 1);
+    border-radius: 20px;
+}
+
+form div textarea{
+    /* width: 46vw; */
+    width: 100%;
     height: 13vh;
 
+    padding: 1.6vh;
     border-radius: 20px;
 
-    padding: 1.6vh;
+    resize: none;
+    border: none;
+}
+
+form div textarea:focus {
+    border: none;
+}
+
+.tags-inline{
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 16px;
+    line-height: 100%;
+    letter-spacing: 0%;
+
+    z-index: 10;
 }
 
 .file-input{
@@ -85,27 +130,77 @@ form p textarea{
     z-index: 5;
 }
 
-div form div{
+.file-input{
+    display: none;
+}
+
+.buttons{
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: end;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
 
     width: 47.7vw;
     height: 4.1vh;
-
+    gap: 0.7vw;
 }
-
-
 
 div form .publicate{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
     
+    width: 9vw;
+    height: 4vh;
+    gap: 0.6vw;
+
     color: #FFFFFF;
     background-color: #543C52;
     border-radius: 1234px;
 }
 
+.id-tags{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+.id-tags label{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    width: fit-content;
+    height: fit-content;
+
+    padding: 0.4vw;
+
+    background-color: rgba(233, 229, 238, 1);
+    border-radius: 6px;
+
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 14px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: rgba(84, 60, 82, 1);
+}
+    
+
+.id-tags label input{
+    display: none;
+}
+
+.id-tags button{
+    border: none;
+    background-color: transparent;
+}
+
+.add-link{
+    border: none;
+    background-color: transparent;
+}

@@ -1,6 +1,6 @@
 const button = document.getElementById('create-post')
 const imageButton = document.querySelector('#file-upload-button')
-const modalCreatePost = document.querySelector('.create-post-container')
+const modalCreatePost = document.querySelector('.modal-container')
 
 button.addEventListener('click', () => {
     const textInput = document.querySelector('#post-text')
@@ -9,17 +9,11 @@ button.addEventListener('click', () => {
     modalTextInput.value = textInput.value
     modalCreatePost.style.display = 'flex'
 
-    // if (imageButton) {
-    //     imageButton.style.color = 'transparent'
-        
-    //     const imageIcon = document.createElement('img')
-    //     imageIcon.src = "/static/post_app/icons/image-add.png"
-    //     imageIcon.alt = "Image Icon"
-    //     imageButton.appendChild(imageIcon)
-    // }
-    // else {
-    //     console.error("Element 'file-upload-button' not found.")
-    // }
+    const p = document.createElement("p")
+    p.className = 'tags-inline'
+    p.textContent = 'fff'
+
+    document.querySelector("form div textarea").appendChild(p)
 })
 
 const closeCross = document.querySelector('.close-cross')
