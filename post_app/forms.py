@@ -80,7 +80,7 @@ class PostCreationForm(forms.ModelForm):
         '''
         super().__init__(*args, **kwargs)
         
-        self.fields['tags'].queryset = Tag.objects.all() # pyright: ignore[reportAttributeAccessIssue]
+        self.fields["tags"].label_from_instance = lambda obj: f"#{obj.name}" # pyright: ignore[reportAttributeAccessIssue]
         
         self.links_list = []
         
@@ -103,7 +103,6 @@ class PostCreationForm(forms.ModelForm):
         
         url_field =  forms.URLField()
         image_field = forms.ImageField()
-        
         for link in self.links_list:
             try:
                 url_field.clean(link)
@@ -122,10 +121,13 @@ class PostCreationForm(forms.ModelForm):
         post: Post = super().save(commit= False)
         post.author = author
         
+        post.save()
+
         if commit:
-            post.save()
+            tags = self.cleaned_data.get("tags")
+            if tags:
+                post.tags.set(tags)
             
-            post.tags.set(self.cleaned_data['tags'])
             
             for url in self.links_list:
                 PostLinks.objects.create(post= post, url= url)
@@ -172,3 +174,17 @@ class PostCreationForm(forms.ModelForm):
         compressed_name = f'compressed_{image.name.rsplit('.', 1)[0]}.jpg'
         
         return ContentFile(buffer.getvalue(), name= compressed_name)
+    
+class PostAddTagForm(forms.ModelForm):
+    class Meta:
+        model = Tag
+        fields = ('name', )
+        widgets = {
+            "name": forms.TextInput(attrs={
+                'placeholder': '#|'
+            }),
+        }
+
+        labels = {
+            'name': 'Назва',
+        }

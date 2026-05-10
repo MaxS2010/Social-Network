@@ -1,22 +1,55 @@
 from typing import Any
 
-from django.http import HttpRequest, JsonResponse
+from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import FormView, ListView, TemplateView
+from django.template.loader import render_to_string
+from django.core.paginator import Paginator
 
 from post_app.forms import PostCreationForm
 from .models import Post
 # Create your views here.
 
-class PostView(TemplateView):
+class PostListView(LoginRequiredMixin, ListView):
+    model = Post
     template_name = 'post_app/post.html'
-
-    def get_context_data(self, **kwargs) -> dict[str, Any]:
+    context_object_name = 'posts'
+    paginate_by = 5
+    
+    def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
         context["form_create"] = PostCreationForm()
-
         return context
+    
+    def get_queryset(self):
+        return (
+            Post.objects
+            .filter(author=self.request.user)
+            .select_related("author")
+            .prefetch_related(
+                "images",
+                "tags",
+                "links"
+            )
+            .order_by("-created_at")
+        )
+    
+    def get(self, request, *args, **kwargs):
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            
+            queryset = self.get_queryset()
+            paginator = Paginator(queryset, self.paginate_by)
+            page_number = request.GET.get('page')
+            page_obj = paginator.get_page(page_number)
+            if int(page_number) > paginator.num_pages: # type: ignore
+                return JsonResponse({'success': False})
+            return JsonResponse({
+                'success': True,
+                'html': render_to_string('post_app/particles/show_post.html', {'posts': page_obj.object_list})
+            })
+
+        return super().get(request, *args, **kwargs)
 
 class PostCreateView(LoginRequiredMixin, FormView):
     """
@@ -27,7 +60,7 @@ class PostCreateView(LoginRequiredMixin, FormView):
     а не звичайний HTML redirect.
     """
     
-    template_name = "post_app/post.html"
+    template_name = 'post_app/particles/create_post.html'
     form_class = PostCreationForm
     success_url = reverse_lazy("post")
     login_url = reverse_lazy("auth")
@@ -43,7 +76,7 @@ class PostCreateView(LoginRequiredMixin, FormView):
         
         if self.request.method == "POST":
             kwargs["links"] = self.request.POST.getlist("links")
-            kwargs["images"] = self.request.FILES.getlist("images")
+            kwargs["images"] = self.request.FILES.getlist("image")
             
         return kwargs
 
@@ -54,7 +87,9 @@ class PostCreateView(LoginRequiredMixin, FormView):
         Зберігає пост з поточним користувачем як автором
         та повертає JSON-відповідь для JavaScript.
         """
+        
         post = form.save(author=self.request.user)
+
         return JsonResponse(
             {
                 "success": True,

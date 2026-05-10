@@ -24,7 +24,7 @@ expandForm.addEventListener('submit', async (event) => {
         return data
     })
     .then(data => {
-        document.querySelector('.form-info').style.display = 'none'
+        document.querySelector('.form-info-container').style.display = 'none'
     })
     .catch(data => {
         if (data?.errors) {

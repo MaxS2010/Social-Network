@@ -125,14 +125,39 @@
 
 .author-info{
     display: flex;
-    flex-direction: column;
-    justify-content: center !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
     align-items: flex-start !important;
 
-    width: 44vw;
+    width: 44.3vw;
     height: 18vh;
     
     
-    gap: 1.6vh;
+
+}
+
+.author-info .pseudonym-info{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+
+    width: 44.3vw;
+    height: 5.5vh;
+
+    gap: 0.8vh;
+
+}
+
+.author-info .signature-info{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+
+    width: 15.2vw;
+    height: 10.3vh;
+
+    gap: 0.8vh;
 
 }

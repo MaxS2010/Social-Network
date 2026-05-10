@@ -48,9 +48,9 @@ async function logoutUser() {
 
 
 const needModal = sessionStorage.getItem("showProfileModal")
+const modal = document.querySelector('.form-info-container')
 
 if (needModal == "true") {
-    const modal = document.querySelector('.form-info')
     
     const message = document.createElement('p')
 

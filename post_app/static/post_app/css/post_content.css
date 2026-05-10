@@ -13,6 +13,8 @@
 
     padding: 1vw;
     gap: 1vh;
+
+    overflow: hidden;
 }
 
 

@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="{% static 'css/side_panel.css' %}">
     <link rel="stylesheet" href="{% static 'post_app/css/post_content.css' %}">
     <link rel="stylesheet" href="{% static 'post_app/css/create_post.css' %}">
+    <link rel="stylesheet" href="{% static 'post_app/css/show_post.css' %}">
 {% endblock links %}
 
 {% block side_panel %}
@@ -27,4 +28,5 @@
 {% block scripts %}
     <script src="{% static 'post_app/js/post.js' %}"></script>
     <script type="module" src="{% static 'post_app/js/create_post.js' %}"></script>
+    <script src="{% static 'post_app/js/post_list.js' %}" ></script>
 {% endblock scripts %}

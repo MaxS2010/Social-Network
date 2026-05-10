@@ -12,8 +12,9 @@
     width: 100%;
     height: 101%;
 
+    padding: 1vh;
+
     background-color: rgba(0, 0, 0, 0.5);
-    /* backdrop-filter: blur(27.2px); */
     user-select: none;
 }
 
@@ -23,11 +24,11 @@
     justify-content: center;
     align-items: flex-start;
     
-    width: 54vw;
+    width: fit-content;
     /* height: 68vh; */
     height: fit-content;
     
-    padding: 2vh;
+    padding: 2.4vh 3vw 3vw 3vw;
     gap: 2.5vh;
 
     border-radius: 20px;
@@ -85,22 +86,41 @@ form .text-area-container{
     height: 13vh;
     border: 1px solid rgba(205, 206, 210, 1);
     border-radius: 20px;
+
+    padding: 0 0 0.4vw 0.4vw;
 }
 
 form div textarea{
-    /* width: 46vw; */
     width: 100%;
-    height: 13vh;
 
-    padding: 1.6vh;
+    padding: 1.6vh 0 0 1.6vh;
     border-radius: 20px;
 
     resize: none;
     border: none;
+    overflow: hidden;
+}
+
+form .text-area-container p{
+    width: 100%;
+    /* min-height: 2vh; */
+    height: fit-content;
+    padding-left: 1.6vh;
+
+    color: rgba(84, 60, 82, 1);
+
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 16px;
+    line-height: 100%;
+    letter-spacing: 0%;
+
 }
 
 form div textarea:focus {
+    outline: none;
     border: none;
+    border-color: transparent;
 }
 
 .tags-inline{
@@ -114,8 +134,8 @@ form div textarea:focus {
 }
 
 .file-input{
+    display: none;
     background-color: transparent;
-    /* background-image: #FFFFFF; */
 
     /* width: 2.7vw;
     height: 4.1vh; */
@@ -128,10 +148,6 @@ form div textarea:focus {
 .file-input img{
     height: 100%;
     z-index: 5;
-}
-
-.file-input{
-    display: none;
 }
 
 .buttons{
@@ -189,7 +205,11 @@ div form .publicate{
     letter-spacing: 0%;
     color: rgba(84, 60, 82, 1);
 }
-    
+
+.select-label{
+    background-color: rgba(84, 60, 82, 1) !important;
+    color: rgba(255, 255, 255, 1) !important;
+}
 
 .id-tags label input{
     display: none;
@@ -200,7 +220,125 @@ div form .publicate{
     background-color: transparent;
 }
 
+
+.text-link{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    width: fit-content;
+    height: fit-content;
+
+}
+
+.button-div{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    width: 100%;
+    height: fit-content;
+}
+
+.button-div input{
+    flex: 1;
+}
+
 .add-link{
+    width: 1.9vw;
+    height: 2.6vh;
+
     border: none;
     background-color: transparent;
+}
+
+.add-link img{
+    height: 100%;
+}
+
+.images{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    width: 47vw;
+    height: fit-content;
+
+    gap: 1vw;
+
+    overflow-x: auto;
+}
+
+.img-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: flex-start;
+
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    width: 13vw;
+    height: 25vh;
+    border-radius: 16px;
+    padding: 1vh;
+    
+}
+
+.button-remove{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    width: 2.7vw;
+    height: 4vh;
+
+    background-color: transparent;
+    border: none;
+}
+
+.button-remove img{
+    height: 100%;
+}
+
+.container-link{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: start;
+
+    width: 100%;
+    height: 4.4vh;
+    gap: 0.6vw;
+}
+
+.container-link .container-link-buttons{
+    display: flex;
+    flex-direction: row !important;
+    justify-content: start;
+    align-items: center;
+
+    width: fit-content;
+    height: 4.4vh;
+}
+
+.container-link input{
+    flex: 1;
+}
+
+.remove-link{
+    width: 1.9vw;
+    height: 2.6vh;
+    
+    background-color: transparent;
+    border: none;
+}
+
+.remove-link img{
+    height: 100%;
 }

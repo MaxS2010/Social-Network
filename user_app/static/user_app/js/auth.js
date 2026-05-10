@@ -8,6 +8,8 @@ import {
 
 import { initCodeInputs } from './ui/codeInputs.js'
 
+document.querySelector(".side-panel-container").style.display = "none" 
+
 export function initAuth() {
     const codeInputs = initCodeInputs()
 
