@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'chat_app',
-    "friends_app",
     "post_app",
     "home_app",
 ]
@@ -76,7 +75,6 @@ TEMPLATES = [
             BASE_DIR / 'templates', 
             BASE_DIR / "home_app" / "templates",
             BASE_DIR / "user_app" / "templates",
-            BASE_DIR / "friends_app" / "templates",
             BASE_DIR / "post_app" / "templates",
             BASE_DIR / 'chat_app' / 'templates',
         ],
@@ -157,7 +155,6 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
     BASE_DIR / 'home_app' / 'static',
     BASE_DIR / 'user_app' / 'static',
-    BASE_DIR / 'friends_app' / 'static',
     BASE_DIR / 'post_app' / 'static',
     BASE_DIR / 'chat_app' / 'static',                
 ]

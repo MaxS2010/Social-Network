@@ -58,8 +58,12 @@ main{
     align-items: center;
 
     width: 64vw;
+    max-height: 85vh;
+
     flex: 1;
     min-height: 0;
+
+    gap: 0.8vh;
 
     overflow-y: auto;
 }

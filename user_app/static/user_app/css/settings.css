@@ -27,12 +27,16 @@
     border: 1px solid rgba(205, 206, 210, 1);
 }
 
+
 .settings-container .profile-panel{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     
     width: 62vw;
     height: 26.8vh;
 }
-
 .profile-panel .edit-info{
     display: flex;
     flex-direction: row;
@@ -42,6 +46,37 @@
     width: 60vw;
     height: 4.1vh;
 }
+
+
+.profile-panel .author-profile{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    width: 60vw;
+    height: 17.8vh;
+
+    gap: 6px;
+
+}
+
+.author-profile .image-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    width: 6.6vw;
+    height: 9.8vh;
+
+}
+
+.image-container img{
+    height: 100%
+}
+
+
 
 .settings-container .setting-info{   
     display: flex;

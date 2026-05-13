@@ -1,17 +1,20 @@
 from time import time
 from typing import Any
 from django.contrib.auth import authenticate, login, logout
+from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
 from django.views import View
 from django.http import HttpRequest, JsonResponse
 from django.shortcuts import redirect
 
-
-from .models import User
+from .models import Friendship, User
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .services import confirm_user
 from .forms import UserExpandInfoForm, UserRegisterForm, UserLoginForm, UserConfirmForm
-from .utils import generate_confirm_code, send_confirm_code
+
+from .utils.friend_queries import get_user_by_section
+from .utils.utils import generate_confirm_code, send_confirm_code
 
 # Create your views here.
 
@@ -161,3 +164,20 @@ class LogoutView(View):
 
 class SettingsView(TemplateView):
     template_name = 'user_app/settings.html'
+
+class ModelCreateView(TemplateView, LoginRequiredMixin):
+    
+    template_name = "user_app/friends.html"
+    login_url = reverse_lazy("auth")
+
+class FriendsView(TemplateView, LoginRequiredMixin):
+    model = Friendship
+    template_name = 'user_app/friends.html'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["sections"] = {
+            "requests": {'title': 'Запити', 'users': get_user_by_section(self.request.user, "requests")[:3]},
+            'recommendations': {'title': 'Рекомендації', 'users': get_user_by_section(self.request.user, "recommendations")[:6]},
+            'friends': {'title': 'Всі друзі', 'users': get_user_by_section(self.request.user, "friends")[:6]}
+        }
+        return context

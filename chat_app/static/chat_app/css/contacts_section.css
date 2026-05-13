@@ -1,0 +1,75 @@
+.contacts-section>button{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    height: 4vh;
+    width: 100%;
+
+    border-radius: 1234px;
+    gap: 8px;
+
+    background-color: rgba(84, 60, 82, 1);
+    color: white;
+
+    flex-shrink: 0;
+}
+
+.contacts-container{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+
+    width: 100%;
+    height: 82vw;
+    flex: 1;
+
+    border: 1px solid rgba(205, 206, 210, 1);
+    border-radius: 10px;
+    
+    padding: 16px;
+    gap: 16px;
+
+    overflow-y: auto;
+}
+
+.contacts-container .search-input-container{
+    height: 4.2vh !important;
+    padding: 10px 16px;
+    gap: 10px;
+    border: 1px solid rgba(205, 206, 210, 1);
+    border-radius: 10px;
+}
+
+.contacts-container .search-input-container input{
+    width: 100%;
+    height: 100%;
+
+    border: none;
+}
+
+.contacts-container .search-input-container input::placeholder{
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 16px;
+    line-height: 22px;
+    letter-spacing: -0.7%;
+}
+
+.contacts-container .search-input-container input:focus{
+    outline: none;
+}
+
+.contacts-container div{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+
+    width: 100%;
+    height: 4.7vh;
+
+    gap: 16px;
+}

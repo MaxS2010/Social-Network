@@ -1,8 +1,11 @@
-from django.shortcuts import render
+from django.http import JsonResponse
 from django.views.generic.base import TemplateView
+from django.template.loader import render_to_string
+from django.core.paginator import Paginator
 
 from user_app.forms import UserExpandInfoForm
 from post_app.forms import PostCreationForm
+from post_app.models import Post
 # Create your views here.
 
 
@@ -18,6 +21,47 @@ class HomeView(TemplateView):
             context['form_info'] = UserExpandInfoForm(
                 instance= user # type: ignore
             )
+        
         context["form_create"] = PostCreationForm()
 
+        queryset = Post.objects.select_related("author").prefetch_related(
+            "images",
+            "tags",
+            "links"
+        ).order_by("-created_at")
+
+        if user.is_authenticated:
+            queryset = queryset.exclude(author=user)
+
+        context["posts"] = queryset[:10]
+
         return context
+
+    def get(self, request, *args, **kwargs):
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            user = request.user
+            queryset = Post.objects.select_related("author").prefetch_related(
+                "images",
+                "tags",
+                "links"
+            ).order_by("-created_at")
+
+            if user.is_authenticated:
+                queryset = queryset.exclude(author=user)
+
+            paginator = Paginator(queryset, 10)
+            page_number = request.GET.get('page', 1)
+            page_obj = paginator.get_page(page_number)
+
+            try:
+                if int(page_number) > paginator.num_pages:
+                    return JsonResponse({'success': False})
+            except (TypeError, ValueError):
+                return JsonResponse({'success': False})
+
+            return JsonResponse({
+                'success': True,
+                'html': render_to_string('post_app/particles/show_post.html', {'posts': page_obj.object_list})
+            })
+
+        return super().get(request, *args, **kwargs)

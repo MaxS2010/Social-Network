@@ -41,12 +41,18 @@ function renderTags() {
     if (!output) return
 
     output.textContent = Array.from(selectedTags)
-        .map(tag => `#${tag}`)
+        .map(tag => `${tag}`)
         .join(" ")
 }
 
 document.querySelectorAll("#id_tags input").forEach(input => {
     input.addEventListener("change", updateTagsUI)
+})
+
+document.getElementById("id_tags").addEventListener("change", function(event) {
+    if (event.target.matches("input[type='checkbox']")) {
+        updateTagsUI()
+    }
 })
 
 document.addEventListener("DOMContentLoaded", updateTagsUI)
@@ -167,3 +173,28 @@ fileInput.addEventListener('change', function() {
         })
     }
 })
+
+document.getElementById("add-tag").addEventListener(
+    "click",
+    function (){
+        document.querySelector('.modal-container div').style.display = "none"
+        document.querySelector(".section-add-tag").style.display = "flex"
+    }
+)
+
+function toCreate(){
+    document.querySelector(".section-add-tag").style.display = "none"
+    document.querySelector('.create-post-container').style.display = "flex"
+    
+    document.querySelector(".tag-input p input").textContent = ""
+}
+
+document.querySelector(".back-create").addEventListener(
+    "click",
+    toCreate
+)
+
+document.querySelector(".section-add-tag .close-cross-container").addEventListener(
+    "click",
+    toCreate
+)

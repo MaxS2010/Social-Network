@@ -1,27 +1,31 @@
 let currentPage = 1
 let isLoading = false
 
-const  loaderLine = document.getElementById('postLoaderLine')
-const  postList = document.querySelector('.post-list')
+const loaderLine = document.getElementById('postLoaderLine')
+const postList = document.querySelector('.post-list')
 
-const observer = new IntersectionObserver(async (entries) => {
-    if (entries[0].isIntersecting && isLoading == false){
-        isLoading = true
-        currentPage ++
-        const response = await fetch(`/post?page=${currentPage}`, {
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest'
+if (loaderLine && postList) {
+    const currentPath = window.location.pathname
+    const postsUrl = currentPath.endsWith('/') ? currentPath : `${currentPath}/`
+
+    const observer = new IntersectionObserver(async (entries) => {
+        if (entries[0].isIntersecting && !isLoading) {
+            isLoading = true
+            currentPage++
+            const response = await fetch(`${postsUrl}?page=${currentPage}`, {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            const data = await response.json()
+            if (data.success) {
+                loaderLine.insertAdjacentHTML('beforebegin', data.html)
+            } else {
+                observer.disconnect()
             }
-        })
-        const data = await response.json()
-        if (data.success){
-            const html = data.html
-            loaderLine.insertAdjacentHTML('beforebegin', html)
-        }else{
-            observer.disconnect()
+            isLoading = false
         }
-        isLoading = false
-    }
-}, {rootMargin: '200px'})
+    }, {rootMargin: '200px'})
 
-observer.observe(loaderLine)
+    observer.observe(loaderLine)
+}

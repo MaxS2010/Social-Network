@@ -1,6 +1,7 @@
 from django.urls import path
 
-from .views import AuthView, RegisterView, LoginView, LogoutView, SettingsView, ConfirmView, ExpandInfoView
+from .views import AuthView, RegisterView, LoginView, LogoutView, SettingsView, ConfirmView, ExpandInfoView, FriendsView
+
 
 urlpatterns = [    
     path(route = '', view = AuthView.as_view(), name='auth'),
@@ -10,4 +11,5 @@ urlpatterns = [
     path(route = 'logout/', view = LogoutView.as_view(), name='logout'),
     path(route = 'expand-info/', view = ExpandInfoView.as_view(), name='expand_info'),
     path(route = 'settings/', view = SettingsView.as_view(), name='settings'),
+    path(route= 'friends/', view= FriendsView.as_view(), name='friends'),
 ]

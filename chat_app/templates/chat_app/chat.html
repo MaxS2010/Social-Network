@@ -8,23 +8,227 @@
 {% block title %}Chat{% endblock title %}
 
 {% block links %}
-    <link rel="stylesheet" href="">
+    <link rel="stylesheet" href="{% static 'chat_app/css/chat.css' %}">
+    <link rel="stylesheet" href="{% static 'chat_app/css/contacts_section.css' %}">
+    <link rel="stylesheet" href="{% static 'chat_app/css/messages_section.css' %}">
+    <link rel="stylesheet" href="{% static 'chat_app/css/chats_section.css' %}">
 {% endblock links %}
 
 {% block content %}
-    <h1>Мої чати</h1>
-    <form method="post" id="form-chat">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Надіслати</button>
-    </form>
-    <hr>
-    <div id="message-container">
-        <h2>Повідомлення:</h2>
+<section class="chat-content-section">
+    <section class="contacts-section">
+        <button type="button">
+            <img src="{% static 'chat_app/icons/plus.svg' %}" alt="">
+            Створити груповий чат
+        </button>
+        <div class="contacts-container">
+            <div><img src="{% static 'chat_app/icons/people.svg' %}" alt=""><p class="label-icon">Контакти</p></div>
+            <div class="search-input-container"><img src="{% static 'chat_app/icons/search.svg' %}" alt=""> <input type="text" placeholder="Пошук"></div>
+            <div class="people-contact">
+                <img src="{% static 'chat_app/images/Avatar.png' %}" alt="">
+                <p class="contact-name">Jane Cooper</p>
+            </div>
+            <div class="people-contact">
+                <img src="{% static 'chat_app/images/Avatar-1.png' %}" alt="">
+                <p class="contact-name">Cameron Williamson</p>
+            </div>
+            <div class="people-contact">
+                <img src="{% static 'chat_app/images/Avatar-2.png' %}" alt="">
+                <p class="contact-name">Leslie Alexander</p>
+            </div>
+            <div class="people-contact">
+                <img src="{% static 'chat_app/images/Avatar-3.png' %}" alt="">
+                <p class="contact-name">Robert Fox</p>
+            </div>
+            <div class="people-contact">
+                <img src="{% static 'chat_app/images/Avatar-4.png' %}" alt="">
+                <p class="contact-name">Jacob Jones</p>
+            </div>
+            <div class="people-contact">
+                <img src="{% static 'chat_app/images/Avatar-5.png' %}" alt="">
+                <p class="contact-name">Brooklyn Simmons</p>
+            </div>
+            <div class="people-contact">
+                <img src="{% static 'chat_app/images/Avatar-6.png' %}" alt="">
+                <p class="contact-name">Cameron Williamson</p>
+            </div>
+            <div class="people-contact">
+                <img src="{% static 'chat_app/images/Avatar-7.png' %}" alt="">
+                <p class="contact-name">Esther Howard</p>
+            </div>
+            <div class="people-contact">
+                <img src="{% static 'chat_app/images/Avatar-8.png' %}" alt="">
+                <p class="contact-name">Darrell Steward</p>
+            </div>
+            <div class="people-contact">
+                <img src="{% static 'chat_app/images/Avatar-9.png' %}" alt="">
+                <p class="contact-name">Devon Lane</p>
+            </div>
+        </div>
+    </section>
 
-    </div>
+    <section class="messages-section">
+        <div class="message-info-container">
+            <h1>Почніть нове спілкування</h1>
+            <p>Оберіть контакт зі списку ліворуч <br> або створіть групу, щоб почати спілкування</p>
+        </div>
+    </section>
+
+    <section class="chats-section">
+        <div class="messages-container">
+            <div class="row-block">
+                <div><img src="{% static 'chat_app/icons/chat.svg' %}" alt=""><p class="label-icon">Групові чати</p></div>
+                <p class="text-all">Дивитись всі</p>
+            </div>
+            <div class="content-chats">
+                <div class="container-chat">
+                    <img src="{% static 'chat_app/images/chat-avatar1.png' %}" alt="">
+                    <div class="chat-info">
+                        <div>
+                            <h2>Mona Lisa</h2>
+                            <h3>Привіт! Як справи ?</h3>
+                        </div>
+                        <div>
+                            <p>09:41</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="container-chat">
+                    <img src="{% static 'chat_app/images/chat-avatar2.png' %}" alt="">
+                    <div class="chat-info">
+                        <div>
+                            <h2>Ann Ti</h2>
+                            <h3>Привіт!</h3>
+                        </div>
+                        <div>
+                            <p>25.04.2025</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="container-chat">
+                    <img src="{% static 'chat_app/images/chat-avatar3.png' %}" alt="">
+                    <div class="chat-info">
+                        <div>
+                            <h2>Ann Ti</h2>
+                            <h3>Привіт!</h3>
+                        </div>
+                        <div>
+                            <p>25.04.2025</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="container-chat">
+                    <img src="{% static 'chat_app/images/chat-avatar4.png' %}" alt="">
+                    <div class="chat-info">
+                        <div>
+                            <h2>Ann Ti</h2>
+                            <h3>Привіт!</h3>
+                        </div>
+                        <div>
+                            <p>25.04.2025</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="container-chat">
+                    <img src="{% static 'chat_app/images/chat-avatar5.png' %}" alt="">
+                    <div class="chat-info">
+                        <div>
+                            <h2>Ann Ti</h2>
+                            <h3>Привіт!</h3>
+                        </div>
+                        <div>
+                            <p>25.04.2025</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="messages-container">
+            <div class="row-block">
+                <div><img src="{% static 'chat_app/icons/people.svg' %}" alt=""><p class="label-icon">Групові чати</p></div>
+                <p class="text-all">Дивитись всі</p>
+            </div>
+            <div class="content-chats">
+                <div class="container-chat">
+                    <img src="{% static 'chat_app/images/Title-group.png' %}" alt="">
+                    <div class="chat-info">
+                        <div>
+                            <h2>New group</h2>
+                            <h3>Чудово!</h3>
+                        </div>
+                        <div>
+                            <p>25.04.2025</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="container-chat">
+                    <img src="{% static 'chat_app/images/Title-group.png' %}" alt="">
+                    <div class="chat-info">
+                        <div>
+                            <h2>Ann Ti</h2>
+                            <h3>Привіт!</h3>
+                        </div>
+                        <div>
+                            <p>25.04.2025</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="container-chat">
+                    <img src="{% static 'chat_app/images/Title-group.png' %}" alt="">
+                    <div class="chat-info">
+                        <div>
+                            <h2>Ann Ti</h2>
+                            <h3>Привіт!</h3>
+                        </div>
+                        <div>
+                            <p>25.04.2025</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="container-chat">
+                    <img src="{% static 'chat_app/images/Title-group.png' %}" alt="">
+                    <div class="chat-info">
+                        <div>
+                            <h2>Ann Ti</h2>
+                            <h3>Привіт!</h3>
+                        </div>
+                        <div>
+                            <p>25.04.2025</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="container-chat">
+                    <img src="{% static 'chat_app/images/Title-group.png' %}" alt="">
+                    <div class="chat-info">
+                        <div>
+                            <h2>Ann Ti</h2>
+                            <h3>Привіт!</h3>
+                        </div>
+                        <div>
+                            <p>25.04.2025</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="container-chat">
+                    <img src="{% static 'chat_app/images/Title-group.png' %}" alt="">
+                    <div class="chat-info">
+                        <div>
+                            <h2>Ann Ti</h2>
+                            <h3>Привіт!</h3>
+                        </div>
+                        <div>
+                            <p>25.04.2025</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</section>
 {% endblock content %}
 
 {% block scripts %}
     <script src="{% static 'chat_app/js/chat.js' %} "></script>
+    <script src="{% static 'chat_app/js/chat_ws.js' %} "></script>
 {% endblock scripts %}

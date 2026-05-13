@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="{% static 'user_app/css/form_info.css' %}">
     <link rel="stylesheet" href="{% static 'post_app/css/post_content.css' %}">
     <link rel="stylesheet" href="{% static 'post_app/css/create_post.css' %}">
+    <link rel="stylesheet" href="{% static 'post_app/css/show_post.css' %}">
 {% endblock links %}
 
 {% block side_panel %}
@@ -108,11 +109,13 @@
 {% block content %}
     {% include 'user_app/particles/form_info.html' %}
     {% include 'post_app/particles/create_post.html' %}
+    {% include 'post_app/particles/add_tag.html' %}
     {% include 'post_app/particles/post_content.html' %}
 {% endblock content %}
 
 {% block scripts %}
     <script type="module" src="{% static 'user_app/js/expand_info.js' %}"></script>
     <script src="{% static 'post_app/js/post.js' %}"></script>
+    <script src="{% static 'post_app/js/post_list.js' %}"></script>
     <script type="module" src="{% static 'post_app/js/create_post.js' %}"></script>
 {% endblock scripts %}

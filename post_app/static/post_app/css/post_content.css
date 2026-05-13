@@ -3,9 +3,11 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    
+    flex-shrink: 0;
 
     width: 64vw;
-    height: 12vh;
+    height: 13vh;
 
     background-color: rgba(255, 255, 255, 1);
     border: 1px solid rgba(205, 206, 210, 1);
@@ -20,7 +22,7 @@
 
 .write-post-container div{
     width: 100%;
-    height: 50%;
+    height: 6vh;
 }
 
 .write-post-container div textarea, .write-post-container div textarea::placeholder{

@@ -1,0 +1,121 @@
+.messages-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    width: 100%;
+    /* height: 40vh; */
+    flex: 1;
+
+    padding: 16px 0;
+    gap: 24px;
+    border-radius: 10px;
+    border: 1px solid rgba(205, 206, 210, 1);
+}
+
+.row-block{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    width: 100%;
+    height: fit-content;
+
+    padding: 0 16px;
+}
+
+.row-block div{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    gap: 8px;
+}
+
+.text-all{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    width: 6.6vw;
+    height: 100%;
+}
+
+.content-chats{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+
+    width: 100%;
+    max-height: 35vh;
+    flex: 1;
+
+    overflow-y: auto;
+}
+
+.content-chats .container-chat:first-child{
+    background-color: rgba(233, 229, 238, 1);
+}
+
+.content-chats .container-chat{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    width: 90%;
+    height: 6.3vh;
+    gap: 12px;
+    flex-shrink: 0;
+    padding: 8px 16px;
+}
+
+.content-chats .container-chat .chat-info{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    flex: 1;
+    background-color: transparent;
+}
+
+.content-chats .container-chat .chat-info div:last-child{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    align-self: stretch;
+}
+
+.content-chats .container-chat h2{
+    font-weight: 500;
+    font-style: Medium;
+    font-size: 16px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: rgba(7, 10, 28, 1);
+}
+
+.content-chats .container-chat h3{
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 14px;
+    line-height: 160%;
+    letter-spacing: 0%;
+    color: rgba(7, 10, 28, 1);
+}
+
+.content-chats .container-chat p{
+    font-weight: 400;
+    font-style: Regular;
+    font-size: 12px;
+    line-height: 100%;
+    letter-spacing: 0%;
+    color: rgba(129, 129, 141, 1);
+}

@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block meta %}
+    <meta name="csrf-token" content="{{ csrf_token }}">
+{% endblock %}
+
+{% block title %}Chat{% endblock title %}
+
+{% block links %}
+    <link rel="stylesheet" href="">
+{% endblock links %}
+
+{% block content %}
+    <h1>Мої чати</h1>
+    <form method="post" id="form-chat">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Надіслати</button>
+    </form>
+    <hr>
+    <div id="message-container">
+        <h2>Повідомлення:</h2>
+
+    </div>
+{% endblock content %}
+
+{% block scripts %}
+    <script src="{% static 'chat_app/js/chat.js' %} "></script>
+{% endblock scripts %}

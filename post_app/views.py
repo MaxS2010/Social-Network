@@ -7,11 +7,11 @@ from django.views.generic import FormView, ListView, TemplateView
 from django.template.loader import render_to_string
 from django.core.paginator import Paginator
 
-from post_app.forms import PostCreationForm
+from post_app.forms import PostAddTagForm, PostCreationForm
 from .models import Post
 # Create your views here.
 
-class PostListView(LoginRequiredMixin, ListView):
+class PostListView(ListView, LoginRequiredMixin):
     model = Post
     template_name = 'post_app/post.html'
     context_object_name = 'posts'
@@ -20,6 +20,7 @@ class PostListView(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs) -> dict:
         context = super().get_context_data(**kwargs)
         context["form_create"] = PostCreationForm()
+        context["form_add_tag"] = PostAddTagForm()
         return context
     
     def get_queryset(self):
@@ -113,3 +114,37 @@ class PostCreateView(LoginRequiredMixin, FormView):
             },
             status=400,
         )
+
+class PostAddTagView(FormView, LoginRequiredMixin):
+    template_name = 'post_app/particles/add_tag.html'
+    form_class = PostAddTagForm
+
+    def form_valid(self, form):
+        tag = form.save()
+
+        checkbox_html = f"""
+        <label for="id_tags_{tag.id}">
+            <input
+                type="checkbox"
+                name="tags"
+                value="{tag.id}"
+                id="id_tags_{tag.id}"
+                checked
+            >
+            #{tag.name}
+        </label>
+        """
+
+        return JsonResponse({
+            'success': True,
+            'tag': {
+                'id': tag.id,
+                'html': checkbox_html,
+            }
+        })
+
+    def form_invalid(self, form):
+        return JsonResponse({
+            'success': False,
+            'errors': form.errors,
+        }, status=400)
