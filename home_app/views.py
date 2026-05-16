@@ -1,7 +1,9 @@
 from django.http import JsonResponse
+from django.urls import reverse_lazy
 from django.views.generic.base import TemplateView
 from django.template.loader import render_to_string
 from django.core.paginator import Paginator
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 from user_app.forms import UserExpandInfoForm
 from post_app.forms import PostCreationForm
@@ -9,7 +11,7 @@ from post_app.models import Post
 # Create your views here.
 
 
-class HomeView(TemplateView):
+class HomeView(LoginRequiredMixin, TemplateView):
     template_name = 'home_app/home.html'
 
     def get_context_data(self, **kwargs):
@@ -56,8 +58,9 @@ class HomeView(TemplateView):
             try:
                 if int(page_number) > paginator.num_pages:
                     return JsonResponse({'success': False})
+            
             except (TypeError, ValueError):
-                return JsonResponse({'success': False})
+                return JsonResponse({'success': False, })
 
             return JsonResponse({
                 'success': True,

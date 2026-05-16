@@ -26,7 +26,8 @@
     
     width: fit-content;
     /* height: 68vh; */
-    height: fit-content;
+    max-height: 96vh;
+    overflow-x: auto;
     
     padding: 2.4vh 3vw 3vw 3vw;
     gap: 2.5vh;

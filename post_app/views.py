@@ -11,7 +11,7 @@ from post_app.forms import PostAddTagForm, PostCreationForm
 from .models import Post
 # Create your views here.
 
-class PostListView(ListView, LoginRequiredMixin):
+class PostListView(LoginRequiredMixin, ListView):
     model = Post
     template_name = 'post_app/post.html'
     context_object_name = 'posts'
@@ -64,7 +64,6 @@ class PostCreateView(LoginRequiredMixin, FormView):
     template_name = 'post_app/particles/create_post.html'
     form_class = PostCreationForm
     success_url = reverse_lazy("post")
-    login_url = reverse_lazy("auth")
 
     def get_form_kwargs(self):
         """
@@ -115,7 +114,7 @@ class PostCreateView(LoginRequiredMixin, FormView):
             status=400,
         )
 
-class PostAddTagView(FormView, LoginRequiredMixin):
+class PostAddTagView(LoginRequiredMixin, FormView):
     template_name = 'post_app/particles/add_tag.html'
     form_class = PostAddTagForm
 

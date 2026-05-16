@@ -15,9 +15,11 @@
 {% endblock links %}
 
 {% block content %}
+{% include 'chat_app/particles/create_group.html' %}
+
 <section class="chat-content-section">
     <section class="contacts-section">
-        <button type="button">
+        <button type="button" id="create-group">
             <img src="{% static 'chat_app/icons/plus.svg' %}" alt="">
             Створити груповий чат
         </button>

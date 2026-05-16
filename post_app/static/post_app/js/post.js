@@ -137,42 +137,57 @@ document.getElementById("add-link").addEventListener("click", createLinkInput)
 const fileInput = document.getElementById('file-input') 
 const previewContainer = document.getElementById('images-preview')
 
+let selectedFiles = []
+
 fileInput.addEventListener('change', function() {
     const files = this.files
 
     if (files) {
-            Array.from(files).forEach(file => {
-                if (file.type.startsWith('image/')) {
-                    const reader = new FileReader()
+        Array.from(files).forEach(file => {
+            if (file.type.startsWith('image/')) {
+                selectedFiles.push(file)
 
-                    reader.onload = function(e) {
-                        const imgDiv = document.createElement('div')
-                        imgDiv.className = "img-container"
-                        imgDiv.style.backgroundImage = `url('${e.target.result}')`
+                const reader = new FileReader()
 
-                        const buttonRemove = document.createElement('button')
-                        buttonRemove.type = "button"
-                        buttonRemove.className = "button-remove"
+                reader.onload = function(e) {
+                    const imgDiv = document.createElement('div')
+                    imgDiv.className = "img-container"
+                    imgDiv.style.backgroundImage = `url('${e.target.result}')`
 
-                        const imgRemove = document.createElement('img')
-                        imgRemove.src = "/static/post_app/icons/remove-image.svg"
+                    const buttonRemove = document.createElement('button')
+                    buttonRemove.type = "button"
+                    buttonRemove.className = "button-remove"
 
-                        buttonRemove.appendChild(imgRemove)
-                        imgDiv.appendChild(buttonRemove)
-                        previewContainer.appendChild(imgDiv)
+                    const imgRemove = document.createElement('img')
+                    imgRemove.src = "/static/post_app/icons/remove-image.svg"
 
-                        buttonRemove.addEventListener(
-                            'click',
-                            function (){
-                                imgDiv.remove()
+                    buttonRemove.appendChild(imgRemove)
+                    imgDiv.appendChild(buttonRemove)
+                    previewContainer.appendChild(imgDiv)
+
+                    buttonRemove.addEventListener(
+                        'click',
+                        function (){
+                            const index = selectedFiles.indexOf(file)
+                            if (index > -1) {
+                                selectedFiles.splice(index, 1)
+                                updateFileInput()
                             }
-                        )
-                }
-                reader.readAsDataURL(file)
+                            imgDiv.remove()
+                        }
+                    )
             }
-        })
-    }
-})
+            reader.readAsDataURL(file)
+        }
+    })
+}})
+
+
+function updateFileInput() {
+    const dt = new DataTransfer()
+    selectedFiles.forEach(file => dt.items.add(file))
+    fileInput.files = dt.files
+}
 
 document.getElementById("add-tag").addEventListener(
     "click",

@@ -12,6 +12,23 @@ html {
     overflow: hidden;
 }
 
+html div::-webkit-scrollbar {
+    padding: 0;
+    width: fit-content;
+    border-radius: 10px;
+    width: 8px;
+}
+
+html div::-webkit-scrollbar-track {
+    background: rgba(233, 229, 238, 1);
+    border-radius: 10px;
+}
+
+html div::-webkit-scrollbar-thumb {
+    background: rgba(84, 60, 82, 1);
+    border-radius: 10px;
+}
+
 body{
     display: flex;
     flex-direction: column;
@@ -28,12 +45,13 @@ main{
     display: flex;
     flex-direction: row;
     align-items: flex-start;
-    justify-content: center;
+    justify-content: space-between;
     
     gap: 1vw;
-    width: 100%;
+    width: 90%;
     height: 100%;
     min-height: 0;
+
 }
 
 .side-panel-container{
@@ -43,7 +61,6 @@ main{
     justify-content: center;
 
     gap: 1vw;
-    margin-left: 5.6vw;
 
     width: 24vw;
     height: fit-content;
@@ -57,15 +74,20 @@ main{
     justify-content: flex-start;
     align-items: center;
 
-    width: 64vw;
     max-height: 85vh;
-
-    flex: 1;
     min-height: 0;
+
+    width: fit-content;
 
     gap: 0.8vh;
 
     overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.div-container::-webkit-scrollbar {
+    width: 0;
+    height: 0;
 }
 
 /* 

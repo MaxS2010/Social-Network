@@ -7,6 +7,7 @@
 
 {% block links %}
     <link rel="stylesheet" href="{% static 'css/side_panel.css' %}">
+    <link rel="stylesheet" href="{% static 'user_app/css/friends.css' %}">
 {% endblock links %}
 
 {% block side_panel %}
@@ -22,7 +23,38 @@
 {% endblock side_panel %}
 
 {% block content %}
-
+    <section class="friends-container-section">
+        {% for key, section in sections.items %}
+            <section class="{{ key }}-section">
+                <div class="row-bar"><h2>{{ section.title }}</h2><p>Дивитись всі</p></div>
+                <div class="cards-container">
+                    {% for user in section.users %}
+                        {% if user.is_profile_complete %}
+                            <div class="friend-card">
+                                <img src="{% static 'user_app/icons/User1.png' %}" alt="User">
+                                <div class="friend-info">
+                                    <h1>{{ user.get_full_name|default:user.username }}</h1>
+                                    <h3>@{{ user.username }}</h3>
+                                </div>
+                                <div class="buttons-container">
+                                    {% if key == 'requests' %}
+                                        <button>Підтвердити</button>
+                                        <button>Видалити</button>
+                                    {% elif key == 'recommendations' %}
+                                        <button>Додати</button>
+                                        <button>Видалити</button>
+                                    {% elif key == 'friends' %}
+                                        <button>Повідомлення</button>
+                                        <button>Видалити</button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </section>
+        {% endfor %}
+    </section>
 {% endblock content %}
 
 {% block scripts %}

@@ -32,12 +32,12 @@ class AuthView(TemplateView):
             context["form_register"] = UserRegisterForm()
             context['form_login'] = UserLoginForm()
             context['form_confirm_email'] = UserConfirmForm()  
-            context['form_info'] = UserExpandInfoForm()
+            # context['form_info'] = UserExpandInfoForm()
         return context
-    
+
 
 class RegisterView(View):
-    def post(self, request: HttpRequest):
+    def post(self, request: HttpRequest, *args, **kwargs):
         form = UserRegisterForm(request.POST)
 
         if not form.is_valid():
@@ -53,38 +53,18 @@ class RegisterView(View):
             "password1": form.cleaned_data["password1"],
             "password2": form.cleaned_data["password2"],
         }
+        
         request.session["confirm_code"] = confirm_code
 
-        request.session["confirm_code_created_at"] = time()
+        # request.session["confirm_code_created_at"] = time()
 
         send_confirm_code(code= confirm_code, email= form.cleaned_data["email"])
         
 
         return JsonResponse({
             "success": True,
-            "message": "Код отправлен"
+            "message": "Код Відправлено"
         })
-
-
-class LoginView(View):
-    def post(self, request: HttpRequest, *args, **kwargs):
-        form = UserLoginForm(request, data=request.POST)
-
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-
-            return JsonResponse({
-                'success': True,
-                'is_profile_complete': user.is_profile_complete, # type: ignore
-            })
-        
-        else:
-            return JsonResponse({
-                'success': False,
-                'errors': form.errors.get_json_data(),
-            })
-
 
 class ConfirmView(View):
     def post(self, request: HttpRequest, *args, **kwargs):
@@ -124,6 +104,25 @@ class ConfirmView(View):
             "success": True,
             "message": "Акаунт підтверджено"
         })
+
+class LoginView(View):
+    def post(self, request: HttpRequest, *args, **kwargs):
+        form = UserLoginForm (request, data=request.POST)
+
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+
+            return JsonResponse({
+                'success': True,
+                'is_profile_complete': user.is_profile_complete, # type: ignore
+            })
+        
+        else:
+            return JsonResponse({
+                'success': False,
+                'errors': form.errors.get_json_data(),
+            })
 
 
 class ExpandInfoView(View):
@@ -165,19 +164,28 @@ class LogoutView(View):
 class SettingsView(TemplateView):
     template_name = 'user_app/settings.html'
 
-class ModelCreateView(TemplateView, LoginRequiredMixin):
-    
+class ModelCreateView(LoginRequiredMixin, TemplateView):
     template_name = "user_app/friends.html"
     login_url = reverse_lazy("auth")
 
-class FriendsView(TemplateView, LoginRequiredMixin):
+class FriendsView(LoginRequiredMixin, TemplateView):
     model = Friendship
     template_name = 'user_app/friends.html'
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context["sections"] = {
-            "requests": {'title': 'Запити', 'users': get_user_by_section(self.request.user, "requests")[:3]},
-            'recommendations': {'title': 'Рекомендації', 'users': get_user_by_section(self.request.user, "recommendations")[:6]},
-            'friends': {'title': 'Всі друзі', 'users': get_user_by_section(self.request.user, "friends")[:6]}
+            "requests": {
+                "title": "Запити",
+                "users": get_user_by_section(self.request.user, "requests")[:3],
+            },
+            "recommendations": {
+                "title": "Рекомендації",
+                "users": get_user_by_section(self.request.user, "recommendations")[:6],
+            },
+            "friends": {
+                "title": "Всі друзі",
+                "users": get_user_by_section(self.request.user, "friends")[:6],
+            },
         }
         return context
