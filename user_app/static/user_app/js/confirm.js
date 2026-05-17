@@ -29,7 +29,6 @@ document.querySelector('.section-confirm form')
                 codeInputs.clear()
             })
             .catch(data => {
-                console.log("CONFIRM ERROR:", data)
                 if (data?.errors) {
                     showErrors('confirm-errors', data.errors)
                 }

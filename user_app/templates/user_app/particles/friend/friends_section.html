@@ -1,9 +1,9 @@
 <!-- Контейнер повної вкладки, який JS покаже після кліку. -->
-<section id="friends-section" style="border: 1px solid black; display: none;">
+<section id="friends-section" class="all-friends-section" style="display: none;">
     <!-- Кнопка повертає користувача до головної вкладки з трьома блоками. -->
-    <button type="button" id="friends-back-home">Повернутись на головну</button>
-    <!-- Заголовок активної вкладки. -->
-    <h2 id="friends-section-title"></h2>
+    <div class="row-bar"><h2 id="friends-section-title"></h2><button type="button" id="friends-back-home" class="friends-back-home">Повернутись на головну</button></div>
     <!-- Flex-сітка для всіх карток вибраної вкладки. -->
-    <div id="friends-section-list" style="display: flex; flex-wrap: wrap;"></div>
+    <div id="friends-section-list" class="cards-container">
+        {% include 'user_app/particles/friend/friend_cards.html' %}
+    </div>
 </section>

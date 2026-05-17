@@ -27,10 +27,8 @@ document.querySelector('.section-register form').addEventListener('submit', func
         codeInputs.clear()
         document.querySelector('.section-register').style.display = 'none'
         showLoginForm()
-
     })
     .catch(data => {
-        console.log("REGISTER ERROR:", data)
         if (data?.errors) {
             showErrors('register-errors', data.errors)
         }

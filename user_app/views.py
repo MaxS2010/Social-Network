@@ -6,6 +6,9 @@ from django.views.generic.base import TemplateView
 from django.views import View
 from django.http import HttpRequest, JsonResponse
 from django.shortcuts import redirect
+from django.template.loader import render_to_string
+from django.core.paginator import Paginator
+
 
 from .models import Friendship, User
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -59,7 +62,7 @@ class RegisterView(View):
         # request.session["confirm_code_created_at"] = time()
 
         send_confirm_code(code= confirm_code, email= form.cleaned_data["email"])
-        
+
 
         return JsonResponse({
             "success": True,
@@ -68,18 +71,9 @@ class RegisterView(View):
 
 class ConfirmView(View):
     def post(self, request: HttpRequest, *args, **kwargs):
-        session_code = request.session.get("confirm_code")
-        pending_user = request.session.get("pending_user")
-
-        if not session_code or not pending_user:
-            return JsonResponse({
-                "success": False,
-                "errors": "Сесія закінчилась або дані відсутні"
-            }, status=400)
-
         form = UserConfirmForm(
             request.POST,
-            confirm_code=session_code
+            confirm_code= request.session.get("confirm_code")
         )
 
         if not form.is_valid():
@@ -93,6 +87,7 @@ class ConfirmView(View):
                 session=request.session,
                 input_code=form.cleaned_data["code"]
             )
+            
 
         except ValueError as error:
             return JsonResponse({
@@ -107,7 +102,7 @@ class ConfirmView(View):
 
 class LoginView(View):
     def post(self, request: HttpRequest, *args, **kwargs):
-        form = UserLoginForm (request, data=request.POST)
+        form = UserLoginForm(request, data=request.POST)
 
         if form.is_valid():
             user = form.get_user()
@@ -164,10 +159,6 @@ class LogoutView(View):
 class SettingsView(TemplateView):
     template_name = 'user_app/settings.html'
 
-class ModelCreateView(LoginRequiredMixin, TemplateView):
-    template_name = "user_app/friends.html"
-    login_url = reverse_lazy("auth")
-
 class FriendsView(LoginRequiredMixin, TemplateView):
     model = Friendship
     template_name = 'user_app/friends.html'
@@ -189,3 +180,48 @@ class FriendsView(LoginRequiredMixin, TemplateView):
             },
         }
         return context
+
+
+class FriendsSectionView(FriendsView):
+    paginate_by = 10
+
+    def get(self, request: HttpRequest, section: str, *args, **kwargs):
+        try:
+            users = get_user_by_section(request.user, section)
+        except ValueError:
+            return JsonResponse({
+                "success": False,
+                "message": "Невідома секція"
+            }, status=400)
+
+        paginator = Paginator(users, self.paginate_by)
+
+        page_number = request.GET.get("page", 1)
+        page_obj = paginator.get_page(page_number)
+
+        if int(page_number) > paginator.num_pages:
+            return JsonResponse({
+                "success": False
+            })
+
+        html = render_to_string(
+            'user_app/particles/friend/friend_cards.html',
+            {
+                'users': page_obj.object_list,
+                'section': section,
+                'request': request,
+            }
+        )
+
+        titles = {
+            'requests': 'Запити',
+            'recommendations': 'Рекомендації',
+            'friends': 'Всі друзі',
+        }
+
+        return JsonResponse({
+            'success': True,
+            'html': html,
+            'title': titles.get(section, section),
+            'has_next': page_obj.has_next(),
+        })

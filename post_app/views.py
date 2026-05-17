@@ -1,5 +1,3 @@
-from typing import Any
-
 from django.http import JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
@@ -38,7 +36,6 @@ class PostListView(LoginRequiredMixin, ListView):
     
     def get(self, request, *args, **kwargs):
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-            
             queryset = self.get_queryset()
             paginator = Paginator(queryset, self.paginate_by)
             page_number = request.GET.get('page')

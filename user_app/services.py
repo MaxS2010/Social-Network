@@ -18,6 +18,6 @@ def confirm_user(session, input_code):
 
     user = form.save()
 
-    session.pop("confirm_code_created_at", None)
+    # session.pop("confirm_code_created_at", None)
 
     return user

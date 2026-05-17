@@ -1,0 +1,28 @@
+{% load static %}
+{% comment %}Partial: renders a list of user cards. Expects `users` and `section` in context.{% endcomment %}
+
+{% for user in users %}
+    {% if user.is_profile_complete %}
+        <div class="friend-card">
+            <img src="{% static 'user_app/icons/User1.png' %}" alt="User">
+            <div class="friend-info">
+                <h1>{{ user.get_full_name|default:user.username }}</h1>
+                <h3>@{{ user.username }}</h3>
+            </div>
+            <div class="buttons-container">
+                {% if section == 'requests' %}
+                    <button class="confirm-btn">Підтвердити</button>
+                    <button class="remove-btn">Видалити</button>
+                {% elif section == 'recommendations' %}
+                    <button class="add-btn">Додати</button>
+                    <button class="remove-btn">Видалити</button>
+                {% elif section == 'friends' %}
+                    <button class="message-btn">Повідомлення</button>
+                    <button class="remove-btn">Видалити</button>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
+{% empty %}
+    <p class="empty-note">Немає користувачів у цьому блоці.</p>
+{% endfor %}

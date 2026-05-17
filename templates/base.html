@@ -43,8 +43,7 @@
                             <form action="{% url 'logout' %}" method="post" style="display:inline;">
                                 {% csrf_token %}
                                 <a href="{% url 'logout' %}" class="button-exit" id="button-exit">
-                                    <img src="{% static 'icons/exit.svg' %}" alt="exit.svg" class="icons">
-                                    <span>Вихід</span>
+                                    <img src="{% static 'icons/exit.svg' %}" alt="exit.svg">
                                 </a>
                             </form>
                         </div>
@@ -69,7 +68,7 @@
                 {% block content %} {% endblock content %}
             </div>
         </main>
-        <script src="{% static 'js/base.js' %}"></script>
+        <script type="module" src="{% static 'js/base.js' %}"></script>
         {% block scripts %} {% endblock scripts %}
     </body>
 </html>

@@ -28,7 +28,7 @@ document.querySelector('.section-login form')
                     !data.is_profile_complete
                 )
 
-                window.location.href = '/'
+                window.location.href = '/home/'
             })
             .catch(data => {
                 if (data?.errors) {

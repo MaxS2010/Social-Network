@@ -15,8 +15,6 @@
 
     padding: 1vw;
     gap: 1vh;
-
-    overflow: hidden;
 }
 
 
@@ -29,7 +27,6 @@
     font-weight: 400;
     font-style: Regular;
     font-size: 1.6vh;
-    line-height: 22px;
     letter-spacing: -0.7%;
     
     background-color: transparent;

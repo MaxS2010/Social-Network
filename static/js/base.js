@@ -1,3 +1,5 @@
+import { getCSRFToken } from "/static/user_app/js/utils.js"
+
 const urlLinks = document.querySelectorAll('.url')
 
 for (let link of urlLinks) {
@@ -9,43 +11,6 @@ for (let link of urlLinks) {
         })
     }
 }
-
-function getCSRFToken() {
-    const cookies = document.cookie.split(';')
-
-    for (let c of cookies) {
-        c = c.trim();
-        if (c.startsWith('csrftoken=')) {
-            return decodeURIComponent(c.slice(10));
-        }
-    }
-}
-
-async function logoutUser() {
-    console.log("CLICK WORKED");
-
-    const response = await fetch('/user/logout/', {
-        method: 'POST',
-        headers: {
-            'X-CSRFToken': getCSRFToken(),
-        },
-        credentials: 'same-origin'
-    });
-
-    if (!response.ok) {
-        console.error("HTTP ERROR:", response.status);
-        const text = await response.text();
-        console.error(text);
-        return;
-    }
-
-    const data = await response.json();
-
-    if (data.success) {
-        window.location.href = "/user/auth/";
-    }
-}
-
 
 const needModal = sessionStorage.getItem("showProfileModal")
 const modal = document.querySelector('.form-info-container')

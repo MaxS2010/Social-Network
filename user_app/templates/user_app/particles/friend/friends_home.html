@@ -15,7 +15,7 @@
             <!-- Позначаємо сітку назвою блоку, щоб JS міг знайти "Всі друзі". -->
             <div style="display: flex; flex-wrap: wrap;" data-home-section="{{ key }}">
                 <!-- Підключаємо картки людей для блоку. -->
-                {% include "user_app/particles/friends/friend_cards.html" with users=section.users section=key %}
+                {% include "user_app/particles/friend/friend_cards.html" with users=section.users section=key %}
             </div>
         </section>
     <!-- Завершуємо перебір трьох блоків. -->
