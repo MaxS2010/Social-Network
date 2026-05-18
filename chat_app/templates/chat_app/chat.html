@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="{% static 'chat_app/css/contacts_section.css' %}">
     <link rel="stylesheet" href="{% static 'chat_app/css/messages_section.css' %}">
     <link rel="stylesheet" href="{% static 'chat_app/css/chats_section.css' %}">
+    <link rel="stylesheet" href="{% static 'chat_app/css/chat_modal.css' %}">
 {% endblock links %}
 
 {% block content %}
@@ -74,6 +75,7 @@
             <h1>Почніть нове спілкування</h1>
             <p>Оберіть контакт зі списку ліворуч <br> або створіть групу, щоб почати спілкування</p>
         </div>
+        {% include 'chat_app/particles/create_group.html' %}
     </section>
 
     <section class="chats-section">

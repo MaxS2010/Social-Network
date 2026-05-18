@@ -16,7 +16,7 @@
             <div class="container">
                 <nav>
                     {% if request.path != '/' %}
-                        <a href="/">
+                        <a href="{% url 'home' %}">
                             <img src="{% static 'icons/logo.svg' %}" alt="logo.svg" class="logo">
                         </a>
                         <div>
