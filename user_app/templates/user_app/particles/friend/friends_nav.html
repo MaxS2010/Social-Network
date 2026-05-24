@@ -1,9 +1,6 @@
-<!-- Єдиний flex для перемикання вкладок зліва зверху. -->
-<nav style="display: flex; gap: 12px;">
-    <!-- Кнопка відкриває всі запити без перезавантаження. -->
-    <button type="button" data-section-link="requests">Запити</button>
-    <!-- Кнопка відкриває всі рекомендації без перезавантаження. -->
-    <button type="button" data-section-link="recommendations">Рекомендації</button>
-    <!-- Кнопка відкриває всіх друзів без перезавантаження. -->
-    <button type="button" data-section-link="friends">Всі друзі</button>
+<nav class="friends-panel" id="friends-panel">
+    <button type="button" id="friends-back-home-nav" class="friends-back-home selected">Головна</button>
+    <button type="button" class="view-all-btn" data-section-link="requests">Запити</button>
+    <button type="button" class="view-all-btn" data-section-link="recommendations">Рекомендації</button>
+    <button type="button" class="view-all-btn" data-section-link="friends">Всі друзі</button>
 </nav>

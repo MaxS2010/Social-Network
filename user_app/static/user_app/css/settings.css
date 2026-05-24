@@ -36,6 +36,9 @@
     
     width: 62vw;
     height: 26.8vh;
+
+    gap: 1.6vh;
+    padding: 16px;
 }
 .profile-panel .edit-info{
     display: flex;
@@ -45,7 +48,22 @@
 
     width: 60vw;
     height: 4.1vh;
+
 }
+
+
+/* .edit-info .edit-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    width: 14.1vw;
+    height: 2.7vh;
+
+    border-radius: 1px;
+
+} */
 
 
 .profile-panel .author-profile{
@@ -132,12 +150,16 @@
 
 .settings-signature{
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-start;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: space-between;
 
     width: 62vw;
     height: 27vh;
+
+    gap: 1.6vh;
+    padding: 16px;
+
 }
 
 .settings-signature .signature-info{
@@ -158,17 +180,16 @@
 
 }
 
-.author-info{
+.settings-signature .author-info{
     display: flex;
-    flex-direction: column !important;
-    justify-content: flex-start !important;
-    align-items: flex-start !important;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
 
     width: 44.3vw;
     height: 18vh;
     
-    
-
+    gap: 2.4vh;
 }
 
 .author-info .pseudonym-info{

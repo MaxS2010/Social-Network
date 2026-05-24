@@ -1,23 +1,13 @@
-<!-- Контейнер головного стану з трьома блоками. -->
-<main id="friends-home">
-    <!-- Проходимо по блоках: запити, рекомендації, друзі. -->
+<section class="friends-container-section" id="friends-home">
     {% for key, section in sections.items %}
-        <!-- Обводка навколо кожного блоку. -->
-        <section style="border: 1px solid black;">
-            <!-- Flex для заголовка і кнопки перегляду всіх. -->
-            <div style="display: flex; justify-content: space-between;">
-                <!-- Виводимо назву поточного блоку. -->
+        <section class="{{ key }}-section">
+            <div class="row-bar">
                 <h2>{{ section.title }}</h2>
-                <!-- Відкриваємо повний список цього блоку. -->
-                <button type="button" data-section-link="{{ key }}">Дивитись всі</button>
+                <button type="button" class="view-all-btn" data-section-link="{{ key }}">Дивитись всі</button>
             </div>
-            <!-- Flex-сітка карток по 3 у ряд. -->
-            <!-- Позначаємо сітку назвою блоку, щоб JS міг знайти "Всі друзі". -->
-            <div style="display: flex; flex-wrap: wrap;" data-home-section="{{ key }}">
-                <!-- Підключаємо картки людей для блоку. -->
-                {% include "user_app/particles/friend/friend_cards.html" with users=section.users section=key %}
+            <div class="cards-container" data-home-section="{{ key }}">
+                {% include 'user_app/particles/friend/friend_cards.html' with users=section.users section=key %}
             </div>
         </section>
-    <!-- Завершуємо перебір трьох блоків. -->
     {% endfor %}
-</main>
+</section>

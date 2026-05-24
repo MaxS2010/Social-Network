@@ -3,7 +3,7 @@ const chatSocket = new WebSocket(url)
 
 chatSocket.onmessage = function(event){
     const data = JSON.parse(event.data)
-    console.log(data.type)
+    // console.log(data.type)
     if (data.type == 'chat'){
         console.log(2)
         const text = document.createElement('h4')

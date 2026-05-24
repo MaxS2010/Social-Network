@@ -25,6 +25,7 @@ class Friendship(models.Model):
     STATUS_CHOICES = [
         ('pending', 'Pending'),
         ('accepted', 'Accepted'),
+        ('dismissed', 'Dismissed'),
     ]
 
     status = models.CharField(

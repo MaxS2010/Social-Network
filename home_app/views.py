@@ -25,6 +25,7 @@ class HomeView(LoginRequiredMixin, TemplateView):
             )
         
         context["form_create"] = PostCreationForm()
+        context["user"] = self.request.user
 
         queryset = Post.objects.select_related("author").prefetch_related(
             "images",

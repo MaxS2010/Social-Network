@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import AuthView, RegisterView, LoginView, LogoutView, SettingsView, ConfirmView, ExpandInfoView, FriendsView, FriendsSectionView
+from .views import AuthView, RegisterView, LoginView, LogoutView, SettingsView, ConfirmView, ExpandInfoView, FriendsView, FriendsSectionView, FriendActionView
 
 
 urlpatterns = [    
@@ -13,4 +13,5 @@ urlpatterns = [
     path(route = 'settings/', view = SettingsView.as_view(), name='settings'),
     path(route= 'friends/', view= FriendsView.as_view(), name='friends'),
     path(route= 'friends/section/<str:section>/', view= FriendsSectionView.as_view(), name='friends_section'),
+    path("friends/action/<int:user_id>/<str:action>/", FriendActionView.as_view(), name="friend_action"),
 ]

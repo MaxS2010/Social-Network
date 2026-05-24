@@ -16,8 +16,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .services import confirm_user
 from .forms import UserExpandInfoForm, UserRegisterForm, UserLoginForm, UserConfirmForm
 
-from .utils.friend_queries import get_user_by_section
-from .utils.utils import generate_confirm_code, send_confirm_code
+from .utils.friend_queries import get_users_by_section
+from .utils.friend_action import add_friend_request, dismiss_recommendation, accept_friend_request, delete_friendship
+from .utils.utils import generate_confirm_code, send_confirm_code, create_random_users_with_friendships, del_user
 
 # Create your views here.
 
@@ -168,60 +169,72 @@ class FriendsView(LoginRequiredMixin, TemplateView):
         context["sections"] = {
             "requests": {
                 "title": "Запити",
-                "users": get_user_by_section(self.request.user, "requests")[:3],
+                "users": get_users_by_section(self.request.user, "requests")[:3],
             },
             "recommendations": {
                 "title": "Рекомендації",
-                "users": get_user_by_section(self.request.user, "recommendations")[:6],
+                "users": get_users_by_section(self.request.user, "recommendations")[:7],
             },
             "friends": {
                 "title": "Всі друзі",
-                "users": get_user_by_section(self.request.user, "friends")[:6],
+                "users": get_users_by_section(self.request.user, "friends")[:6],
             },
         }
+        
+    
         return context
 
 
 class FriendsSectionView(FriendsView):
-    paginate_by = 10
+    # create_random_users_with_friendships()
+    SECTION_TITLES = {
+        "requests": "Запити",
+        "recommendations": "Рекомендації",
+        "friends": "Всі друзі",
+    }
 
-    def get(self, request: HttpRequest, section: str, *args, **kwargs):
-        try:
-            users = get_user_by_section(request.user, section)
-        except ValueError:
-            return JsonResponse({
-                "success": False,
-                "message": "Невідома секція"
-            }, status=400)
+    def get(self, request, section, *args, **kwargs):
 
-        paginator = Paginator(users, self.paginate_by)
+        users = get_users_by_section(request.user, section)
 
-        page_number = request.GET.get("page", 1)
-        page_obj = paginator.get_page(page_number)
-
-        if int(page_number) > paginator.num_pages:
-            return JsonResponse({
-                "success": False
-            })
-
-        html = render_to_string(
-            'user_app/particles/friend/friend_cards.html',
-            {
-                'users': page_obj.object_list,
-                'section': section,
-                'request': request,
-            }
+        page_obj = Paginator(users, 6).get_page(
+            request.GET.get("page", 1)
         )
 
-        titles = {
-            'requests': 'Запити',
-            'recommendations': 'Рекомендації',
-            'friends': 'Всі друзі',
-        }
+        html = render_to_string(
+            "user_app/particles/friend/friend_cards.html",
+            {
+                "users": page_obj.object_list,
+                "section": section,
+            },
+            request=request
+        )
 
         return JsonResponse({
-            'success': True,
-            'html': html,
-            'title': titles.get(section, section),
-            'has_next': page_obj.has_next(),
+            "html": html,
+            "title": self.SECTION_TITLES.get(section, "Друзі"),
+            "has_next": page_obj.has_next(),
         })
+
+class FriendActionView(LoginRequiredMixin, View):
+    login_url = reverse_lazy('auth')
+    
+    def post(self, request, user_id, action, *args, **kwargs):
+        other_user = User.objects.get(id= user_id)
+        
+        if action == 'add':
+            return JsonResponse(add_friend_request(request.user, other_user))
+        if action == 'dismiss':
+            return JsonResponse(dismiss_recommendation(request.user, other_user))
+        if action == 'accept':
+            action_result = accept_friend_request(request.user, other_user)
+            action_result['friend_html'] = render_to_string(
+                'user_app/particles/friend/friend_cards.html',
+                {'users': [action_result['friend']], 'section': 'friends'},
+                request= request
+            )
+            del action_result['friend']
+            
+            return JsonResponse(action_result)
+        
+        return JsonResponse(delete_friendship(request.user, other_user))

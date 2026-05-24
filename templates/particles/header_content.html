@@ -1,13 +1,13 @@
 {% load static %}
 
-<div class="profile-container">
+<div>
     <div class="profile-head">
         <div class= "profile-picture">
             <img src= "{% static  'icons/example-photo.png' %}" alt="example-photo.png">
         </div>
         <div class="profile-name">
-            <h3>Lina Li</h3>
-            <p>@thelili</p>
+            <h3>{{ user.first_name }} {{ user.last_name }}</h3>
+            <p>@{{ user.username }}</p>
         </div>
     </div>
     

@@ -5,6 +5,7 @@
     align-items: center;
 
     gap: 0.6vw;
+    height: 100%;
 }
 
 .contacts-section, .chats-section, .messages-section{
@@ -13,7 +14,7 @@
     justify-content: center;
     align-items: center;
 
-    height: 85vh;
+    height: 100%;
 }
 
 .contacts-section>div, .chats-section>div, .messages-section{
@@ -26,7 +27,7 @@
 }
 
 .messages-section{
-    width: 39vw;
+    width: 40.4vw;
     border: 1px solid rgba(205, 206, 210, 1);
     border-radius: 10px;
 }

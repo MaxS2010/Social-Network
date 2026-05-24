@@ -17,3 +17,5 @@ class ChatView(
     }
     
 
+class ContactsListView(LoginRequiredMixin, TemplateView):
+    template_name = "chat_app/chat_list.html"

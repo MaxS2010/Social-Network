@@ -19,6 +19,7 @@ class PostListView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context["form_create"] = PostCreationForm()
         context["form_add_tag"] = PostAddTagForm()
+        context['user'] = self.request.user
         return context
     
     def get_queryset(self):
