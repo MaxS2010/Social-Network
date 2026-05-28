@@ -1,0 +1,40 @@
+{% load static %}
+
+<div class="group-members" id="create-name">
+    <div class="name-input-container">
+        <p>Назва</p>
+        <div class="search-input-container"><input type="text" placeholder="Введіть назву"></div>
+    </div>
+    <div class="avatar-container">
+        <img src="{% static 'chat_app/icons/Example-group-image.png' %}" alt="">
+        <div class="photo-action-container">
+            <div>
+                <img src="{% static 'chat_app/icons/plus-create-image.svg' %}" alt="" class="plus-icon">
+                <h3>Додайте фото</h3>
+            </div>
+            <div>
+                <img src="{% static 'chat_app/icons/add-image.svg' %}" alt="" class="image-icon">
+                <h3>Оберіть фото</h3>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="group-members-list">
+        <h1>Учасники</h1>
+        <div class="members-list-view">
+            <div class="member-group">
+                <img src="{% static 'chat_app/icons/Example-group-image.png' %}" alt="">
+                <h2>Аeslie Alexander</h2>
+            </div>
+            <div class="member-group">
+                <img src="{% static 'chat_app/icons/Example-group-image.png' %}" alt="">
+                <h2>Аeslie Alexander</h2>
+            </div>
+            <div class="member-group">
+                <img src="{% static 'chat_app/icons/Example-group-image.png' %}" alt="">
+                <h2>Аeslie Alexander</h2>
+            </div>
+        </div>
+    </div>
+</div>

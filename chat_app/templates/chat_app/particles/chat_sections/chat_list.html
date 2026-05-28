@@ -1,0 +1,26 @@
+{% for chat in chats %}
+    <div class="container-chat" data-chat-id="{{ chat.id }}">
+        {% if chat.avatar %}
+            <img src="{{ chat.avatar.url }}" alt="">
+        {% endif %}
+
+        <div class="chat-info">
+            <div>
+                <h2>
+                    {{ chat.name }}
+                </h2>
+                <h3>
+                    {{ chat.last_message_text|default:"Немає повідомлень" }}
+                </h3>
+            </div>
+            <div>
+                <p>
+                    {{ chat.last_message_time }}
+                </p>
+            </div>
+        </div>
+    </div>
+
+    {% empty %}
+        <p>Тут ще нічого немає</p>
+{% endfor %}

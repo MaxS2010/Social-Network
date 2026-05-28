@@ -15,27 +15,18 @@
 {% endblock links %}
 
 {% block side_panel %}
-    <div class="friends-nav-content" style="display: none;">
+    <div class="friends-nav-content">
         {% include 'user_app/particles/friend/friends_nav.html' %}
     </div>
-    <div class="profile-container">
-        <!-- <p>{{ context.users|length }} friends</p> -->
-        {% include 'particles/header_content.html' %}
-        <div class="buttons-container">
-            <button type="button" data-friend-action data-url="{% url 'friend_action' user.id 'add' %}">
-                Додати
-            </button>
-    
-            <button type="button" data-friend-action data-url="{% url 'friend_action' user.id 'dismiss' %}">
-                Видалити
-            </button>
-        </div>
+    <div class="profile-container" id="profileContent" style="display: none;">
+        
     </div>
 {% endblock side_panel %}
 
 {% block content %}
     {% include 'user_app/particles/friend/friends_home.html' %}
     {% include 'user_app/particles/friend/friends_section.html' %}
+    {% include 'post_app/particles/post_content.html' %}
     
     <div id="friendsLoaderLine"></div>
 {% endblock content %}
@@ -43,4 +34,5 @@
 {% block scripts %}
     <script type="module" src="{% static 'user_app/js/friends.js' %}"></script>
     <script type="module" src="{% static 'user_app/js/friend_actions.js' %}"></script>
+    <script type="module" src="{% static 'user_app/js/friends_confirm.js' %}"></script>
 {% endblock scripts %}

@@ -34,7 +34,7 @@ class Chat(models.Model):
 
     admin = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
         related_name='admin_chats',
         blank=True,
         null=True,

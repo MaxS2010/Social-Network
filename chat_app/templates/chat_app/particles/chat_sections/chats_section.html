@@ -1,0 +1,29 @@
+{% load static %}
+
+<div class="messages-container">
+    <div class="row-block">
+        <div>
+            <img src="{% static 'chat_app/icons/chat.svg' %}" alt="">
+            <p class="label-icon">Особисті чати</p>
+        </div>
+        <p class="text-all">Дивитись всі</p>
+    </div>
+
+    <div class="content-chats">
+        {% include 'chat_app/particles/chat_sections/chat_list.html' %}
+    </div>
+</div>
+
+<div class="messages-container">
+    <div class="row-block">
+        <div>
+            <img src="{% static 'chat_app/icons/people.svg' %}" alt="">
+            <p class="label-icon">Групові чати</p>
+        </div>
+        <p class="text-all">Дивитись всі</p>
+    </div>
+
+    <div class="content-chats">
+        {% include 'chat_app/particles/chat_sections/chat_list.html' with chats=group_chats %}
+    </div>
+</div>

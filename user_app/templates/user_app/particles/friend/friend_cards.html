@@ -11,10 +11,14 @@
             </div>
             <div class="buttons-container">
                 {% if section == "requests" %}
-                    <button type="button" data-friend-action data-url="{% url 'friend_action' user.id 'accept' %}">Підтвердити</button>
+                    <button type="button" class="open-profile-btn" data-user-id="{{ user.id }}" data-section="{{ section }}">
+                        Підтвердити
+                    </button>
                     <button type="button" data-friend-action data-url="{% url 'friend_action' user.id 'delete' %}">Відхилити</button>
                 {% elif section == "recommendations" %}
-                    <button type="button">Додати</button>
+                   <button type="button" class="open-profile-btn" data-user-id="{{ user.id }}" data-section="{{ section }}">
+                        Додати
+                    </button>
                     <button type="button" data-friend-action data-url="{% url 'friend_action' user.id 'dismiss' %}">Видалити</button>
                 {% else %}
                     <button type="button">Повідомлення</button>
@@ -26,4 +30,3 @@
 {% empty %}
     <p class="empty-note">Немає користувачів у цьому блоці.</p>
 {% endfor %}
-        

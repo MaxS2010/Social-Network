@@ -1,24 +1,46 @@
-const url = `ws://${window.location.host}/chat/`
-const chatSocket = new WebSocket(url)
+import { getCSRFToken, showErrors } from '/static/user_app/js/utils.js'
 
-chatSocket.onmessage = function(event){
-    const data = JSON.parse(event.data)
-    // console.log(data.type)
-    if (data.type == 'chat'){
-        console.log(2)
-        const text = document.createElement('h4')
-        text.innerHTML = data.message
-        document.querySelector('#message-container').append(text)
+let chatSocket = null
+const chatTitle = document.getElementById("chat-title")
+const chatStatus = document.getElementById("chat-status")
+const chatButttons = document.querySelectorAll("[data-chat-user]")
+
+function connectWebSocket(chatId) {
+    if (chatSocket) {
+        chatSocket.close()
+    }
+
+    chatSocket = new WebSocket(
+        `ws://${window.location.host}/chat/${chatId}/`
+    )
+
+    chatSocket.onmessage = function(event) {
+        const data = JSON.parse(event.data)
+        chatStatus.textContent = data.onmessage
     }
 }
 
-const form = document.querySelector("#form-chat")
-const input = form.querySelector("#message-id")
-console.log(form)
-form.addEventListener("submit", (event) =>{ 
-    event.preventDefault()
-    chatSocket.send(JSON.stringify({
-        message: input.value
-    }))
-    input.value = ""
+async function openChatWithUser(userId, username) {
+    const response = await fetch(`/chat/chat_with/${userId}/`, {
+        method: 'POST',
+        headers: {
+            "X-CSRFToken": getCSRFToken(),
+        }
+    })
+    const data = await response.json()
+    if (!data.success) {
+        // showErrors(data.errors)
+        return
+    }
+    chatTitle.textContent = `Чат з ${data.username || username}`
+    connectWebSocket(data.chat_id)
+}
+
+chatButttons.forEach(function(button){
+    button.addEventListener(
+        "click", 
+        async function() {
+            await openChatWithUser(button.dataset.chatUser, button.dataset.chatUsername)
+        }
+    )
 })

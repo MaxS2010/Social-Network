@@ -9,6 +9,8 @@ from django.shortcuts import redirect
 from django.template.loader import render_to_string
 from django.core.paginator import Paginator
 
+from post_app.models import Post
+
 
 from .models import Friendship, User
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -238,3 +240,24 @@ class FriendActionView(LoginRequiredMixin, View):
             return JsonResponse(action_result)
         
         return JsonResponse(delete_friendship(request.user, other_user))
+    
+class FriendProfileView(LoginRequiredMixin, View):
+    def get(self, request, user_id, *args, **kwargs):
+
+        profile_user = User.objects.get(id= user_id)
+        section = request.GET.get("section")
+        posts = Post.objects.filter(author= profile_user)
+
+        html = render_to_string(
+            "user_app/particles/friend/profile_content.html",
+            {
+                "profile_user": profile_user,
+                "section": section,
+                "posts": posts,
+            },
+            request=request
+        )
+
+        return JsonResponse({
+            "html": html
+        })

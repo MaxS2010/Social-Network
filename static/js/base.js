@@ -6,6 +6,8 @@ for (let link of urlLinks) {
     if (link.href === window.location.href) {
         link.style.backgroundColor = '#E9E5EE'
         link.style.cursor = 'default'
+        link.style.borderRadius = "3px"
+        link.style.padding = "4px 8px 4px 8px"
         link.addEventListener('click', function(event) {
             event.preventDefault()
         })
