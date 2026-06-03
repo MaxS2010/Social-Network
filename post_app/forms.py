@@ -4,7 +4,7 @@ from PIL import Image
 from django import forms
 from django.core.files.base import ContentFile
 
-from post_app.models import Post, Tag, PostLinks, PostImage, PostView
+from post_app.models import Post, Tag, PostLink, PostImage, PostView
 
 
 MAX_COMPRESSED_IMAGE_SIZE = 5 * 1024 * 1024  # 5MB
@@ -130,7 +130,7 @@ class PostCreationForm(forms.ModelForm):
             
             
             for url in self.links_list:
-                PostLinks.objects.create(post= post, url= url)
+                PostLink.objects.create(post= post, url= url)
             for image in self.images_list:
                 PostImage.objects.create(
                     post= post,

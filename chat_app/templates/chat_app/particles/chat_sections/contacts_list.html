@@ -1,7 +1,7 @@
 {% load static %}
 
 {% for contact in contacts %}
-    <div class="people-contact" data-user-id="{{ contact.id }}">
+    <div class="people-contact" data-user-id="{{ contact.id }}" data-chat-user="{{ contact.id }}" data-chat-username="{{ contact.email }}" style="cursor: pointer;">
         {% if contact.profile.avatar %}
             <img src="{{ contact.profile.avatar.url }}" alt="">
         {% else %}

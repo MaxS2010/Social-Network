@@ -3,29 +3,20 @@
 
     <div class="buttons-container">
         {% if section == "requests" %}
-            <button type="button" data-friend-action data-url="{% url 'friend_action' profile_user.id 'accept' %}" data-section="{{ section }}">
+            <button type="button" data-friend-action data-url="{% url 'friend_action' user.id 'accept' %}">
                 Підтвердити
             </button>
     
-            <button type="button" data-friend-action data-url="{% url 'friend_action' profile_user.id 'delete' %}">
+            <button type="button" data-friend-action data-url="{% url 'friend_action' user.id 'delete' %}">
                 Відхилити
             </button>
     
         {% elif section == "recommendations" %}
-            <button type="button" data-friend-action data-url="{% url 'friend_action' profile_user.id 'add' %}" data-section="{{ section }}">
+            <button type="button" data-friend-action data-url="{% url 'friend_action' user.id 'add' %}">
                 Додати
             </button>
     
-            <button type="button" data-friend-action data-url="{% url 'friend_action' profile_user.id 'dismiss' %}">
-                Видалити
-            </button>
-    
-        {% elif section == "friends" %}
-            <button type="button">
-                Повідомлення
-            </button>
-    
-            <button type="button" data-friend-action data-url="{% url 'friend_action' profile_user.id 'delete' %}" >
+            <button type="button" data-friend-action data-url="{% url 'friend_action' user.id 'dismiss' %}">
                 Видалити
             </button>
         {% endif %}

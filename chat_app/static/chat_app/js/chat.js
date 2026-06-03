@@ -11,6 +11,7 @@ document.getElementById("next-create").addEventListener("click", function() {
     document.querySelector(".group-container").style.display = "flex"
 })
 
+
 document.querySelectorAll(".close-cross-container").forEach(btn => {
     btn.addEventListener("click", function () {
         const group = this.closest(".group")
@@ -19,4 +20,20 @@ document.querySelectorAll(".close-cross-container").forEach(btn => {
             group.style.display = "none"
         }
     })
+})
+
+document.getElementById("cancel-create").addEventListener("click", function() {
+    const group = this.closest(".group")
+    document.querySelector(".group-container").style.display = "none"
+    if (group) {
+        group.style.display = "none"
+    }
+})
+
+document.getElementById("back-to-add-member").addEventListener("click", function() {
+    const group = this.closest(".group")
+    if (group) {
+        group.style.display = "none"
+    }
+    document.getElementById("create-group").style.display = "flex"
 })

@@ -25,7 +25,9 @@ urlpatterns = [
     path(route= "home/", view= include("home_app.urls")),
     path(route= "post/", view= include("post_app.urls")),
     path(route= "chat/", view= include("chat_app.urls")),
+    path(route= "profile/", view= include("profile_app.urls")),
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root= settings.MEDIA_ROOT)
+

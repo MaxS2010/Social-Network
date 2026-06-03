@@ -4,8 +4,9 @@ class MessageForm(forms.Form):
     message = forms.CharField(
         max_length= 100,
         required= True,
+        label= "", 
         widget= forms.TextInput(attrs= {
-            'placeholder': 'Type your message',
+            'placeholder': 'Повідомлення',
             'id': 'message-id'
         })
     )

@@ -62,7 +62,7 @@ class UserRegisterForm(forms.ModelForm):
     
     def save(self, commit: bool = True) -> Any:
         user = super().save(commit= False)
-        user.username = ''
+        # user.username = ''
         user.set_password(self.cleaned_data['password1'])
         if commit:
             user.save()

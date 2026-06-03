@@ -101,6 +101,6 @@ class ChatWithView(LoginRequiredMixin, View):
             {
                 "success": True,
                 "chat_id": chat.id, # type: ignore
-                "username": other_user.email
+                "username": other_user.username
             }   
         )

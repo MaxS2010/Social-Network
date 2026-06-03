@@ -21,7 +21,7 @@ class Tag(models.Model):
     def __str__(self):
         return self.name
     
-class PostLinks(models.Model):
+class PostLink(models.Model):
     post = models.ForeignKey(
         to = Post,
         on_delete= models.CASCADE,
@@ -53,4 +53,26 @@ class PostView(models.Model):
         to= Post,
         on_delete= models.CASCADE,
         related_name= "views"
+    )
+
+class PostLike(models.Model):
+    user = models.ForeignKey(
+        to= settings.AUTH_USER_MODEL,
+        on_delete= models.CASCADE
+    )
+    post = models.ForeignKey(
+        to= Post,
+        on_delete= models.CASCADE,
+        related_name= "likes"
+    )
+
+class PostHeart(models.Model):
+    user = models.ForeignKey(
+        to= settings.AUTH_USER_MODEL,
+        on_delete= models.CASCADE
+    )
+    post = models.ForeignKey(
+        to= Post,
+        on_delete= models.CASCADE,
+        related_name= "hearts"
     )

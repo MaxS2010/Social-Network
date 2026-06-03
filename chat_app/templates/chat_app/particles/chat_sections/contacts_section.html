@@ -16,8 +16,10 @@
         <input type="text" placeholder="Пошук">
     </div>
     <div class="contacts-scroll">
-        <div id="contactsContainer" class="contacts-container-list"></div>
+        <div id="contactsContainer" class="contacts-container-list">
+            {% include "chat_app/particles/chat_sections/contacts_list.html" %}
+            
+        </div>
         <div id="contactsSentinel" style="height: 1px;display: block;" ></div>
     </div>
-    
 </div>

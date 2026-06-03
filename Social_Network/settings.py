@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+import sys
+from django import db
 import environ
 import os
 
@@ -52,6 +54,7 @@ INSTALLED_APPS = [
     'chat_app',
     "post_app",
     "home_app",
+    'profile_app',
 ]
 
 AUTH_USER_MODEL = 'user_app.User'
@@ -77,6 +80,7 @@ TEMPLATES = [
             BASE_DIR / "user_app" / "templates",
             BASE_DIR / "post_app" / "templates",
             BASE_DIR / 'chat_app' / 'templates',
+            BASE_DIR / "profile_app" / "templates",
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -109,11 +113,50 @@ CHANNEL_LAYERS = {
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
+# if 'migrate' in sys.argv and db == 'remote':
+#     print("Error: Прямі міграції на віддаленій базі даних ЗАБОРОНЕНО!")
+#     sys.exit(1)
+
+import django.db.backends.postgresql.base as pg_base
+if hasattr(pg_base, 'DatabaseWrapper'):
+    pg_base.DatabaseWrapper.pg_version = property(lambda self: 140000) # type: ignore
+
+ALL_DATABASES = {
+    'sqlite': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+    },
+    'rlocal': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env("DATABASE_NAME"),
+        'USER': env("DATABASE_USER"),
+        'PASSWORD': env("DATABASE_PASSWORD"),
+        'HOST': '127.0.0.1',
+        'PORT': '53134',
+        'OPTIONS': {
+            'target_session_attrs': 'any',
+        },
+    },
+    'remote': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env("DATABASE_NAME"),
+        'USER': env("DATABASE_USER"),
+        'PASSWORD': env("DATABASE_PASSWORD"),
+        'HOST': env("DATABASE_HOST"),
+        'PORT': env("DATABASE_PORT"),
+        'OPTIONS': {
+            'target_session_attrs': 'any',
+        },
     }
+}
+
+DB_MODE = env("DB_MODE", "sqlite")
+
+if DB_MODE not in ALL_DATABASES:
+    raise ValueError(f"Невідомий режим бази даних: {DB_MODE}. Доступні режими: {', '.join(ALL_DATABASES.keys())}")
+
+DATABASES = {
+    'default': ALL_DATABASES[DB_MODE] # type: ignore
 }
 
 
@@ -157,7 +200,8 @@ STATICFILES_DIRS = [
     BASE_DIR / 'home_app' / 'static',
     BASE_DIR / 'user_app' / 'static',
     BASE_DIR / 'post_app' / 'static',
-    BASE_DIR / 'chat_app' / 'static',                
+    BASE_DIR / 'chat_app' / 'static',
+    BASE_DIR / 'profile_app' / 'static',
 ]
 
 MEDIA_URL = 'media/'

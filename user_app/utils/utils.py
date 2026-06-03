@@ -23,10 +23,11 @@ User = get_user_model()
 def del_user():
     User.objects.filter(email__startswith="user").delete()
 
+
 def create_random_users_with_friendships(
     target_user_id=27,
     users_count=10,
-    without_friendship_ratio=1.0,
+    without_friendship_ratio=0.2,
 ):
 
     target_user = User.objects.filter(id=target_user_id).first()
@@ -47,6 +48,8 @@ def create_random_users_with_friendships(
             email=f"user{i}_{random_suffix}@test.com",
             password="test12345",
             username=f"user_{i}_{random_suffix}",
+            first_name = f"name_{i}",
+            last_name = f"lastname_{random_suffix}",
             is_profile_complete=True,
         )
 

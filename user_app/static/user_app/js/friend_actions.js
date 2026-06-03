@@ -5,23 +5,19 @@ const csrfToken = getCSRFToken()
 const homeFriendsList = document.querySelector('[data-home-section= "friends"]')
 
 async function handlerFriendAction(actionButton) {
-    const responce = await fetch(actionButton.dataset.url, {
+
+    const response = await fetch(actionButton.dataset.url, {
         method: 'POST',
         headers: {
             'X-CSRFToken': csrfToken,
         },
     })
-    const data = await responce.json()
 
-    if (data.friend_html){
-        addFriendToHome(data.friend_html)
-    }
-    if (data.label){
-        actionButton.textContent = data.label
-    }
+    const data = await response.json()
 
-    if (data.remove){ 
-        actionButton.closest('article').remove()
+    if (data.success && data.redirect_url) {
+        window.location.href = data.redirect_url
+        return
     }
 }
 
@@ -54,3 +50,14 @@ function connectFRiendActionButtons(parent = document) {
 window.connectFRiendActionButtons = connectFRiendActionButtons
 
 connectFRiendActionButtons()
+
+const profileContainer = document.querySelector(".profile-container")
+const profileContent = document.getElementById("profileContent")
+
+function closeProfile() {
+    profileContainer.style.display = "none"
+    profileContent.innerHTML = ""
+    
+    document.getElementById("friends-home").style.display = "flex"
+    document.querySelector(".friends-nav-content").style.display = "flex"
+}

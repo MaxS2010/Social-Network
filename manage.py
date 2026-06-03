@@ -3,10 +3,14 @@
 import os
 import sys
 
+from Social_Network.tunnel import start_ssh_tunnel
+
 
 def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Social_Network.settings')
+    if os.environ.get('RUN_MAIN') == 'true':
+        start_ssh_tunnel()
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

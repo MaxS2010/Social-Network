@@ -1,19 +1,18 @@
 from time import time
 from typing import Any
 from django.contrib.auth import authenticate, login, logout
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.views.generic.base import TemplateView
 from django.views import View
 from django.http import HttpRequest, JsonResponse
 from django.shortcuts import redirect
 from django.template.loader import render_to_string
 from django.core.paginator import Paginator
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 from post_app.models import Post
-
-
 from .models import Friendship, User
-from django.contrib.auth.mixins import LoginRequiredMixin
 
 from .services import confirm_user
 from .forms import UserExpandInfoForm, UserRegisterForm, UserLoginForm, UserConfirmForm
@@ -159,14 +158,12 @@ class LogoutView(View):
         else:
             return redirect(request.META.get('HTTP_REFERER', 'home'))
 
-class SettingsView(TemplateView):
-    template_name = 'user_app/settings.html'
-
 class FriendsView(LoginRequiredMixin, TemplateView):
     model = Friendship
     template_name = 'user_app/friends.html'
 
     def get_context_data(self, **kwargs):
+        # create_random_users_with_friendships(target_user_id=34, users_count= 10, without_friendship_ratio= 0.01) 
         context = super().get_context_data(**kwargs)
         context["sections"] = {
             "requests": {
@@ -175,7 +172,7 @@ class FriendsView(LoginRequiredMixin, TemplateView):
             },
             "recommendations": {
                 "title": "Рекомендації",
-                "users": get_users_by_section(self.request.user, "recommendations")[:7],
+                "users": get_users_by_section(self.request.user, "recommendations")[:6],
             },
             "friends": {
                 "title": "Всі друзі",
@@ -186,9 +183,7 @@ class FriendsView(LoginRequiredMixin, TemplateView):
     
         return context
 
-
 class FriendsSectionView(FriendsView):
-    # create_random_users_with_friendships()
     SECTION_TITLES = {
         "requests": "Запити",
         "recommendations": "Рекомендації",
@@ -220,38 +215,39 @@ class FriendsSectionView(FriendsView):
 
 class FriendActionView(LoginRequiredMixin, View):
     login_url = reverse_lazy('auth')
-    
+
     def post(self, request, user_id, action, *args, **kwargs):
-        other_user = User.objects.get(id= user_id)
-        
+
+        other_user = User.objects.get(id=user_id)
+
         if action == 'add':
-            return JsonResponse(add_friend_request(request.user, other_user))
+            add_friend_request(request.user, other_user)
+
         if action == 'dismiss':
-            return JsonResponse(dismiss_recommendation(request.user, other_user))
+            dismiss_recommendation(request.user, other_user)
+
         if action == 'accept':
-            action_result = accept_friend_request(request.user, other_user)
-            action_result['friend_html'] = render_to_string(
-                'user_app/particles/friend/friend_cards.html',
-                {'users': [action_result['friend']], 'section': 'friends'},
-                request= request
-            )
-            del action_result['friend']
-            
-            return JsonResponse(action_result)
-        
-        return JsonResponse(delete_friendship(request.user, other_user))
-    
+            accept_friend_request(request.user, other_user)
+
+        if action == 'delete':
+            delete_friendship(request.user, other_user)
+
+        return JsonResponse({
+            "success": True,
+            "redirect_url": reverse("friends")
+        })
+
 class FriendProfileView(LoginRequiredMixin, View):
     def get(self, request, user_id, *args, **kwargs):
 
-        profile_user = User.objects.get(id= user_id)
+        user = User.objects.get(id= user_id)
         section = request.GET.get("section")
-        posts = Post.objects.filter(author= profile_user)
+        posts = Post.objects.filter(author= user)
 
         html = render_to_string(
             "user_app/particles/friend/profile_content.html",
             {
-                "profile_user": profile_user,
+                "user": user,
                 "section": section,
                 "posts": posts,
             },

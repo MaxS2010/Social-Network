@@ -49,11 +49,20 @@
     justify-content: center;
     align-items: center;
 
-    width: 6.7vw;
+    width: 100%;
+    /* width: 6.7vw; */
     height: 5vh;
+
+    gap: 1vh;
 }
 
 .profile-name h3 {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
     font-size: 2.5vh;
     color: rgba(7, 10, 28, 1);
 }

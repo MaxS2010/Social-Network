@@ -4,13 +4,16 @@
     </section>
 
     <section class="messages-section">
-        <div class="message-info-container">
+        <div class="message-info-container" id="message-info-container">
             <h1>Почніть нове спілкування</h1>
             <p>
                 Оберіть контакт зі списку ліворуч
                 <br>
                 або створіть групу, щоб почати спілкування
             </p>
+        </div>
+        <div id="messages-container" style="display: none;">
+            {% include 'chat_app/particles/chat_sections/chat_main.html' %}
         </div>
     </section>
 
