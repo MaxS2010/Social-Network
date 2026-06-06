@@ -5,6 +5,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator
 from django.template.loader import render_to_string
 from django.contrib.auth import get_user_model
+from django.db.models import CharField, DateTimeField, OuterRef, Subquery
 
 from .models import Chat, Message
 from user_app.utils.friend_queries import get_users_by_section
@@ -34,7 +35,18 @@ class ChatView(
         context["contacts"] = paginator.get_page(1)
 
         context["form"] = MessageForm()
-        context["personal_chats"] = Chat.objects.filter(users= self.request.user, is_group= False).order_by("id")
+
+        last_message = Message.objects.filter(chat=OuterRef('pk')).order_by('-created_at')
+
+        context["personal_chats"] = Chat.objects.filter(users=self.request.user, is_group=False).annotate(
+            last_message_text=Subquery(last_message.values('text')[:1], output_field=CharField()),
+            last_message_time=Subquery(last_message.values('created_at')[:1], output_field=DateTimeField()),
+        ).order_by('id')
+
+        context["group_chats"] = Chat.objects.filter(users=self.request.user, is_group=True).annotate(
+            last_message_text=Subquery(last_message.values('text')[:1], output_field=CharField()),
+            last_message_time=Subquery(last_message.values('created_at')[:1], output_field=DateTimeField()),
+        ).order_by('id')
 
         return context
     
@@ -97,10 +109,21 @@ class ChatWithView(LoginRequiredMixin, View):
             chat.users.add(request.user)
             chat.users.add(other_user)
 
+        messages = [
+            {
+                "sender": message.sender.username,
+                "text": message.text,
+                "datetime": message.created_at.isoformat(),
+            }
+            for message in chat.messages.select_related('sender').order_by('created_at') # type: ignore
+        ]
+
         return JsonResponse(
             {
                 "success": True,
                 "chat_id": chat.id, # type: ignore
-                "username": other_user.username
+                "username": other_user.username,
+                "current_user": request.user.username,
+                "messages": messages,
             }   
         )

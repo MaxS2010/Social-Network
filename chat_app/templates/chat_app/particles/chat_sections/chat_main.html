@@ -7,23 +7,20 @@
         <h2 id="chat-status"></h2>
     </div>   
     <div class="chat-messages" id="message-container">
-        <div id="messages-container">
-            <!-- %{ for message im messages %}
-                <p></p>
-            %{ endfor %} -->
-
+        <div class="messages-users-container" id="messages-users-container">
+            
         </div>
 
         <form method="post" id="form-chat" class="form-chat">
             {% csrf_token %}
             {{ form.as_p }}
-        <div class = "images">    
-            <label for="send-button">
-                <img src="{% static  'chat_app/icons/img-button.svg' %}" alt="">
-                <img src="{% static  'chat_app/icons/send.svg' %}">
-            </label>
-            <input type="submit" name="send-button" id="send-button" style="display: none;">
-        </div>
+            <div class="images">    
+                <label for="send-button">
+                    <img src="{% static  'chat_app/icons/img-button.svg' %}" alt="">
+                    <img src="{% static  'chat_app/icons/send.svg' %}">
+                </label>
+                <input type="submit" name="send-button" id="send-button" style="display: none;">
+            </div>
         </form>
     </div>
 </div>

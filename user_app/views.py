@@ -112,7 +112,7 @@ class LoginView(View):
 
             return JsonResponse({
                 'success': True,
-                'is_profile_complete': user.is_profile_complete, # type: ignore
+                'is_profile_complete': bool(user.username),
             })
         
         else:
@@ -137,7 +137,6 @@ class ExpandInfoView(View):
 
         if form.is_valid():
             user = form.save(commit=False)
-            user.is_profile_complete = True
             user.save()
 
             return JsonResponse({

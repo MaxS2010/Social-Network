@@ -22,7 +22,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.send(text_data= json.dumps(
             {
                 "type": "connection_established",
-                "message": f"Зв`язок з {username} встановлено",
+                # "message": f"{username}",
                 "username": username
             }
         ))

@@ -3,7 +3,7 @@ import { getCSRFToken, showErrors } from '/static/user_app/js/utils.js'
 let chatSocket = null
 const chatTitle = document.getElementById("chat-title")
 const chatStatus = document.getElementById("chat-status")
-const messagesContainer = document.getElementById("messages-container")
+const messagesContainer = document.getElementById("messages-users-container")
 // const chatButttons = document.querySelectorAll("[data-chat-user]")
 
 const ChatForm = document.getElementById("form-chat")
@@ -20,10 +20,18 @@ function connectWebSocket(chatId) {
 
     chatSocket.onmessage = function(event) {
         const data = JSON.parse(event.data)
-        chatStatus.textContent = data.onmessage
+
+        if (data.type === "connection_established") {
+            chatStatus.textContent = data.message
+            return
+        }
+
+        chatStatus.textContent = ""
         renderMessage(data)
     }
 }
+
+let currentUserUsername = null
 
 async function openChatWithUser(userId, username) {
     const response = await fetch(`/chat/chat_with/${userId}/`, {
@@ -42,19 +50,47 @@ async function openChatWithUser(userId, username) {
         document.querySelector("#messages-container").style.display = "flex"
     }
     chatTitle.textContent = `Чат з ${data.username || username}`
+    currentUserUsername = data.current_user
     connectWebSocket(data.chat_id)
+    renderMessages(data.messages || [])
 }
 
-document.getElementById('contactsContainer').addEventListener("click", async function(event) {
-    const button = event.target.closest("[data-chat-user]")
+const contactsContainer = document.getElementById('contactsContainer')
+const chatsSection = document.querySelector('.chats-section')
 
-    if (!button) return
+function setActiveChat(element) {
+    document.querySelectorAll('.content-chats .container-chat.active').forEach(chat => {
+        chat.classList.remove('active')
+    })
 
-    await openChatWithUser(
-        button.dataset.chatUser,
-        button.dataset.chatUsername
-    )
-})
+    if (element) {
+        element.classList.add('active')
+    }
+}
+
+function handleChatOpen(event) {
+    const target = event.target.closest('[data-chat-user]') || event.target.closest('.container-chat')
+    if (!target) return
+
+    const chatItem = target.closest('.container-chat')
+    if (chatItem) {
+        setActiveChat(chatItem)
+    }
+
+    const userId = target.dataset.chatUser
+    const username = target.dataset.chatUsername
+    if (!userId) return
+
+    openChatWithUser(userId, username)
+}
+
+if (contactsContainer) {
+    contactsContainer.addEventListener("click", handleChatOpen)
+}
+
+if (chatsSection) {
+    chatsSection.addEventListener("click", handleChatOpen)
+}
 
 ChatForm.addEventListener("submit", function(event) {
     event.preventDefault()
@@ -62,17 +98,37 @@ ChatForm.addEventListener("submit", function(event) {
     const formData = new FormData(ChatForm)
     const fromObject = Object.fromEntries(formData)
     chatSocket.send(JSON.stringify(fromObject))
+    ChatForm.reset()
 })
 
 function renderMessage(message) {
+    const sender = message.message ? message.message.sender : message.sender
+    const datetime = message.message ? message.message.datetime : message.datetime
+    const text = message.message ? message.message.text : message.text
+
     const messageElement = document.createElement("div")
     messageElement.classList.add("message")
+    
+    // Add class based on who sent the message
+    if (sender === currentUserUsername) {
+        messageElement.classList.add("message-sent")
+    } else {
+        messageElement.classList.add("message-received")
+    }
+    
     messageElement.innerHTML = `
-        <div class="message-header">
-            <p class="message-sender">${message.message.sender}</p>
-            <p class="message-datetime">${new Date(message.message.datetime).toLocaleTimeString()}</p>
+        <div class="message-content">
+            <p class="message-sender">${sender}</p>
+            <div class="message-text-time">
+                <div class="message-text">${text}</div>
+                <p class="message-datetime">${new Date(datetime).toLocaleTimeString('uk-UA', { hour: '2-digit', minute: '2-digit' })}</p>
+            </div>
         </div>
-        <div class="message-text">${message.message.text}</div>
     `
     messagesContainer.appendChild(messageElement)
+}
+
+function renderMessages(messages) {
+    messagesContainer.innerHTML = ""
+    messages.forEach(message => renderMessage(message))
 }

@@ -1,3 +1,4 @@
+import sys
 import paramiko
 from sshtunnel import SSHTunnelForwarder
 from django.db import connections
@@ -14,6 +15,10 @@ def start_ssh_tunnel():
         return
 
     db_engine= connections.settings["default"]['ENGINE']
+
+    if 'migrate' in sys.argv and 'sqlite3' not in db_engine:
+        print("Error: Прямі міграції на віддаленій базі даних ЗАБОРОНЕНО!")
+        sys.exit(1)
 
     if 'sqlite3' in db_engine:
         print(f"[SSH] База даних використовує SQLite, тунель не потрібен.")
@@ -39,7 +44,7 @@ def start_ssh_tunnel():
             
             db_conn = connections["default"]
             db_conn.cursor()
-            print("\n[УСПІХ] Бекенд Django успішно підключився до DataBase")
+            print("[УСПІХ] Бекенд Django успішно підключився до DataBase")
             
         except Exception as e:
             print(f"[SSH ПОМИЛКА]: Не вдалося відкрити тунель: {e}")

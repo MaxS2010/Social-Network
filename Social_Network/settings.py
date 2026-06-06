@@ -11,8 +11,6 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
-import sys
-from django import db
 import environ
 import os
 
@@ -113,10 +111,6 @@ CHANNEL_LAYERS = {
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-# if 'migrate' in sys.argv and db == 'remote':
-#     print("Error: Прямі міграції на віддаленій базі даних ЗАБОРОНЕНО!")
-#     sys.exit(1)
-
 import django.db.backends.postgresql.base as pg_base
 if hasattr(pg_base, 'DatabaseWrapper'):
     pg_base.DatabaseWrapper.pg_version = property(lambda self: 140000) # type: ignore
@@ -150,13 +144,13 @@ ALL_DATABASES = {
     }
 }
 
-DB_MODE = env("DB_MODE", "sqlite")
+DB_MODE = str(env("DB_MODE", default= "sqlite"))  # type: ignore
 
 if DB_MODE not in ALL_DATABASES:
     raise ValueError(f"Невідомий режим бази даних: {DB_MODE}. Доступні режими: {', '.join(ALL_DATABASES.keys())}")
 
 DATABASES = {
-    'default': ALL_DATABASES[DB_MODE] # type: ignore
+    'default': ALL_DATABASES[DB_MODE]
 }
 
 

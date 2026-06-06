@@ -19,7 +19,7 @@ class HomeView(LoginRequiredMixin, TemplateView):
 
         user = self.request.user
 
-        if user.is_authenticated and not user.is_profile_complete: # type: ignore
+        if user.is_authenticated and not user.username: # type: ignore
             context['form_info'] = UserExpandInfoForm(
                 instance= user # type: ignore
             )

@@ -1,26 +1,56 @@
 {% for chat in chats %}
-    <div class="container-chat" data-chat-id="{{ chat.id }}">
-        {% if chat.avatar %}
-            <img src="{{ chat.avatar.url }}" alt="">
-        {% endif %}
-
-        <div class="chat-info">
-            <div>
-                <h2>
-                    {{ chat.name }}
-                </h2>
-                <h3>
-                    {{ chat.last_message_text|default:"Немає повідомлень" }}
-                </h3>
-            </div>
-            <div>
-                <p>
-                    {{ chat.last_message_time }}
-                </p>
+    {% if chat.is_group %}
+        <div class="container-chat" data-chat-id="{{ chat.id }}">
+            {% if chat.avatar %}
+                <img src="{{ chat.avatar.url }}" alt="">
+            {% endif %}
+            <div class="chat-info">
+                <div>
+                    <h2>{{ chat.name|default:"Груповий чат" }}</h2>
+                    <h3>{{ chat.last_message_text|default:"Немає повідомлень" }}</h3>
+                </div>
+                <div>
+                    <p>{{ chat.last_message_time|date:"H:i" }}</p>
+                </div>
             </div>
         </div>
-    </div>
+    {% else %}
+        {% for user in chat.users.all %}
+            {% if user != request.user %}
+                <div class="container-chat" data-chat-id="{{ chat.id }}" data-chat-user="{{ user.id }}" data-chat-username="{{ user.username }}">
+                    {% if user.profile.avatar %}
+                        <img src="{{ user.profile.avatar.url }}" alt="">
+                    {% endif %}
+                    <div class="chat-info">
+                        <div>
+                            <h2>{{ user.username }}</h2>
+                            <h3>{{ chat.last_message_text|default:"Немає повідомлень" }}</h3>
+                        </div>
+                        <div>
+                            <p>{{ chat.last_message_time|date:"H:i" }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+        {% empty %}
+            <div class="container-chat" data-chat-id="{{ chat.id }}">
+                <div class="chat-info">
+                    <div>
+                        <h2>Особистий чат</h2>
+                        <h3>{{ chat.last_message_text|default:"Немає повідомлень" }}</h3>
+                    </div>
+                    <div>
+                        <p>{{ chat.last_message_time|date:"H:i" }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% endif %}
 
     {% empty %}
-        <p>Тут ще нічого немає</p>
+        {% if show_contacts %}
+            {% include 'chat_app/particles/chat_sections/contacts_list.html' with contacts=contacts %}
+        {% else %}
+            <p>Тут ще нічого немає</p>
+        {% endif %}
 {% endfor %}

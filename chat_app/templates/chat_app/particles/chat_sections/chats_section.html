@@ -10,7 +10,7 @@
     </div>
 
     <div class="content-chats">
-        {% include 'chat_app/particles/chat_sections/chat_list.html' %}
+        {% include 'chat_app/particles/chat_sections/chat_list.html' with chats=personal_chats show_contacts=True %}
     </div>
 </div>
 
@@ -24,6 +24,6 @@
     </div>
 
     <div class="content-chats">
-        {% include 'chat_app/particles/chat_sections/chat_list.html' with chats=group_chats %}
+        {% include 'chat_app/particles/chat_sections/chat_list.html' with chats=group_chats show_contacts=False %}
     </div>
 </div>

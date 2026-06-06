@@ -10,14 +10,13 @@
     border-radius: 1px;
 }
 
-
 .chat-header{
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: flex-start;
 
-    width: 36.9vw;
+    width: 100%;
     height: 5.9vh;
 
     padding-bottom: 10px;
@@ -25,6 +24,35 @@
     gap: 0.7vw;
 }
 
+.messages-users{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.chat-messages{
+    display: flex !important;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    width: 100%;
+
+    gap: 24px;
+}
+
+.messages-users-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    width: 100%;
+    gap: 24px;
+    max-height: 650px;
+    overflow-y: auto;
+}
 
 .form-chat{
     display: flex;
@@ -43,7 +71,17 @@
     flex-direction: row;
     justify-content: flex-end;
     align-items: flex-end;
+}
 
+.images{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: flex-end;
+
+    width: 10.5vw;
+    height: 4vh;
+    gap: 16px;
 }
 
 .form-chat p input{
@@ -56,13 +94,64 @@
     border-color:#CDCED2;
 }
 
-.images{
-    font-display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    align-items: flex-end;
+.message {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-width: 60%;
+    word-wrap: break-word;
+    position: relative;
+    padding-bottom: 20px;
+}
 
-    width: 10.5vw;
-    height: 4vh;
-    gap: 16px;
+.message-sent {
+    align-self: flex-end;
+    background-color: #CDCED2;
+    padding: 12px 16px;
+    border-radius: 12px;
+}
+
+.message-received {
+    align-self: flex-start;
+    background-color: transparent;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid #E9E5EE;
+}
+
+.message-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.message-sender {
+    font-weight: 600;
+    margin: 0;
+    font-size: 12px;
+    color: #666;
+}
+
+.message-text-time {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+.message-datetime {
+    font-size: 11px;
+    color: #999;
+    margin: 0;
+    white-space: nowrap;
+    position: absolute;
+    bottom: 4px;
+    right: 12px;
+}
+
+.message-text {
+    font-size: 14px;
+    color: #333;
+    word-wrap: break-word;
+    margin: 0;
+    padding-right: 40px;
 }

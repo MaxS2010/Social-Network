@@ -2,7 +2,7 @@
 {% comment %}Partial: renders a list of user cards. Expects `users` and `section` in context.{% endcomment %}
 
 {% for user in users %}
-    {% if user.is_profile_complete %}
+    {% if user.username %}
         <article class="friend-card">
             <img src="{% static 'user_app/icons/User1.png' %}" alt="User">
             <div class="friend-info">

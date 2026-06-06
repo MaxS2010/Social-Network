@@ -50,7 +50,6 @@ def create_random_users_with_friendships(
             username=f"user_{i}_{random_suffix}",
             first_name = f"name_{i}",
             last_name = f"lastname_{random_suffix}",
-            is_profile_complete=True,
         )
 
         created_users.append(user)

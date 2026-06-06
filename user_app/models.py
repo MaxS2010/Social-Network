@@ -14,10 +14,6 @@ class User(AbstractUser):
         unique= True
     )
 
-    is_profile_complete = models.BooleanField(
-        default=False
-    )
-
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
 
