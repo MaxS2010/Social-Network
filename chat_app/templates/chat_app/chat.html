@@ -23,7 +23,10 @@
 {% endblock content %}
 
 {% block scripts %}
-    <script src="{% static 'chat_app/js/chat.js' %} "></script>
-    <script src="{% static 'chat_app/js/contacts_list.js' %} "></script>
-    <script type="module" src="{% static 'chat_app/js/chat_ws.js' %} "></script>
+    <script type="module" src="{% static 'chat_app/js/chat.js' %}"></script>
+    <script type="module" src="{% static 'chat_app/js/contacts_list.js' %}"></script>
+    <script type="module" src="{% static 'chat_app/js/modal_create.js' %}"></script>
+    <script type="module" src="{% static 'chat_app/js/chat_ws.js' %}"></script>
+    <script type="module" src="{% static 'chat_app/js/presence_ws.js' %}"></script>
+    <script type="module" src="{% static 'chat_app/js/localstorage_cache.js' %}"></script>
 {% endblock scripts %}

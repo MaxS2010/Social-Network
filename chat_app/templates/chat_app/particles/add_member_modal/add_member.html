@@ -4,52 +4,13 @@
     <div class="search-input-container"><img src="{% static 'chat_app/icons/search.svg' %}" alt=""><input type="text" placeholder="Пошук"></div>
 
     <div class="select-container">
-        <p>Вибрано: 3</p>
+        <p id="selected-count">Вибрано: 0</p>
     </div>
 
     <div class="members-list">
-        <div class="members-continer">
-            <p>A</p>
-            <div class="card-member">
-                <div class="img-block"><img src="{% static 'user_app/icons/User1.png' %}" alt=""></div>
-                <div class="member-info">
-                    <h1>Аeslie Alexander</h1>
-                </div>
-            </div>
-            <div class="card-member">
-                <div class="img-block"><img src="{% static 'user_app/icons/User1.png' %}" alt=""></div>
-                <div class="member-info">
-                    <h1>Аeslie Alexander</h1>
-                </div>
-            </div>
-            <div class="card-member">
-                <div class="img-block"><img src="{% static 'user_app/icons/User1.png' %}" alt=""></div>
-                <div class="member-info">
-                    <h1>Аeslie Alexander</h1>
-                </div>
-            </div>
-        </div>
-
-        <div class="members-continer">
-            <p>Б</p>
-            <div class="card-member">
-                <div class="img-block"><img src="{% static 'user_app/icons/User1.png' %}" alt=""></div>
-                <div class="member-info">
-                    <h1>Аeslie Alexander</h1>
-                </div>
-            </div>
-            <div class="card-member">
-                <div class="img-block"><img src="{% static 'user_app/icons/User1.png' %}" alt=""></div>
-                <div class="member-info">
-                    <h1>Аeslie Alexander</h1>
-                </div>
-            </div>
-            <div class="card-member">
-                <div class="img-block"><img src="{% static 'user_app/icons/User1.png' %}" alt=""></div>
-                <div class="member-info">
-                    <h1>Аeslie Alexander</h1>
-                </div>
-            </div>
+        <div class="members-container" id="contactsModalScroll">
+            <div id="contactsModalContainer"></div>
+            <div id="contactsModalSentinel" style="height: 100%;"></div>
         </div>
     </div>
 </div>

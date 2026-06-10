@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Alboms page
+{% endblock title %}
+
+{% block links %}
+    <link rel="stylesheet" href="{% static 'css/side_panel.css' %}">
+    <link rel="stylesheet" href="{% static 'profile_app/css/alboms.css' %}">
+    <link rel="stylesheet" href="{% static 'profile_app/js/alboms.js' %}">
+    <link rel="stylesheet" href="{% static 'profile_app/js/settings.js' %}">
+    <link rel="stylesheet" href="{% static 'profile_app/css/side_panel_settings.css' %}">
+{% endblock links %}
+
+{% block side_panel %}
+    {% include 'profile_app/particles/side_panel_settings.html' %}
+{% endblock side_panel %}
+
+{% block content %}
+    <div class="alboms-container">
+        <div class="albom-panel">
+            <div class="edit-albom">
+                <p>Мої фото</p>
+                <div class="edit-albom-container" id="EditButton">
+                    <p>
+                        <img src="{% static 'profile_app/icons/add-image.svg' %}" alt="">
+                    </p>
+                </div>
+            </div>
+            <div class>
+
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block scripts %}
+
+{% endblock scripts %}

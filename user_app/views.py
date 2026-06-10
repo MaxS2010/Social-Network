@@ -19,6 +19,7 @@ from .forms import UserExpandInfoForm, UserRegisterForm, UserLoginForm, UserConf
 
 from .utils.friend_queries import get_users_by_section
 from .utils.friend_action import add_friend_request, dismiss_recommendation, accept_friend_request, delete_friendship
+from .utils.online_status import get_online_user_ids
 from .utils.utils import generate_confirm_code, send_confirm_code, create_random_users_with_friendships, del_user
 
 # Create your views here.
@@ -255,4 +256,16 @@ class FriendProfileView(LoginRequiredMixin, View):
 
         return JsonResponse({
             "html": html
+        })
+
+
+class OnlineStatusView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        friend_ids = list(
+            get_users_by_section(request.user, 'friends').values_list('id', flat=True)
+        )
+
+        return JsonResponse({
+            'success': True,
+            'online_user_ids': list(get_online_user_ids(friend_ids)),
         })

@@ -13,12 +13,15 @@ from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 
-from chat_app.routing import websocket_urlpatterns
+from chat_app.routing import websocket_urlpatterns as chat_websocket_urlpatterns
+from user_app.routing import websocket_urlpatterns as user_websocket_urlpatterns
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Social_Network.settings')
 
 # application = get_asgi_application()
 application = ProtocolTypeRouter({
     'http': get_asgi_application(),
-    'websocket': AuthMiddlewareStack(URLRouter(websocket_urlpatterns))
+    'websocket': AuthMiddlewareStack(
+        URLRouter(chat_websocket_urlpatterns + user_websocket_urlpatterns)
+    ),
 })

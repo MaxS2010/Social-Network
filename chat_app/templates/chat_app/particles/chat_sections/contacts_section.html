@@ -17,9 +17,11 @@
     </div>
     <div class="contacts-scroll">
         <div id="contactsContainer" class="contacts-container-list">
-            {% include "chat_app/particles/chat_sections/contacts_list.html" %}
-            
+            <div id="contactsList">
+                {% include "chat_app/particles/chat_sections/contacts_list.html" %}
+            </div>
+            <div id="contacts-sentinel"></div>
         </div>
-        <div id="contactsSentinel" style="height: 1px;display: block;" ></div>
     </div>
 </div>
+

@@ -108,17 +108,25 @@
     height: 45vh;
     /* height: 12vh; */
 
-    overflow-y: auto;
+    /* overflow-y: auto; */
     gap: 16px;
 }
 
-.members-continer{
+.members-container{
     display: flex;  
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
 
-    width: 28vw;
+    width: 100%;
+    padding: 20px;
+    gap: 16px;
+
+    overflow-y: auto;
+}
+
+.members-container div{
+    width: 100%;
 }
 
 .members-continer .card-member:first-of-type{
@@ -235,6 +243,19 @@
 .members-list-view{
     height: 17vh;
     gap: 10px;
+    overflow-y: auto;
+}
+
+.members-list{
+    width: 100%;
+}
+
+.member-group-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
 }
 
 .member-group{
@@ -252,4 +273,122 @@
     line-height: 100%;
     letter-spacing: 0%;
     color: rgba(7, 10, 28, 1);
+}
+
+.remove-member{
+    background-color: transparent;
+    border: none;
+
+    background-image: url(../icons/remove-member.svg);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    
+    width: 1.4vw;
+    height: 2vh;
+}
+
+.contacts-group{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    gap: 8px;
+}
+
+.contacts-group>p{
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+
+    width: 100%;
+}
+
+.people-contact-modal{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    flex: 1;
+    width: 100%;
+    gap: 10px;
+
+    padding: 8px 16px;
+    
+    border-top: 1px solid rgba(226, 224, 232, 1);
+    border-bottom: 1px solid rgba(226, 224, 232, 1);
+}
+
+.checkbox-container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 1;
+    height: 100%;
+}
+
+.input-checkbox {
+    display: inline-block;
+    cursor: pointer;
+    user-select: none;
+    width: 16px;
+    height: 16px;
+    position: relative;
+    vertical-align: middle;
+}
+
+.input-checkbox input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    margin: 0;
+}
+
+.checkmark {
+    position: relative;
+    transition: all 0.2s ease;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: all 0.2s ease;
+
+    display: block;
+
+    width: 15px;
+    height: 15px;
+
+    border: 2px solid rgba(84, 60, 82, 1);
+    border-radius: 4px;
+}
+
+.input-checkbox input:checked + .checkmark {
+    background-color: transparent;
+    border-color: rgba(84, 60, 82, 1);
+}
+
+.checkmark::after {
+    content: "";
+    position: absolute;
+    display: none;
+
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 80%;
+
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: contain;
+
+    background-image: url("../icons/checkmark.svg");
+}
+
+.input-checkbox input:checked + .checkmark::after {
+  display: block;
 }

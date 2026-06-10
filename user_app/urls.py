@@ -1,6 +1,6 @@
 from django.urls import path
 
-from .views import AuthView, FriendProfileView, RegisterView, LoginView, LogoutView, ConfirmView, ExpandInfoView, FriendsView, FriendsSectionView, FriendActionView
+from .views import AuthView, FriendProfileView, RegisterView, LoginView, LogoutView, ConfirmView, ExpandInfoView, FriendsView, FriendsSectionView, FriendActionView, OnlineStatusView
 
 
 urlpatterns = [    
@@ -18,4 +18,5 @@ urlpatterns = [
     FriendProfileView.as_view(),
     name='friend_profile'
     ),
+    path('online_status/', OnlineStatusView.as_view(), name='online_status'),
 ]

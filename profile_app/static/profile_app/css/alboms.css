@@ -1,0 +1,53 @@
+.alboms-container{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+
+    flex: 1;
+    width: 64vw;
+    height: 94vh;
+    max-height: 94vh;
+    min-height: 0;
+
+    gap: 0.8vh;
+
+    overflow-y: auto;
+}
+
+.alboms-container>div{
+    /* display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; */
+
+    border-radius: 10px;
+    padding: 1.6vh;
+    background-color: #FFFFFF;
+    border: 1px solid rgba(205, 206, 210, 1);
+}
+
+.alboms-container .albom-panel{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+    width: 62vw;
+    height: 26.8vh;
+
+    gap: 1.6vh;
+    padding: 16px;
+}
+
+.albom-panel .edit-albom{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    width: 60vw;
+    height: 4.1vh;
+
+    gap: 16px
+}

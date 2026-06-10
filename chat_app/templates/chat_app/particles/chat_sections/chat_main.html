@@ -15,9 +15,9 @@
             {% csrf_token %}
             {{ form.as_p }}
             <div class="images">    
+                <div class="img-container"><img src="{% static  'chat_app/icons/img-button.svg' %}" alt=""></div>
                 <label for="send-button">
-                    <img src="{% static  'chat_app/icons/img-button.svg' %}" alt="">
-                    <img src="{% static  'chat_app/icons/send.svg' %}">
+                    <div class="img-container"><img src="{% static  'chat_app/icons/send.svg' %}"></div>
                 </label>
                 <input type="submit" name="send-button" id="send-button" style="display: none;">
             </div>

@@ -1,3 +1,5 @@
+{% load static %}
+
 {% for chat in chats %}
     {% if chat.is_group %}
         <div class="container-chat" data-chat-id="{{ chat.id }}">
@@ -18,9 +20,14 @@
         {% for user in chat.users.all %}
             {% if user != request.user %}
                 <div class="container-chat" data-chat-id="{{ chat.id }}" data-chat-user="{{ user.id }}" data-chat-username="{{ user.username }}">
-                    {% if user.profile.avatar %}
-                        <img src="{{ user.profile.avatar.url }}" alt="">
-                    {% endif %}
+                    <div class="chat-avatar-wrapper">
+                        {% if user.profile.avatar %}
+                            <img src="{{ user.profile.avatar.url }}" alt="">
+                        {% else %}
+                            <img src="{% static 'chat_app/images/Avatar-1.png' %}" alt="">
+                        {% endif %}
+                        <span class="online-indicator {% if online_user_ids and user.id in online_user_ids %}online-indicator--online{% else %}online-indicator--offline{% endif %}"></span>
+                    </div>
                     <div class="chat-info">
                         <div>
                             <h2>{{ user.username }}</h2>
