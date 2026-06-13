@@ -19,14 +19,13 @@
 {% block content %}
     {% include 'chat_app/particles/chats_modal.html' %}
     {% include 'chat_app/particles/main_chats.html' %}
-
 {% endblock content %}
 
 {% block scripts %}
+    <script type="module">
+        import { setOnlineUserIds } from "{% static 'chat_app/js/chat/chat_open.js' %}";
+        const onlineUserIds = {{ online_user_ids|safe }};
+        setOnlineUserIds(onlineUserIds);
+    </script>
     <script type="module" src="{% static 'chat_app/js/chat.js' %}"></script>
-    <script type="module" src="{% static 'chat_app/js/contacts_list.js' %}"></script>
-    <script type="module" src="{% static 'chat_app/js/modal_create.js' %}"></script>
-    <script type="module" src="{% static 'chat_app/js/chat_ws.js' %}"></script>
-    <script type="module" src="{% static 'chat_app/js/presence_ws.js' %}"></script>
-    <script type="module" src="{% static 'chat_app/js/localstorage_cache.js' %}"></script>
 {% endblock scripts %}

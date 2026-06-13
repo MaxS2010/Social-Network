@@ -180,7 +180,7 @@
     outline: none; */
 }
 
-.personal-info .password-div{
+.password-div {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
@@ -188,21 +188,19 @@
     
     width: 22vw;
     min-height: 4.2vh;
-
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-right: 16px;
+    padding: 10px 16px 10px 10px;
     gap: 10px;
 
     border-radius: 10px;
     border: 1px solid #81818D;
-    outline: none;
+    background-color: #fff;
 }
 
-.personal-info .password-div input{
+.password-div .password-form {
     width: 87%;
-    border: none;
-    background: transparent;
+    border: none !important;       
+    background: transparent !important; 
+    outline: none !important;      
 }
 
 .personal-password{

@@ -1,5 +1,8 @@
 import { getCSRFToken, showErrors } from './utils.js'
 import { showLoginForm, hideConfirmForm } from './ui/authViews.js'
+import { initCodeInputs } from './ui/codeInputs.js'
+
+const codeInputs = initCodeInputs()
 
 document.querySelector('.section-confirm form')
         ?.addEventListener('submit', function (event) {
@@ -26,7 +29,7 @@ document.querySelector('.section-confirm form')
             .then(data => {
                 hideConfirmForm()
                 showLoginForm()
-                codeInputs.clear()
+                codeInputs?.clear()
             })
             .catch(data => {
                 if (data?.errors) {

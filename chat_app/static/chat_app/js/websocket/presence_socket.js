@@ -7,7 +7,7 @@ let pingIntervalId = null
 let statusPollIntervalId = null
 let shouldReconnect = true
 
-function updateUserOnlineStatus(userId, isOnline) {
+export function updateUserOnlineStatus(userId, isOnline) {
     const userIdStr = String(userId)
 
     document.querySelectorAll('.container-chat[data-chat-user]').forEach((chatItem) => {
@@ -25,7 +25,7 @@ function updateUserOnlineStatus(userId, isOnline) {
     })
 }
 
-function applyInitialStatus(onlineUserIds) {
+export function applyInitialStatus(onlineUserIds) {
     const onlineSet = new Set((onlineUserIds || []).map(String))
 
     document.querySelectorAll('.container-chat[data-chat-user]').forEach((chatItem) => {
@@ -34,7 +34,7 @@ function applyInitialStatus(onlineUserIds) {
     })
 }
 
-async function pollOnlineStatus() {
+export async function pollOnlineStatus() {
     try {
         const response = await fetch('/online_status/')
         const data = await response.json()
@@ -47,14 +47,14 @@ async function pollOnlineStatus() {
     }
 }
 
-function clearPingTimer() {
+export function clearPingTimer() {
     if (pingIntervalId) {
         clearInterval(pingIntervalId)
         pingIntervalId = null
     }
 }
 
-function clearAllPresenceTimers() {
+export function clearAllPresenceTimers() {
     clearPingTimer()
 
     if (statusPollIntervalId) {
@@ -63,7 +63,7 @@ function clearAllPresenceTimers() {
     }
 }
 
-function connectPresenceWebSocket() {
+export function connectPresenceWebSocket() {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
     presenceSocket = new WebSocket(`${protocol}//${window.location.host}/presence/`)
 
@@ -106,6 +106,8 @@ window.addEventListener('beforeunload', () => {
     }
 })
 
-statusPollIntervalId = setInterval(pollOnlineStatus, STATUS_POLL_INTERVAL_MS)
-
-connectPresenceWebSocket()
+export function startPresencePolling() {
+    if (!statusPollIntervalId) {
+        statusPollIntervalId = setInterval(pollOnlineStatus, STATUS_POLL_INTERVAL_MS)
+    }
+}

@@ -29,11 +29,25 @@
                                 <span>Мої публікації</span>
                             </a>
                             <a href= "{% url 'friends' %}" class="url">
-                                <img src="{% static 'icons/friend.svg' %}" alt="friend.svg" class="icons">
+                                <span class="header-icon-wrapper">
+                                    <img src="{% static 'icons/friend.svg' %}" alt="friend.svg" class="icons">
+                                    {% if header_friend_requests_count %}
+                                        <span class="header-icon-badge{% if header_friend_requests_count >= 10 %} count-badge--multi{% endif %}">
+                                            {% if header_friend_requests_count > 99 %}99+{% else %}{{ header_friend_requests_count }}{% endif %}
+                                        </span>
+                                    {% endif %}
+                                </span>
                                 <span>Друзі</span>
                             </a>
                             <a href= "{% url 'chat' %}" class="url">
-                                <img src="{% static 'icons/group.svg' %}" alt="user.svg" class="icons">
+                                <span class="header-icon-wrapper" id="headerMessagesIcon">
+                                    <img src="{% static 'icons/group.svg' %}" alt="user.svg" class="icons">
+                                    {% if header_new_messages_count %}
+                                        <span class="header-icon-badge{% if header_new_messages_count >= 10 %} count-badge--multi{% endif %}">
+                                            {% if header_new_messages_count > 99 %}99+{% else %}{{ header_new_messages_count }}{% endif %}
+                                        </span>
+                                    {% endif %}
+                                </span>
                                 <span>Чати</span>
                             </a>
                             <a href= "{% url 'settings' %}" class="url">

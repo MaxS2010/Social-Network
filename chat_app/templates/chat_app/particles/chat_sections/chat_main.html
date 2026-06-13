@@ -3,8 +3,10 @@
 <div class="message-container">
     <div class="chat-header">
         <img src="{% static 'chat_app/images/Avatar-1.png' %}" alt="">
-        <h2 id="chat-title"></h2>
-        <h2 id="chat-status"></h2>
+        <div class="chat-header-info">
+            <h2 id="chat-title"></h2>
+            <p id="chat-status" class="chat-status-text"></p>
+        </div>
     </div>   
     <div class="chat-messages" id="message-container">
         <div class="messages-users-container" id="messages-users-container">
@@ -15,7 +17,10 @@
             {% csrf_token %}
             {{ form.as_p }}
             <div class="images">    
-                <div class="img-container"><img src="{% static  'chat_app/icons/img-button.svg' %}" alt=""></div>
+                <label for="message-image" class="img-container">
+                    <img src="{% static  'chat_app/icons/img-button.svg' %}" alt="">
+                </label>
+                <input type="file" name="image" id="message-image" accept="image/*" hidden>
                 <label for="send-button">
                     <div class="img-container"><img src="{% static  'chat_app/icons/send.svg' %}"></div>
                 </label>
@@ -23,4 +28,17 @@
             </div>
         </form>
     </div>
+</div>
+
+<!-- Image Preview Modal -->
+<div id="image-preview-modal" class="image-preview-modal" style="display: none;">
+    <div class="image-preview-container">
+        <button class="image-preview-close">&times;</button>
+        <img id="preview-image" src="" alt="Preview" class="preview-image-content">
+        <div class="image-preview-actions">
+            <button id="cancel-preview" class="btn-cancel">Скасувати</button>
+            <button id="send-with-preview" class="btn-send">Відправити</button>
+        </div>
+    </div>
+</div>
 </div>

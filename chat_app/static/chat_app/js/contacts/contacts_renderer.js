@@ -35,6 +35,8 @@ export function renderGroups(grouped, containerId = "contactsContainer") {
 
                 const el = document.createElement("div")
                 el.className = "people-contact-modal"
+                el.dataset.userId = user.id
+                el.dataset.chatUsername = user.username
 
                 el.innerHTML = `
                     <img src="${user.avatar || '/static/chat_app/images/Avatar-1.png'}">
@@ -45,7 +47,8 @@ export function renderGroups(grouped, containerId = "contactsContainer") {
                             <input type="checkbox"
                                 class="group-user-checkbox"
                                 name="users[]"
-                                value="${user.id}">
+                                value="${user.id}"
+                                data-avatar="${user.avatar || '/static/chat_app/images/Avatar-1.png'}">
                             <span class="checkmark"></span>
                         </label>
                     </div>

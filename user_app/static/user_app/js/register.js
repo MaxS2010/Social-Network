@@ -1,8 +1,10 @@
 import { getCSRFToken, showErrors } from "./utils.js"
-import { showLoginForm } from "./ui/authViews.js"
+import { showConfirmForm } from './ui/authViews.js'
+import { initCodeInputs } from './ui/codeInputs.js'
 
+const codeInputs = initCodeInputs()
 
-document.querySelector('.section-register form').addEventListener('submit', function (event) {
+document.querySelector('.section-register form')?.addEventListener('submit', function (event) {
     event.preventDefault()
 
     const form = event.target
@@ -24,9 +26,9 @@ document.querySelector('.section-register form').addEventListener('submit', func
         return data
     })
     .then(data => {
-        codeInputs.clear()
-        document.querySelector('.section-register').style.display = 'none'
-        showLoginForm()
+        codeInputs?.clear()
+        document.querySelector('.section-login').style.display = 'none'
+        showConfirmForm()
     })
     .catch(data => {
         if (data?.errors) {

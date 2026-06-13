@@ -1,12 +1,13 @@
 import {
     saveCache,
     loadCache
-} from "./localstorage_cache.js"
+} from "../utils/cache.js"
 
 import {
-    groupByLetter,
-    renderGroups
-} from "./modal_sort.js"
+    initModalContactsSearch,
+    renderModalContacts,
+    setContactsSearchUsers
+} from "./contacts_search.js"
 
 let allUsers = []
 let page = 1
@@ -15,6 +16,7 @@ let hasNext = true
 
 const contactsScroll = document.getElementById('contactsModalScroll')
 const contactsContainer = document.getElementById('contactsModalContainer')
+const contactsSearchInput = document.getElementById('contacts-search')
 let modalObserver = null
 
 console.log('modal_create root', contactsScroll)
@@ -33,16 +35,26 @@ async function loadPage(p = 1) {
     }
 
     allUsers.push(...data.results)
+    
 
     hasNext = data.has_next
     page = p
 
     saveCache(allUsers)
 
-    renderGroups(groupByLetter(allUsers), 'contactsModalContainer')
+    setContactsSearchUsers(allUsers)
+    renderModalContacts()
 
     loading = false
 }
+
+async function loadAllModalContacts() {
+    while (hasNext && !loading) {
+        await loadPage(page + 1)
+    }
+}
+
+initModalContactsSearch({ loadAllUsers: loadAllModalContacts })
 
 function openContactsModal() {
     console.log('openContactsModal start')
@@ -59,11 +71,13 @@ function openContactsModal() {
     if (cached && cached.length) {
         allUsers = cached
         hasNext = true
-        renderGroups(groupByLetter(allUsers), 'contactsModalContainer')
+        setContactsSearchUsers(allUsers)
+        renderModalContacts(contactsSearchInput?.value || '')
         return
     }
 
     allUsers = []
+    setContactsSearchUsers(allUsers)
     page = 1
     hasNext = true
 
@@ -98,6 +112,19 @@ function openContactsModal() {
 }
 
 document.addEventListener("click", (e) => {
+    const modalContact = e.target.closest(".people-contact-modal")
+    if (modalContact) {
+        e.stopPropagation()
+
+        const checkbox = modalContact.querySelector(".group-user-checkbox")
+        if (checkbox && e.target !== checkbox) {
+            e.preventDefault()
+            checkbox.checked = !checkbox.checked
+            checkbox.dispatchEvent(new Event("change", { bubbles: true }))
+        }
+
+        return
+    }
 
     if (e.target.closest("#create-group-btn")) {
         console.log('create-group-btn clicked', e.target)

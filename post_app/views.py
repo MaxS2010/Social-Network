@@ -6,6 +6,7 @@ from django.template.loader import render_to_string
 from django.core.paginator import Paginator
 
 from post_app.forms import PostAddTagForm, PostCreationForm
+from home_app.utils.side_panel import get_side_panel_context
 from .models import Post
 # Create your views here.
 
@@ -20,6 +21,7 @@ class PostListView(LoginRequiredMixin, ListView):
         context["form_create"] = PostCreationForm()
         context["form_add_tag"] = PostAddTagForm()
         context['user'] = self.request.user
+        context.update(get_side_panel_context(self.request.user))
         return context
     
     def get_queryset(self):

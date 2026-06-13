@@ -1,7 +1,10 @@
+import { filterUsers } from "./contacts_search.js"
+
 const contactsScroll = document.querySelector('.contacts-scroll')
 const contactsContainer = contactsScroll?.querySelector('#contactsContainer')
 const contactsList = contactsScroll?.querySelector('#contactsList')
 const sentinel = contactsScroll?.querySelector('#contacts-sentinel')
+const contactsSearchInput = document.getElementById('contacts-list-search')
 
 if (sentinel) {
     sentinel.style.display = 'block'
@@ -45,6 +48,10 @@ function render(users) {
     users.forEach(user => contactsList.appendChild(createContactItem(user)))
 }
 
+function renderSearchResults() {
+    render(filterUsers(allUsers, contactsSearchInput?.value || ''))
+}
+
 
 async function loadInitial() {
     const res = await fetch(`/chat/contacts/?page=1`)
@@ -56,10 +63,10 @@ async function loadInitial() {
     hasNext = data.has_next
     page = 1
 
-    render(allUsers)
+    renderSearchResults()
 }
 
-async function loadPage(nextPage) {
+async function loadPage(nextPage, { renderAfterLoad = true } = {}) {
     console.log("FETCH PAGE:", nextPage, 'hasNext=', hasNext, 'loading=', loading)
     if (loading || !hasNext) return
 
@@ -78,9 +85,17 @@ async function loadPage(nextPage) {
     hasNext = data.has_next
     page = nextPage
     console.log("ALL USERS:", allUsers.length)
-    render(allUsers)
+    if (renderAfterLoad) {
+        renderSearchResults()
+    }
 
     loading = false
+}
+
+async function loadAllContacts() {
+    while (hasNext && !loading) {
+        await loadPage(page + 1, { renderAfterLoad: false })
+    }
 }
 
 const observer = new IntersectionObserver(async ([entry]) => {
@@ -101,6 +116,14 @@ if (sentinel instanceof Element) {
 }
 
 loadInitial()
+
+contactsSearchInput?.addEventListener('input', async (event) => {
+    if (event.target.value.trim()) {
+        await loadAllContacts()
+    }
+
+    renderSearchResults()
+})
 
 window.ensureContactVisible = async function(userId) {
     if (!contactsList) return null

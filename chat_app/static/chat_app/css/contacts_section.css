@@ -4,34 +4,47 @@
     justify-content: center;
     align-items: center;
 
-    height: 4vh;
+    height: 48px;
     width: 100%;
 
-    border-radius: 1234px;
+    border-radius: 24px;
     border: none;
     gap: 8px;
 
-    background-color: rgba(84, 60, 82, 1);
+    background-color: #543C52;
     color: white;
+    font-weight: 500;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
 
-    /* flex-shrink: 0; */
+.contacts-section>button:hover {
+    background-color: #3D2D3E;
+}
+
+.contacts-section>button img {
+    width: 20px;
+    height: 20px;
 }
 
 .contacts-container{
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-start;
+    justify-content: flex-start;
 
     width: 100%;
-    /* height: 84vw; */
     flex: 1;
 
-    border: 1px solid rgba(205, 206, 210, 1);
+    border: 1px solid #CDCED2;
     border-radius: 10px;
     
     padding: 16px;
     gap: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .contacts-container>div:first-child{
@@ -41,31 +54,47 @@
     justify-content: flex-start;
     width: 100%;
     gap: 8px;
+    padding: 0 8px;
+}
+
+.contacts-container>div:first-child p {
+    font-weight: 500;
+    font-size: 14px;
+    color: #333;
+    margin: 0;
 }
 
 .contacts-container .search-input-container{
-    height: 4.2vh !important;
-    width: 22vw;
+    height: 40px;
+    width: 100%;
     padding: 10px 16px;
     gap: 10px;
-    border: 1px solid rgba(205, 206, 210, 1);
-    border-radius: 10px;
+    border: 1px solid #CDCED2;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    background-color: #fafafa;
+}
+
+.contacts-container .search-input-container img {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
 }
 
 .contacts-container .search-input-container input{
     flex: 1;
-    /* width: 100%; */
     height: 100%;
-
     border: none;
+    background: transparent;
+    font-size: 14px;
+    color: #333;
 }
 
 .contacts-container .search-input-container input::placeholder{
     font-weight: 400;
-    font-style: Regular;
-    font-size: 16px;
-    line-height: 22px;
-    letter-spacing: -0.7%;
+    font-size: 14px;
+    color: #999;
 }
 
 .contacts-container .search-input-container input:focus{
@@ -84,6 +113,14 @@
     gap: 16px;
 }
 
+.contacts-scroll {
+    width: 100%;
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 4px;
+}
+
 .contacts-container .contacts-scroll .contacts-container-list{
     display: flex;
     flex-direction: column;
@@ -91,18 +128,17 @@
     justify-content: flex-start;
     
     width: 100%;
-
-    gap: 16px;
+    gap: 0;
 }
 
 #contactsList{
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    align-items: center;
+    align-items: stretch;
 
     width: 100%;
-    gap: 16px;
+    gap: 0;
 }
 
 .people-contact-plain{
@@ -111,37 +147,48 @@
     justify-content: flex-start;
     align-items: center;
 
-    gap: 5px;
+    gap: 12px;
     width: 100%;
+    padding: 8px 12px;
     border: none;
-    border-radius: 8px;
-    color: rgba(233, 229, 238, 1);
+    border-radius: 6px;
+    color: #333;
     cursor: pointer;
+    background-color: transparent;
+    transition: background-color 0.2s ease;
+}
+
+.people-contact-plain:hover {
+    background-color: #f5f5f5;
 }
 
 .people-contact-plain img{
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     object-fit: cover;
     border-radius: 50%;
+    flex-shrink: 0;
 }
 
 .people-contact-plain .contact-name{
     margin: 0;
-    font-size: 0.95rem;
+    font-size: 14px;
     font-weight: 500;
-    color: rgba(20, 20, 30, 1);
+    color: #333;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .people-contact-plain.active {
-    background-color: rgba(84, 60, 82, 0.12);
-    color: rgba(84, 60, 82, 1);
+    background-color: #E9E5EE;
+    color: #543C52;
 }
 
-.contacts-scroll {
-    height: 69vh;
-    width: 100%;
-    overflow-y: auto;
+.people-contact-plain.active .contact-name {
+    color: #543C52;
+    font-weight: 600;
 }
 
 #contacts-sentinel,

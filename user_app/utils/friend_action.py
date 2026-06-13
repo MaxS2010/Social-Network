@@ -13,10 +13,18 @@ def dismiss_recommendation(user, other_user):
     return {'remove': True}
 # додаємо у друзі
 def accept_friend_request(user, other_user):
-    friendship = Friendship.objects.filter(from_user = other_user, to_user = user).first()
-    friendship.status = 'accepted' # type: ignore
-    friendship.save()  # type: ignore
-    
+    friendship = Friendship.objects.filter(
+        from_user=other_user,
+        to_user=user,
+        status='pending',
+    ).first()
+
+    if not friendship:
+        raise ValueError('Запит у друзі не знайдено')
+
+    friendship.status = 'accepted'
+    friendship.save()
+
     return {'remove': True, 'friend': other_user}
 # видаляємо запит або дружбу
 def delete_friendship(user, other_user):

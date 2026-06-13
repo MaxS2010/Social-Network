@@ -1,3 +1,15 @@
+#friends-main-content{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    gap: 0.8vh;
+}
+
 .friends-container-section{
     display: flex;
     flex-direction: column;
@@ -173,6 +185,41 @@
     color: #070A1C !important;
     border-bottom: 2px solid #543C52 !important;
     padding-bottom: 0.8vh !important;
+}
+
+.friend-posts-view{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+
+    flex: 1;
+    width: 64vw;
+    min-height: 100%;
+    height: 100%;
+    padding: 16px;
+    gap: 1.6vh;
+
+    background-color: white;
+    border: 1px solid rgba(205, 206, 210, 1);
+    border-radius: 10px;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.friend-posts-view .post-list{
+    width: 100%;
+    align-items: stretch;
+}
+
+.friend-posts-view .post{
+    width: 100%;
+}
+
+.friend-posts-view .author-info,
+.friend-posts-view .post-info{
+    width: 100%;
 }
 
 /* .profile-container{

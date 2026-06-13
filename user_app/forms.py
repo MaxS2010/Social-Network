@@ -200,7 +200,11 @@ class UserExpandInfoForm(forms.ModelForm):
     def clean_username(self):
         username = self.cleaned_data.get('username')
 
-        if User.objects.filter(username=username).exists():
+        queryset = User.objects.filter(username=username)
+        if self.instance.pk:
+            queryset = queryset.exclude(pk=self.instance.pk)
+
+        if queryset.exists():
             raise forms.ValidationError('Цей псевдонім вже зайнятий')
 
         return username

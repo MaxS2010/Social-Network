@@ -3,22 +3,30 @@ import { getCSRFToken } from "./utils.js";
 const csrfToken = getCSRFToken()
 
 const homeFriendsList = document.querySelector('[data-home-section= "friends"]')
+const profileContainer = document.getElementById("profileContent")
+const profileContent = profileContainer
 
 async function handlerFriendAction(actionButton) {
-
     const response = await fetch(actionButton.dataset.url, {
         method: 'POST',
         headers: {
             'X-CSRFToken': csrfToken,
+            'X-Requested-With': 'XMLHttpRequest',
         },
     })
 
     const data = await response.json()
 
-    if (data.success && data.redirect_url) {
-        window.location.href = data.redirect_url
+    if (!data.success) {
+        console.warn('friend action failed', data.errors)
         return
     }
+
+    if (profileContainer?.style.display === 'flex') {
+        closeProfile()
+    }
+
+    window.location.reload()
 }
 
 function addFriendToHome(frienHtml){
@@ -51,13 +59,16 @@ window.connectFRiendActionButtons = connectFRiendActionButtons
 
 connectFRiendActionButtons()
 
-const profileContainer = document.querySelector(".profile-container")
-const profileContent = document.getElementById("profileContent")
-
 function closeProfile() {
     profileContainer.style.display = "none"
     profileContent.innerHTML = ""
-    
-    document.getElementById("friends-home").style.display = "flex"
-    document.querySelector(".friends-nav-content").style.display = "flex"
+
+    if (typeof window.restoreFriendsContent === 'function') {
+        window.restoreFriendsContent()
+    } else {
+        document.getElementById("friends-home").style.display = "flex"
+        document.querySelector(".friends-nav-content").style.display = "flex"
+    }
 }
+
+window.closeFriendProfile = closeProfile

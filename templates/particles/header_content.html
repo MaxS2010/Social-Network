@@ -3,7 +3,11 @@
 <div>
     <div class="profile-head">
         <div class="profile-picture">
-            <img src="{% static  'icons/example-photo.png' %}" alt="example-photo.png">
+            {% if user_avatar %}
+                <img src="{{ user_avatar }}" alt="{{ user.username }}">
+            {% else %}
+                <img src="{% static 'icons/example-photo.png' %}" alt="{{ user.username }}">
+            {% endif %}
         </div>
         <div class="profile-name">
             <h3>{{ user.first_name }} {{ user.last_name }}</h3>
@@ -13,15 +17,15 @@
 
     <div class="profile-info">
         <div class="info-container">
-            <h3>566</h3>                       
+            <h3>{{ profile_stats.posts_count }}</h3>
             <p>Дописи</p>
         </div>
         <div class="info-container">
-            <h3>12.1K</h3>                                
+            <h3>{{ profile_stats.readers_count }}</h3>
             <p>Читачі</p>
         </div>
         <div class="info-container">
-            <h3>222</h3>                   
+            <h3>{{ profile_stats.friends_count }}</h3>
             <p>Друзі</p>
         </div>
     </div>

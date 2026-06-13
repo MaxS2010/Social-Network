@@ -22,7 +22,8 @@
                         <input type="checkbox"
                             class="group-user-checkbox"
                             name="users[]"
-                            value="{{ contact.id }}">
+                            value="{{ contact.id }}"
+                            data-avatar="{% if contact.profile.avatar %}{{ contact.profile.avatar.url }}{% else %}{% static 'chat_app/images/Avatar-1.png' %}{% endif %}">
                         <span class="checkmark"></span>
                     </label>
                 </div>

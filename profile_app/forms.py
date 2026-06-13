@@ -4,8 +4,6 @@ from .models import Profile
 
 User = get_user_model()
 
-User = get_user_model()
-
 class ProfileForm(forms.ModelForm):
     class Meta:
         model = Profile
@@ -27,7 +25,6 @@ class ProfileForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Для відображення повного імені (Lina Li) у шаблоні
         if self.instance and hasattr(self.instance, 'user'):
             self.full_name = f"{self.instance.user.first_name} {self.instance.user.last_name}".strip()
         else:
@@ -36,7 +33,6 @@ class ProfileForm(forms.ModelForm):
     def save(self, commit=True):
         profile = super().save(commit=False)
 
-        # Якщо аватар не завантажено — не затираємо старий
         if not self.cleaned_data.get('avatar'):
             profile.avatar = self.instance.avatar
 
@@ -70,6 +66,19 @@ class InfoForm(forms.ModelForm):
                 user.profile.save()
         
         return user
+
+
+class PasswordForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['password']
+        widgets = {
+            'password': forms.TextInput(attrs={
+                'class': 'password-form',
+                'placeholder': 'введіть пароль',
+                'id': 'form-password',
+            })
+        }
 
 
 class SignatureForm(forms.ModelForm):

@@ -8,6 +8,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from user_app.forms import UserExpandInfoForm
 from post_app.forms import PostCreationForm
 from post_app.models import Post
+from home_app.utils.side_panel import get_side_panel_context
+
 # Create your views here.
 
 
@@ -37,6 +39,7 @@ class HomeView(LoginRequiredMixin, TemplateView):
             queryset = queryset.exclude(author=user)
 
         context["posts"] = queryset[:10]
+        context.update(get_side_panel_context(user))
 
         return context
 

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block side_panel %}
+{% include 'profile_app/particles/side_panel_settings.html' %}
+{% endblock side_panel %}
+
+{% block block_content %}
+
+    <form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+        <div class = modal-window>
+            <div class="header-container">
+                <div class="edit-container">
+                    <p>Картка профілю</p>
+                    <button>
+                        <img src="{% static 'profile_app/icons/button-save-edit.svg' %}" alt="">
+                    </button>
+                </div>    
+                <p>Оберіть або завантажте фото профілю</p>
+            </div>
+            <div class="edit-photo">
+                <input type="file" id="photo-add" accept="image/*" multiple style="display: none;">
+                
+                <input type="file" id="photo-select" accept="image/*" style="display: none;">
+                
+                <button type="button" onclick="document.getElementById('photo-add').click()">
+                    + Додайте фото
+                </button>
+                
+                <button type="button" onclick="document.getElementById('photo-select').click()">
+                    🖼 Оберіть фото
+                </button>
+            </div>
+            <div class="edit-container">
+                <h2 class="user-full-name">{{ request.user.get_full_name|default:"Без імені" }}</h2>
+                <label for=""></label>
+            </div>
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    </form>
+{% endblock block_content %}

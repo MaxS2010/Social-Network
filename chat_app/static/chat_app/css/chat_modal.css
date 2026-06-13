@@ -3,6 +3,7 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    z-index: 1000;
 
     display: flex;  
     flex-direction: column;
@@ -181,13 +182,13 @@
     border-radius: 1234px;
 }
 
-.button-container button[type='button']{
+.button-container button:first-of-type{
     background-color: transparent;
     border: 1px solid rgba(84, 60, 82, 1);
     
 }
 
-.button-container button[type='submit']{
+.button-container .next-button{
     border: none;
     background-color: rgba(84, 60, 82, 1);
     color: white;
@@ -200,6 +201,37 @@
     align-items: center;
 
     gap: 24px;
+}
+
+.group-avatar-preview-wrapper {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: rgba(233, 229, 238, 1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.group-avatar-preview-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.group-avatar-preview-wrapper img:not(.group-avatar-preview--custom) {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+}
+
+.photo-action-label {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
 }
 
 .photo-action-container, .photo-action-container div{
@@ -295,7 +327,6 @@
     justify-content: center;
 
     width: 100%;
-    gap: 8px;
 }
 
 .contacts-group>p{
@@ -318,8 +349,12 @@
 
     padding: 8px 16px;
     
-    border-top: 1px solid rgba(226, 224, 232, 1);
+    
     border-bottom: 1px solid rgba(226, 224, 232, 1);
+}
+
+.people-contact-modal:first-of-type{
+    border-top: 1px solid rgba(226, 224, 232, 1);
 }
 
 .checkbox-container{
@@ -391,4 +426,12 @@
 
 .input-checkbox input:checked + .checkmark::after {
   display: block;
+}
+
+.contacts-modal-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
 }

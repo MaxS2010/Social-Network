@@ -5,7 +5,7 @@ from django.urls import reverse, reverse_lazy
 from django.views.generic.base import TemplateView
 from django.views import View
 from django.http import HttpRequest, JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.template.loader import render_to_string
 from django.core.paginator import Paginator
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -20,6 +20,7 @@ from .forms import UserExpandInfoForm, UserRegisterForm, UserLoginForm, UserConf
 from .utils.friend_queries import get_users_by_section
 from .utils.friend_action import add_friend_request, dismiss_recommendation, accept_friend_request, delete_friendship
 from .utils.online_status import get_online_user_ids
+from home_app.utils.side_panel import get_profile_stats, get_user_avatar
 from .utils.utils import generate_confirm_code, send_confirm_code, create_random_users_with_friendships, del_user
 
 # Create your views here.
@@ -95,7 +96,9 @@ class ConfirmView(View):
         except ValueError as error:
             return JsonResponse({
                 "success": False,
-                "errors": str(error)
+                "errors": {
+                    "__all__": [{"message": str(error), "code": "invalid"}],
+                },
             }, status=400)
 
         return JsonResponse({
@@ -218,7 +221,7 @@ class FriendActionView(LoginRequiredMixin, View):
 
     def post(self, request, user_id, action, *args, **kwargs):
 
-        other_user = User.objects.get(id=user_id)
+        other_user = get_object_or_404(User, id=user_id)
 
         if action == 'add':
             add_friend_request(request.user, other_user)
@@ -227,35 +230,83 @@ class FriendActionView(LoginRequiredMixin, View):
             dismiss_recommendation(request.user, other_user)
 
         if action == 'accept':
-            accept_friend_request(request.user, other_user)
+            try:
+                accept_friend_request(request.user, other_user)
+            except ValueError as error:
+                return JsonResponse({
+                    "success": False,
+                    "errors": {
+                        "__all__": [{"message": str(error), "code": "invalid"}],
+                    },
+                }, status=400)
 
         if action == 'delete':
             delete_friendship(request.user, other_user)
 
         return JsonResponse({
             "success": True,
-            "redirect_url": reverse("friends")
+            "action": action,
         })
 
 class FriendProfileView(LoginRequiredMixin, View):
+    POSTS_PER_PAGE = 5
+
+    def get_posts_queryset(self, user):
+        return (
+            Post.objects
+            .filter(author=user)
+            .select_related("author")
+            .prefetch_related("images", "tags", "links")
+            .order_by("-created_at")
+        )
+
     def get(self, request, user_id, *args, **kwargs):
-
-        user = User.objects.get(id= user_id)
+        user = get_object_or_404(User, id=user_id)
         section = request.GET.get("section")
-        posts = Post.objects.filter(author= user)
+        page_number = request.GET.get("page", 1)
 
-        html = render_to_string(
+        paginator = Paginator(self.get_posts_queryset(user), self.POSTS_PER_PAGE)
+        page_obj = paginator.get_page(page_number)
+
+        if request.headers.get("X-Requested-With") == "XMLHttpRequest" and request.GET.get("page"):
+            if paginator.num_pages and int(page_number) > paginator.num_pages:
+                return JsonResponse({"success": False})
+
+            return JsonResponse({
+                "success": True,
+                "html": render_to_string(
+                    "post_app/particles/show_post.html",
+                    {"posts": page_obj.object_list},
+                    request=request,
+                ),
+                "has_next": page_obj.has_next(),
+            })
+
+        posts_html = render_to_string(
+            "post_app/particles/show_post.html",
+            {"posts": page_obj.object_list},
+            request=request,
+        )
+        if not page_obj.object_list:
+            posts_html = '<p class="empty-note">Дописів поки немає</p>'
+
+        profile_html = render_to_string(
             "user_app/particles/friend/profile_content.html",
             {
                 "user": user,
                 "section": section,
-                "posts": posts,
+                "profile_stats": get_profile_stats(user),
+                "user_avatar": get_user_avatar(user),
             },
-            request=request
+            request=request,
         )
 
         return JsonResponse({
-            "html": html
+            "html": profile_html,
+            "posts_html": posts_html,
+            "has_next": page_obj.has_next(),
+            "user_id": user.id,
+            "username": user.username,
         })
 
 

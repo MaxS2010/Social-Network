@@ -6,16 +6,20 @@
         <div class="search-input-container"><input type="text" id="group-name" name="name" placeholder="Введіть назву"></div>
     </div>
     <div class="avatar-container">
-        <img src="{% static 'chat_app/icons/Example-group-image.png' %}" alt="">
+        <div class="group-avatar-preview-wrapper">
+            <img
+                id="group-avatar-preview"
+                src="{% static 'chat_app/icons/people.svg' %}"
+                data-default-src="{% static 'chat_app/icons/people.svg' %}"
+                alt="Аватар групи"
+            >
+        </div>
+        <input type="file" id="group-avatar-input" name="avatar" accept="image/*" hidden>
         <div class="photo-action-container">
-            <div>
-                <img src="{% static 'chat_app/icons/plus-create-image.svg' %}" alt="" class="plus-icon">
-                <h3>Додайте фото</h3>
-            </div>
-            <div>
+            <label for="group-avatar-input" class="photo-action-label">
                 <img src="{% static 'chat_app/icons/add-image.svg' %}" alt="" class="image-icon">
                 <h3>Оберіть фото</h3>
-            </div>
+            </label>
         </div>
     </div>
 
@@ -23,10 +27,6 @@
     <div class="group-members-list">
         <h1>Учасники</h1>
         <div class="members-list-view">
-            <div class="member-group">
-                <img src="{% static 'chat_app/icons/Example-group-image.png' %}" alt="">
-                <h2>Аeslie Alexander</h2>
-            </div>
         </div>
     </div>
 </div>

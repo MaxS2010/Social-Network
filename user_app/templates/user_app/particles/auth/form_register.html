@@ -7,5 +7,6 @@
     <form action="{% url 'register' %}" method="post">
         {{ form_register.as_p }}
         <button type="submit" class="button-register">Створити акаунт</button>
+        <div id="register-errors"></div>
     </form>
 </div>

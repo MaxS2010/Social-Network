@@ -57,6 +57,22 @@ nav div .icons{
     height: 2vh;
 }
 
+.header-icon-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.4vw;
+    height: 2vh;
+    flex-shrink: 0;
+}
+
+.header-icon-badge {
+    position: absolute;
+    top: -9px;
+    right: -10px;
+}
+
 nav div .button-exit{
     display: flex;
     flex-direction: row;

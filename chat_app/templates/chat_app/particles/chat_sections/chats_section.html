@@ -3,10 +3,16 @@
 <div class="messages-container">
     <div class="row-block">
         <div>
-            <img src="{% static 'chat_app/icons/chat.svg' %}" alt="">
+            <span class="chat-section-icon-wrapper">
+                <img src="{% static 'chat_app/icons/chat.svg' %}" alt="">
+                {% if personal_unread_count %}
+                    <span class="chat-section-icon-badge{% if personal_unread_count >= 10 %} count-badge--multi{% endif %}">
+                        {% if personal_unread_count > 99 %}99+{% else %}{{ personal_unread_count }}{% endif %}
+                    </span>
+                {% endif %}
+            </span>
             <p class="label-icon">Особисті чати</p>
         </div>
-        <p class="text-all">Дивитись всі</p>
     </div>
 
     <div class="content-chats">
@@ -17,13 +23,19 @@
 <div class="messages-container">
     <div class="row-block">
         <div>
-            <img src="{% static 'chat_app/icons/people.svg' %}" alt="">
+            <span class="chat-section-icon-wrapper">
+                <img src="{% static 'chat_app/icons/people.svg' %}" alt="">
+                {% if group_unread_count %}
+                    <span class="chat-section-icon-badge{% if group_unread_count >= 10 %} count-badge--multi{% endif %}">
+                        {% if group_unread_count > 99 %}99+{% else %}{{ group_unread_count }}{% endif %}
+                    </span>
+                {% endif %}
+            </span>
             <p class="label-icon">Групові чати</p>
         </div>
-        <p class="text-all">Дивитись всі</p>
     </div>
 
     <div class="content-chats">
-        {% include 'chat_app/particles/chat_sections/chat_list.html' with chats=group_chats show_contacts=False %}
+        {% include 'chat_app/particles/chat_sections/chat_list.html' with chats=group_chats show_contacts=False online_user_ids=online_user_ids %}
     </div>
 </div>

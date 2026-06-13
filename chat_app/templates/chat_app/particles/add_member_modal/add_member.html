@@ -1,7 +1,7 @@
 {% load static %}
 
 <div class="group-members">
-    <div class="search-input-container"><img src="{% static 'chat_app/icons/search.svg' %}" alt=""><input type="text" placeholder="Пошук"></div>
+    <div class="search-input-container"><img src="{% static 'chat_app/icons/search.svg' %}" alt=""><input type="text" id="contacts-search" placeholder="Пошук"></div>
 
     <div class="select-container">
         <p id="selected-count">Вибрано: 0</p>
@@ -9,7 +9,7 @@
 
     <div class="members-list">
         <div class="members-container" id="contactsModalScroll">
-            <div id="contactsModalContainer"></div>
+            <div id="contactsModalContainer" class="contacts-modal-container"></div>
             <div id="contactsModalSentinel" style="height: 100%;"></div>
         </div>
     </div>

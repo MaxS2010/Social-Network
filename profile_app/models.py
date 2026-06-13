@@ -22,6 +22,7 @@ class Album(models.Model):
     is_default = models.BooleanField(default = True)
     profile = models.ForeignKey(to= "Profile", blank= True, on_delete= models.CASCADE)
 
+
 class AlbumImage(models.Model):
     image = models.ImageField(upload_to= "profile_app/image", blank= True, null= True)
     created_at = models.DateTimeField(auto_now= True)

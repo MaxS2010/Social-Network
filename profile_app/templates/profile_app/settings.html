@@ -20,27 +20,25 @@
 {% endblock side_panel %}
 
 {% block content %}
-<form action="" method="post" style="display: none;">
-
-    {{ form.as_p }}
-
-</form>
+<form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    
     <div class="settings-container">
         <div class="profile-panel">
             <div class="edit-info">
                 <p>Картка профілю</p>
-                <div class="edit-container" id="EditButton">
-                    <p>
+                <div class="edit-container">
+                    <button type="submit" id="EditButton">
                         <img src="{% static 'profile_app/icons/edit-info.svg' %}" alt="">
-                    </p>
+                    </button>
                 </div>
             </div>
             <div class = "author-profile">
                 <div class = "image-container">
                     <img src="{% static 'user_app/icons/Profile.png' %}" alt="">
                 </div>
-                <h3>Lina Li</h3>
-                <p>@thelili</p>
+                <h2 class="user-full-name">{{ request.user.get_full_name|default:"Без імені" }}</h2>
+                <p class="username-display">@{{ request.user.username }}</p>
             </div>
         </div>
         <div class="setting-info">
@@ -54,20 +52,20 @@
             </div>
 
             <div class="personal-info">
-                <label for="first-name">Ім'я</label>
-                <input type="text" name="first-name" placeholder="Li" id="first-name">
-                <label for="second-name">Прізвище</label>
-                <input type="text" name="second-name" placeholder="Li" id="second-name">
-                <label for="born-date">Дата народження</label>
+                <label for="{{ info_form.first_name.id_for_filter }}">Ім'я</label>
+                {{ info_form.first_name }}
+                <label for="{{ info_form.last_name.id_for_label }}">Прізвище</label>
+                {{ info_form.last_name }}
+                <label for="{{info_form.birth_date.id_for_label}}">Дата народження</label>
                 <div class="born-div">
-                    <input type="text" name="born-date" placeholder="15.04.2001" id="born-date">
-                    <img src="{% static 'profile_app/icons/eye-info.svg' %}" alt= ''>
-                </div>   
-                    <label for="email-adress">Електронна адреса</label>
+                    {{ info_form.birth_date }}
+                    <img src="{% static 'profile_app/icons/eye-info.svg' %}" alt="">
+                </div>  
+                    <label for="{{ info_form.email.id_for_label }}">Електронна адреса</label>
                 <div class="email-div">   
-                    <input type='text' name='email-adress' placeholder='you@example.com' id='email-adress'>   
+                    {{ info_form.email }}   
                     <img src="{% static 'profile_app/icons/eye-info.svg' %}" alt= ''>
-                </div> 
+                </div>
                     
                 <div class = "personal-password">
                     <p>Пароль</p>
@@ -77,10 +75,10 @@
                         </p>
                     </div>
                 </div>
-                <label for="password">Пароль</label>
+                <label for="{{ password_form.password.id_for_label }}">Пароль</label>
                 <div class="password-div">
-                    <input type="text" name="password" placeholder="enter password" id="password">               
-                    <img src="{% static 'profile_app/icons/eye-info.svg' %}" alt= ''>
+                    {{ password_form.password }}
+                    <img src="{% static 'profile_app/icons/eye-info.svg' %}" alt="">
                 </div>
             </div>           
         </div>
@@ -96,15 +94,15 @@
 
             <div class="author-info">
                 <div class="pseudonym-info">
-                    <input type="checkbox" id="pseudonym" name="pseudonym">
+                    {{ signature_form.is_text_signature }}
                     <label for="pseudonym">Псевдонім автора</label>
                 </div>
-                <div class="signature-author">
-                    <p>Lina Li</p>
+                <div class="{{ info_form.is_text_signature.id_for_label }}" style="border-color: transparent;">
+                    {{ info_form.first_name }}
                 </div>
                 <div class="signature-information">
-                    <input type="checkbox" name="signature" id="signature">
-                    <label for="signature">Мій електронний підпис</label>
+                    {{ signature_form.is_text_signature }}
+                    <label for="{{ signature_form.is_text_signature.id_for_label }}">Мій електронний підпис</label>
                 </div>
                 <div class="signature-image">
                     <p>    
@@ -114,6 +112,7 @@
             </div>
         </div>
     </div>
+</form>
 {% endblock content %}
 
 {% block scripts %}
