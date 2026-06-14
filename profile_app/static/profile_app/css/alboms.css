@@ -28,7 +28,7 @@
 }
 
 .alboms-container .albom-panel{
-    display: flex;
+    display: flex-start;
     flex-direction: column;
     justify-content: center;
     align-items: center;

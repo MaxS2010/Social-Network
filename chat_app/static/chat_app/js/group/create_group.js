@@ -7,13 +7,19 @@ const cancelCreateButton = document.getElementById("cancel-create")
 const backToAddMemberButton = document.getElementById("back-to-add-member")
 const addCreateMember = document.getElementById("add-create-member")
 
-// Submit group form function
-async function submitGroupForm(selected) {
-    let form = document.querySelector("#create-group-form")
+let isSubmitting = false
+
+async function submitGroupForm(selected, triggerButton = null) {
+    if (isSubmitting) return
+    
+    const form = document.querySelector("#create-group-form")
     if (!form) {
         console.warn('Form not found')
         return
     }
+
+    isSubmitting = true
+    if (triggerButton) triggerButton.disabled = true
 
     const formData = new FormData(form)
     selected.forEach(cb => {
@@ -33,10 +39,11 @@ async function submitGroupForm(selected) {
 
         if (!data.success) {
             alert(data.error)
+            isSubmitting = false
+            if (triggerButton) triggerButton.disabled = false
             return
         }
 
-        // If it's a personal chat (1 user), redirect to chat
         if (data.redirect || !data.is_group) {
             window.location.href = '/chat/'
         } else {
@@ -45,11 +52,14 @@ async function submitGroupForm(selected) {
     } catch (error) {
         console.error('Error:', error)
         alert('Помилка при створенні чату')
+        
+        // Разблокируем при сетевой ошибке
+        isSubmitting = false
+        if (triggerButton) triggerButton.disabled = false
     }
 }
 
 nextCreateButton?.addEventListener("click", function () {
-
     const selected = document.querySelectorAll(".group-user-checkbox:checked")
 
     if (selected.length === 0) {
@@ -57,9 +67,8 @@ nextCreateButton?.addEventListener("click", function () {
         return
     }
 
-    // If only 1 user selected, skip to form submission
     if (selected.length === 1) {
-        submitGroupForm(selected)
+        submitGroupForm(selected, this)
         return
     }
 
@@ -70,50 +79,40 @@ nextCreateButton?.addEventListener("click", function () {
     if (addCreateMember) addCreateMember.style.display = "flex"
 })
 
-cancelCreateButton?.addEventListener("click", function() {
-    const group = this.closest(".group")
+function closeGroupModal(element) {
+    const group = element.closest(".group")
     const groupContainer = document.querySelector(".group-container")
     if (groupContainer) groupContainer.style.display = "none"
-    if (group) {
-        group.style.display = "none"
-    }
+    if (group) group.style.display = "none"
+}
+
+cancelCreateButton?.addEventListener("click", function() {
+    closeGroupModal(this)
+})
+
+document.querySelectorAll(".close-cross-container").forEach(btn => {
+    btn.addEventListener("click", function () {
+        closeGroupModal(this)
+    })
 })
 
 backToAddMemberButton?.addEventListener("click", function() {
     const group = this.closest(".group")
-
-    if (group) {
-        group.style.display = "none"
-    }
+    if (group) group.style.display = "none"
 
     const createGroup = document.getElementById("create-group")
     if (createGroup) createGroup.style.display = "flex"
 
     const membersList = document.querySelector(".members-list-view")
-    if (membersList) {
-        membersList.innerHTML = ""
-    }
+    if (membersList) membersList.innerHTML = ""
 
     document.querySelectorAll(".group-user-checkbox:checked").forEach(cb => {
         cb.checked = false
+        cb.dispatchEvent(new Event('change', { bubbles: true }))
     })
-
-    const container = document.querySelector(".members-list-view")
-    if (container) container.innerHTML = ""
 
     updateSelectedCount()
     resetGroupAvatarPreview()
-})
-
-document.querySelectorAll(".close-cross-container").forEach(btn => {
-    btn.addEventListener("click", function () {
-        const group = this.closest(".group")
-        const groupContainer = document.querySelector(".group-container")
-        if (groupContainer) groupContainer.style.display = "none"
-        if (group) {
-            group.style.display = "none"
-        }
-    })
 })
 
 addCreateMember
@@ -128,6 +127,5 @@ addCreateMember
         return
     }
 
-    submitGroupForm(selected)
+    submitGroupForm(selected, this)
 })
-

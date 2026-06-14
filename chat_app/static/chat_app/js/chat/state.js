@@ -2,10 +2,22 @@ let chatSocket = null
 let currentChatId = null
 let currentUserUsername = null
 let currentChatIsGroup = false
+let currentChatTotalMembers = 2
 
-window.currentUserUsername = currentUserUsername
-window.currentChatIsGroup = currentChatIsGroup
-window.currentChatId = currentChatId
+window.currentUserUsername = null
+window.currentChatIsGroup = false
+window.currentChatId = null
+window.currentChatTotalMembers = currentChatTotalMembers
+
+export function getCurrentChatTotalMembers() {
+    return currentChatTotalMembers || window.currentChatTotalMembers || 2
+}
+
+export function setCurrentChatTotalMembers(count) {
+    const value = Number(count) || 2
+    currentChatTotalMembers = value
+    window.currentChatTotalMembers = value
+}
 
 export function getChatSocket() {
     return chatSocket
@@ -16,16 +28,18 @@ export function setChatSocket(socket) {
 }
 
 export function getCurrentChatId() {
-    return currentChatId
+    const id = currentChatId || window.currentChatId
+    return id ? String(id) : null
 }
 
 export function setCurrentChatId(chatId) {
-    currentChatId = chatId
-    window.currentChatId = chatId
+    const cleanId = chatId ? String(chatId).trim() : null
+    currentChatId = cleanId
+    window.currentChatId = cleanId
 }
 
 export function getCurrentUserUsername() {
-    return currentUserUsername
+    return currentUserUsername || window.currentUserUsername || null
 }
 
 export function setCurrentUserUsername(username) {

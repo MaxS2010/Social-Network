@@ -23,24 +23,33 @@ export function resetHistoryState() {
 }
 
 export function ensureHistorySentinel() {
+    if (!messagesContainer) return null
+    
     let sentinel = document.getElementById('messages-history-sentinel')
     if (!sentinel) {
         sentinel = document.createElement('div')
         sentinel.id = 'messages-history-sentinel'
         sentinel.style.cssText = 'width:100%;height:1px;flex-shrink:0;'
     }
-    if (messagesContainer && sentinel.parentElement !== messagesContainer) {
+    
+    if (sentinel.parentElement !== messagesContainer) {
         messagesContainer.prepend(sentinel)
     }
     return sentinel
 }
 
 export function setupChatHistory(chatId, data) {
-    historyState.chatId = chatId
+    historyState.chatId = chatId ? String(chatId) : null
     historyState.page = data.page || 1
     historyState.hasOlder = Boolean(data.has_older)
     historyState.loading = false
-    initHistoryPagination()
+    
+    if (historyState.hasOlder) {
+        initHistoryPagination()
+    } else if (historyObserver) {
+        historyObserver.disconnect()
+        historyObserver = null
+    }
 }
 
 export function initHistoryPagination() {
@@ -53,49 +62,75 @@ export function initHistoryPagination() {
 
     historyObserver = new IntersectionObserver(async ([entry]) => {
         if (!entry.isIntersecting || !historyState.hasOlder || historyState.loading) return
-        const currentChatId = getCurrentChatId()
+        
+        const currentChatId = getCurrentChatId() ? String(getCurrentChatId()) : null
         if (historyState.chatId !== currentChatId) return
 
         historyState.loading = true
+        
         try {
-            await loadChatHistory(currentChatId, historyState.page + 1, { prepend: true })
+            const nextPage = historyState.page + 1
+            await loadChatHistory(currentChatId, nextPage, { prepend: true })
+        } catch (err) {
+            console.warn('Failed to auto-load older messages:', err)
         } finally {
             historyState.loading = false
+            
+            if (!historyState.hasOlder && historyObserver) {
+                historyObserver.disconnect()
+                historyObserver = null
+            }
         }
     }, {
         root: messagesContainer,
-        rootMargin: '120px',
+        rootMargin: '120px', 
     })
 
     historyObserver.observe(sentinel)
 }
 
 export async function loadChatHistory(chatId, page = 1, { prepend = false } = {}) {
-    const response = await fetch(`/chat/chat_history/${chatId}/?page=${page}`, {
-        headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-        },
-    })
-    const data = await response.json()
+    const strChatId = chatId ? String(chatId) : null
+    if (!strChatId) return { success: false }
 
-    if (!data.success) {
-        console.warn('chat history error', data)
+    try {
+        const response = await fetch(`/chat/chat_history/${strChatId}/?page=${page}`, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+            },
+        })
+        const data = await response.json()
+
+        if (!data.success) {
+            console.warn('chat history error', data)
+            if (!prepend) {
+                uiFunctions.renderMessages([])
+            }
+            return data
+        }
+
+        const activeChatId = getCurrentChatId() ? String(getCurrentChatId()) : null
+        if (activeChatId !== strChatId) return data
+
+        if (data.current_user) {
+            setCurrentUserUsername(data.current_user)
+        }
+
+        if (prepend) {
+            uiFunctions.prependMessages(data.messages || [])
+            historyState.page = data.page || page
+            historyState.hasOlder = Boolean(data.has_older)
+        } else {
+            uiFunctions.renderMessages(data.messages || [])
+            setupChatHistory(strChatId, data)
+        }
+
+        return data
+    } catch (error) {
+        console.error('Network error during chat history fetch:', error)
         if (!prepend) {
             uiFunctions.renderMessages([])
         }
-        return data
+        return { success: false, error }
     }
-
-    setCurrentUserUsername(data.current_user)
-
-    if (prepend) {
-        uiFunctions.prependMessages(data.messages || [])
-        historyState.page = data.page || page
-        historyState.hasOlder = Boolean(data.has_older)
-    } else {
-        uiFunctions.renderMessages(data.messages || [])
-        setupChatHistory(chatId, data)
-    }
-
-    return data
 }

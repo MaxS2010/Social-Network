@@ -188,7 +188,7 @@ def get_unread_status(user):
             other_user = chat.users.exclude(id=user.id).first()
 
         chats.append({
-            'chat_id': chat.id,
+            'chat_id': chat.id, # type: ignore
             'is_group': chat.is_group,
             'user_id': other_user.id if other_user else None,
             'username': (
@@ -201,13 +201,13 @@ def get_unread_status(user):
                 if chat.is_group and chat.avatar
                 else _user_avatar(other_user)
             ),
-            'last_message': chat.last_message_text,
+            'last_message': chat.last_message_text, # type: ignore
             'last_message_time': (
-                chat.last_message_time.isoformat()
-                if chat.last_message_time
+                chat.last_message_time.isoformat() # type: ignore
+                if chat.last_message_time # type: ignore
                 else None
             ),
-            'unread_count': chat.unread_count,
+            'unread_count': chat.unread_count, # type: ignore
         })
 
     return {

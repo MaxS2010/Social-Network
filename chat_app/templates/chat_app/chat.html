@@ -22,10 +22,17 @@
 {% endblock content %}
 
 {% block scripts %}
+    {{ online_user_ids|json_script:"online-users-data" }}
+
     <script type="module">
         import { setOnlineUserIds } from "{% static 'chat_app/js/chat/chat_open.js' %}";
-        const onlineUserIds = {{ online_user_ids|safe }};
-        setOnlineUserIds(onlineUserIds);
+        
+        const dataElement = document.getElementById('online-users-data');
+        if (dataElement) {
+            const onlineUserIds = JSON.parse(dataElement.textContent || '[]');
+            setOnlineUserIds(onlineUserIds);
+        }
     </script>
     <script type="module" src="{% static 'chat_app/js/chat.js' %}"></script>
 {% endblock scripts %}
+

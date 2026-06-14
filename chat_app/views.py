@@ -24,7 +24,7 @@ from .forms import MessageForm
 # Create your views here.
 
 User = get_user_model()
-    
+
 class ChatView(LoginRequiredMixin, TemplateView):
     template_name = "chat_app/chat.html"
 
@@ -56,8 +56,8 @@ class ChatView(LoginRequiredMixin, TemplateView):
 
         context["form"] = MessageForm()
 
-        personal_chats = get_chats_with_unread(self.request.user, is_group=False)
-        group_chats = get_chats_with_unread(self.request.user, is_group=True)
+        personal_chats = get_chats_with_unread(self.request.user, is_group= False)
+        group_chats = get_chats_with_unread(self.request.user, is_group= True)
 
         other_user_ids = set()
         for chat in personal_chats:
@@ -131,6 +131,7 @@ class ChatWithView(LoginRequiredMixin, View):
                 "success": False,
                 "error": "Користувач не є другом"
             }, status= 403)
+        
         user_id_chats = Chat.objects.filter(users= request.user, is_group= False).values_list("id", flat= True)
         chat = Chat.objects.filter(
             id__in= user_id_chats,
@@ -139,11 +140,11 @@ class ChatWithView(LoginRequiredMixin, View):
         ).first()
 
         if not chat:
-            chat = Chat.objects.create(is_group=False)
+            chat = Chat.objects.create(is_group= False)
             chat.users.add(request.user)
             chat.users.add(other_user)
 
-        page_data = get_chat_messages_page(chat, request.user, page=1)
+        page_data = get_chat_messages_page(chat, request.user, page= 1)
         mark_chat_as_read(chat, request.user)
 
         return JsonResponse(
@@ -159,10 +160,10 @@ class ChatWithView(LoginRequiredMixin, View):
 
 class GroupHistoryView(LoginRequiredMixin, View):
     def get(self, request, chat_id, *args, **kwargs):
-        chat = get_object_or_404(Chat, id=chat_id)
+        chat = get_object_or_404(Chat, id= chat_id)
 
         if request.user not in chat.users.all():
-            return JsonResponse({"success": False, "error": "Not a member of this chat"}, status=403)
+            return JsonResponse({"success": False, "error": "Not a member of this chat"}, status= 403)
 
         page_number = int(request.GET.get("page", 1))
         page_data = get_chat_messages_page(chat, request.user, page=page_number)
@@ -172,7 +173,9 @@ class GroupHistoryView(LoginRequiredMixin, View):
 
         other_user = None
         if not chat.is_group:
-            other_user = chat.users.exclude(id=request.user.id).first()
+            other_user = chat.users.exclude(id= request.user.id).first()
+
+        total_members = chat.users.count() if chat.is_group else 2
 
         return JsonResponse({
             "success": True,
@@ -181,6 +184,7 @@ class GroupHistoryView(LoginRequiredMixin, View):
             "name": chat.name if chat.is_group else (other_user.username if other_user else ""),
             "username": other_user.username if other_user else chat.name,
             "avatar": chat.avatar.url if chat.is_group and chat.avatar else None,
+            "total_members": total_members,
             "current_user": request.user.username,
             **page_data,
         })
@@ -189,12 +193,12 @@ class GroupHistoryView(LoginRequiredMixin, View):
 class MarkChatReadView(LoginRequiredMixin, View):
     def post(self, request, chat_id, *args, **kwargs):
         try:
-            chat = Chat.objects.get(id=chat_id)
+            chat = Chat.objects.get(id= chat_id)
         except Chat.DoesNotExist:
-            return JsonResponse({"success": False, "error": "Chat not found"}, status=404)
+            return JsonResponse({"success": False, "error": "Chat not found"}, status= 404)
 
         if request.user not in chat.users.all():
-            return JsonResponse({"success": False, "error": "Not a member of this chat"}, status=403)
+            return JsonResponse({"success": False, "error": "Not a member of this chat"}, status= 403)
 
         mark_chat_as_read(chat, request.user)
 
@@ -203,30 +207,30 @@ class MarkChatReadView(LoginRequiredMixin, View):
 
 class ChatMessageUploadView(LoginRequiredMixin, View):
     def post(self, request, chat_id, *args, **kwargs):
-        chat = get_object_or_404(Chat, id=chat_id)
-        if not chat.users.filter(id=request.user.id).exists():
-            return JsonResponse({"success": False, "error": "Not a member of this chat"}, status=403)
+        chat = get_object_or_404(Chat, id= chat_id)
+        if not chat.users.filter(id= request.user.id).exists():
+            return JsonResponse({"success": False, "error": "Not a member of this chat"}, status= 403)
 
         text = request.POST.get("message", "").strip()
         image = request.FILES.get("image")
 
         if not text and not image:
-            return JsonResponse({"success": False, "error": "Повідомлення порожнє"}, status=400)
+            return JsonResponse({"success": False, "error": "Повідомлення порожнє"}, status= 400)
 
         message = Message.objects.create(
-            text=text,
-            chat=chat,
-            sender=request.user,
+            text= text,
+            chat= chat,
+            sender= request.user,
         )
 
         if image:
-            MessageImage.objects.create(message=message, image=image)
+            MessageImage.objects.create(message= message, image= image)
 
         message = (
             Message.objects
             .select_related("sender", "chat")
             .prefetch_related("images", "chat__users__profile")
-            .get(id=message.id) # type: ignore
+            .get(id= message.id) # type: ignore
         )
         ws_data = serialize_message(message, request.user)
         ws_data["is_new"] = False
@@ -290,35 +294,33 @@ class CreateGroupview(LoginRequiredMixin, View):
         name = request.POST.get("name", "").strip()
         user_ids = request.POST.getlist("users[]")
 
-        # Check if no users selected
         if not user_ids:
             return JsonResponse({
                 "success": False,
                 "error": "Виберіть хоча б одного користувача"
-            }, status=400)
+            }, status= 400)
 
-        # If only 1 user, create personal chat instead
         if len(user_ids) == 1:
             try:
-                other_user = User.objects.get(id=user_ids[0])
-                friends = get_users_by_section(request.user, "friends").filter(id=other_user.id).values_list("id", flat=True) # type: ignore
+                other_user = User.objects.get(id= user_ids[0])
+                friends = get_users_by_section(request.user, "friends").filter(id= other_user.id).values_list("id", flat= True) # type: ignore
                 
                 if other_user.id not in friends: # type: ignore
                     return JsonResponse({
                         "success": False,
                         "error": f"Користувач {other_user.username} не є другом"
-                    }, status=403)
+                    }, status= 403)
                 
                 # Find or create personal chat
-                user_id_chats = Chat.objects.filter(users=request.user, is_group=False).values_list("id", flat=True)
+                user_id_chats = Chat.objects.filter(users= request.user, is_group= False).values_list("id", flat= True)
                 chat = Chat.objects.filter(
-                    id__in=user_id_chats,
-                    users=other_user,
-                    is_group=False
+                    id__in= user_id_chats,
+                    users= other_user,
+                    is_group= False
                 ).first()
 
                 if not chat:
-                    chat = Chat.objects.create(is_group=False)
+                    chat = Chat.objects.create(is_group= False)
                     chat.users.add(request.user)
                     chat.users.add(other_user)
 
@@ -333,22 +335,22 @@ class CreateGroupview(LoginRequiredMixin, View):
                 return JsonResponse({
                     "success": False,
                     "error": "Користувач не знайдений"
-                }, status=404)
+                }, status= 404)
 
         if not name:
             return JsonResponse({
                 "success": False,
                 "error": "Назва групи не може бути порожньою"
-            }, status=400)
+            }, status= 400)
 
         if len(user_ids) < 2:
             return JsonResponse({
                 "success": False,
                 "error": "Потрібно вибрати щонайменше двох користувачів для групи"
-            }, status=400)
+            }, status= 400)
 
-        users = User.objects.filter(id__in=user_ids)
-        friends = get_users_by_section(request.user, "friends").filter(id__in=user_ids).values_list("id", flat=True)
+        users = User.objects.filter(id__in= user_ids)
+        friends = get_users_by_section(request.user, "friends").filter(id__in= user_ids).values_list("id", flat= True)
 
         for user in users:
             if user.id not in friends: # type: ignore
@@ -357,11 +359,11 @@ class CreateGroupview(LoginRequiredMixin, View):
                     "error": f"Користувач {user.username} не є другом"
                 }, status=403)
 
-        chat = Chat.objects.create(name=name, is_group=True, admin=request.user)
+        chat = Chat.objects.create(name= name, is_group= True, admin= request.user)
         avatar = request.FILES.get('avatar')
         if avatar:
             chat.avatar = avatar
-            chat.save(update_fields=['avatar'])
+            chat.save(update_fields= ['avatar'])
 
         chat.users.add(request.user)
         chat.users.add(*users)

@@ -3,6 +3,7 @@ import { groupByLetter, renderGroups } from "./contacts_renderer.js"
 const searchInput = document.getElementById('contacts-search')
 let modalUsers = []
 let loadAllModalUsers = null
+let searchTimeoutId = null
 
 export function setContactsSearchUsers(users) {
     modalUsers = users || []
@@ -32,14 +33,24 @@ export function initModalContactsSearch({ loadAllUsers } = {}) {
     loadAllModalUsers = loadAllUsers || null
 }
 
-export function filterContacts(searchText) {
-    renderModalContacts(searchText)
-}
+searchInput?.addEventListener('input', (e) => {
+    const targetValue = e.target.value
 
-searchInput?.addEventListener('input', async (e) => {
-    if (normalizeSearchText(e.target.value) && typeof loadAllModalUsers === 'function') {
-        await loadAllModalUsers()
+    renderModalContacts(targetValue)
+
+    if (searchTimeoutId) {
+        clearTimeout(searchTimeoutId)
     }
 
-    filterContacts(e.target.value)
+    searchTimeoutId = setTimeout(async () => {
+        if (normalizeSearchText(targetValue) && typeof loadAllModalUsers === 'function') {
+            try {
+                await loadAllModalUsers()
+            } catch (error) {
+                console.warn('Failed to pre-load all modal users during search:', error)
+            } finally {
+                renderModalContacts(targetValue)
+            }
+        }
+    }, 350)
 })

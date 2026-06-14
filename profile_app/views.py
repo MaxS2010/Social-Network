@@ -4,6 +4,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import ProfileForm, SignatureForm, InfoForm, Profile, PasswordForm
 from django.contrib.auth.models import User
+from django.contrib.auth import update_session_auth_hash
 
 # Create your views here.
 
@@ -30,13 +31,16 @@ def edit_profile(request):
         if info_form.is_valid():
             info_form.save()
         if password_form.is_valid():
-            user = password_form.save(commit=False)
-            user.set_password(password_form.cleaned_data['password'])
-            user.save()
+            password = password_form.cleaned_data.get('password')
+            if password:  
+                user = password_form.save(commit=False)
+                user.set_password(password)
+                user.save()
+                update_session_auth_hash(request, user)
         if signature_form.is_valid():
             signature_form.save()
 
-        return redirect('profile_detail')
+        return redirect('settings')
     else:
         form = ProfileForm(instance=profile)
         info_form = InfoForm(instance=user)

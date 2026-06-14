@@ -1,20 +1,39 @@
 import { updateChatPageListItem, reorderChatList, updateHomeSidePanelItem } from "../ui/chat_list.js"
 import { updateHeaderMessagesBadge, updateHomeIconBadge, updateSectionBadge } from "../ui/unread_badges.js"
 
+const PING_INTERVAL_MS = 20000
+const STATUS_POLL_INTERVAL_MS = 30000
 const RECONNECT_DELAY_MS = 3000
+
 let notificationSocket = null
+let pingIntervalId = null
+let statusPollIntervalId = null
 let shouldReconnect = true
 
 export function connectNotificationWebSocket() {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
     notificationSocket = new WebSocket(`${protocol}//${window.location.host}/notifications/`)
 
+    notificationSocket.onopen = () => {
+        stopUnreadPolling()
+
+        pingIntervalId = setInterval(() => {
+            if (notificationSocket?.readyState === WebSocket.OPEN) {
+                notificationSocket.send(JSON.stringify({ type: 'ping' }))
+            }
+        }, PING_INTERVAL_MS)
+    }
+
     notificationSocket.onmessage = (event) => {
         handleChatNotification(JSON.parse(event.data))
     }
 
     notificationSocket.onclose = () => {
+        clearPingTimer()
+
         if (shouldReconnect) {
+            startUnreadPolling()
+            
             setTimeout(connectNotificationWebSocket, RECONNECT_DELAY_MS)
         }
     }
@@ -28,6 +47,33 @@ export async function pollUnreadStatus() {
     } catch (error) {
         console.warn('unread status poll failed', error)
     }
+}
+
+export function startUnreadPolling() {
+    pollUnreadStatus()
+
+    if (!statusPollIntervalId) {
+        statusPollIntervalId = setInterval(pollUnreadStatus, STATUS_POLL_INTERVAL_MS)
+    }
+}
+
+export function stopUnreadPolling() {
+    if (statusPollIntervalId) {
+        clearInterval(statusPollIntervalId)
+        statusPollIntervalId = null
+    }
+}
+
+export function clearPingTimer() {
+    if (pingIntervalId) {
+        clearInterval(pingIntervalId)
+        pingIntervalId = null
+    }
+}
+
+export function clearAllNotificationTimers() {
+    clearPingTimer()
+    stopUnreadPolling()
 }
 
 export function applyUnreadStatus(status) {
@@ -60,7 +106,11 @@ export function applyUnreadStatus(status) {
 }
 
 export function handleChatNotification(data) {
-    if (!data || data.type !== 'chat_notification') return
+    if (!data) return
+    
+    if (data.type === 'pong') return 
+
+    if (data.type !== 'chat_notification') return
 
     updateChatPageListItem(data)
     updateHomeSidePanelItem(data)
@@ -69,6 +119,8 @@ export function handleChatNotification(data) {
 
 window.addEventListener('beforeunload', () => {
     shouldReconnect = false
+    clearAllNotificationTimers()
+
     if (notificationSocket && notificationSocket.readyState === WebSocket.OPEN) {
         notificationSocket.close()
     }

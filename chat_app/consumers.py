@@ -1,11 +1,9 @@
 import json
-
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 
 from chat_app.models import Chat, Message
 from chat_app.utils.chat_queries import build_notifications_for_message
-
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -19,17 +17,25 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
+        
+        await self.mark_chat_as_read_db()
+
         await self.send(text_data=json.dumps({
             'type': 'connection_established',
             'username': chat_title,
         }))
 
-    async def disconnect(self, close_code):
+    async def disconnect(self, close_code): # type: ignore
         if hasattr(self, 'room_group_name'):
             await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
     async def receive(self, text_data):  # type: ignore
         data = json.loads(text_data)
+
+        if data.get('type') == 'ping':
+            await self.send(text_data=json.dumps({'type': 'pong'}))
+            return
+
         text = data.get('message', '')
 
         if not text.strip():
@@ -48,8 +54,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         await self.broadcast_notifications(message)
 
-    async def send_message(self, data):
-        await self.send(text_data=json.dumps(data))
+    async def send_message(self, event):
+        message_payload = event['message']
+        await self.send(text_data=json.dumps(message_payload))
 
     async def broadcast_notifications(self, message):
         payloads = await self.get_notification_payloads(message)
@@ -73,12 +80,18 @@ class ChatConsumer(AsyncWebsocketConsumer):
         )
 
     @database_sync_to_async
+    def mark_chat_as_read_db(self):
+        user = self.scope.get('user')
+        if user and not user.is_anonymous:
+            pass
+
+    @database_sync_to_async
     def get_message_ws_data(self, message):
         message = Message.objects.select_related('sender').get(id=message.id)
         return {
             'sender': message.sender.username,
             'text': message.text,
-            'images': [image.image.url for image in message.images.all()],
+            'images': [image.image.url for image in message.images.all()], # type: ignore
             'datetime': message.created_at.isoformat(),
             'is_new': False,
         }
@@ -107,7 +120,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         other_user = chat.users.exclude(id=user.id).first()
         return other_user.username if other_user else None
 
-
 class NotificationConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         user = self.scope.get('user')
@@ -121,9 +133,18 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_add(self.group_name, self.channel_name)
         await self.accept()
 
-    async def disconnect(self, close_code):
+    async def disconnect(self, close_code): # type: ignore
         if hasattr(self, 'group_name'):
             await self.channel_layer.group_discard(self.group_name, self.channel_name)
+
+    async def receive(self, text_data): # type: ignore
+        try:
+            data = json.loads(text_data)
+            if data.get('type') == 'ping':
+                await self.send(text_data=json.dumps({'type': 'pong'}))
+                return
+        except (json.JSONDecodeError, TypeError):
+            pass
 
     async def chat_notification(self, event):
         await self.send(text_data=json.dumps(event['payload']))

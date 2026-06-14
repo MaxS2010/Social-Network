@@ -5,6 +5,14 @@ function getChatListContainer(isGroup) {
     return sections[isGroup ? 1 : 0] || null
 }
 
+function getChatListItem(chatId, isGroup = null) {
+    if (isGroup !== null) {
+        const container = getChatListContainer(Boolean(isGroup))
+        return container ? container.querySelector(`.container-chat[data-chat-id="${chatId}"]`) : null
+    }
+    return document.querySelector(`.content-chats .container-chat[data-chat-id="${chatId}"]`)
+}
+
 function isChatActive(chatId) {
     return Boolean(document.querySelector(`.container-chat.active[data-chat-id="${chatId}"]`))
 }
@@ -79,18 +87,10 @@ export function ensureChatListItem(data) {
 }
 
 export function moveChatListItemToTop(chatId, isGroup = null) {
-    if (isGroup !== null && isGroup !== undefined) {
-        const container = getChatListContainer(Boolean(isGroup))
-        const item = container?.querySelector(`.container-chat[data-chat-id="${chatId}"]`)
-        if (item && container) {
-            container.prepend(item)
-        }
-        return
-    }
-
-    document.querySelectorAll(`.container-chat[data-chat-id="${chatId}"]`).forEach((item) => {
+    const item = getChatListItem(chatId, isGroup)
+    if (item) {
         item.closest('.content-chats')?.prepend(item)
-    })
+    }
 }
 
 export function reorderChatList(chats) {
@@ -122,12 +122,14 @@ export function bumpChatInList(chatId, messageData, isGroup = null) {
 
     const isOwnMessage = messageData.sender === window.currentUserUsername
     const shouldShowUnread = !isOwnMessage && !isChatActive(chatId)
+    const resolvedIsGroup = isGroup ?? window.currentChatIsGroup ?? false
 
-    if (!document.querySelector(`.container-chat[data-chat-id="${chatId}"]`)) {
-        const resolvedIsGroup = isGroup ?? window.currentChatIsGroup ?? false
+    let item = getChatListItem(chatId, resolvedIsGroup)
+
+    if (!item) {
         const chatTitle = document.getElementById('chat-title')?.textContent?.replace(/^Чат з\s+/, '').trim()
 
-        ensureChatListItem({
+        item = ensureChatListItem({
             chat_id: chatId,
             is_group: Boolean(resolvedIsGroup),
             username: chatTitle || '',
@@ -137,17 +139,12 @@ export function bumpChatInList(chatId, messageData, isGroup = null) {
         })
     }
 
-    document.querySelectorAll(`.container-chat[data-chat-id="${chatId}"]`).forEach((item) => {
+    if (item) {
         const preview = item.querySelector('.chat-info h3')
         const time = item.querySelector('.chat-info > div:last-child p')
 
-        if (preview) {
-            preview.textContent = messageData.text || ''
-        }
-
-        if (time) {
-            time.textContent = formatChatTime(messageData.datetime)
-        }
+        if (preview) preview.textContent = messageData.text || ''
+        if (time) time.textContent = formatChatTime(messageData.datetime)
 
         if (shouldShowUnread) {
             item.classList.add('container-chat--unread')
@@ -159,30 +156,23 @@ export function bumpChatInList(chatId, messageData, isGroup = null) {
                 'chat-unread-badge',
             )
         }
-
+        
         item.closest('.content-chats')?.prepend(item)
-    })
-
-    moveChatListItemToTop(chatId, isGroup)
+    }
 }
 
 export function updateChatPageListItem(data, options = {}) {
     const { moveToTop = true } = options
     const shouldShowUnread = data.unread_count > 0 && !isChatActive(data.chat_id)
 
-    ensureChatListItem(data)
+    const item = ensureChatListItem(data)
 
-    document.querySelectorAll(`.container-chat[data-chat-id="${data.chat_id}"]`).forEach((item) => {
+    if (item) {
         const preview = item.querySelector('.chat-info h3')
         const time = item.querySelector('.chat-info > div:last-child p')
 
-        if (preview) {
-            preview.textContent = data.last_message || ''
-        }
-
-        if (time) {
-            time.textContent = formatChatTime(data.last_message_time)
-        }
+        if (preview) preview.textContent = data.last_message || ''
+        if (time) time.textContent = formatChatTime(data.last_message_time)
 
         item.classList.toggle('container-chat--unread', shouldShowUnread)
         setOrRemoveBadge(
@@ -190,18 +180,17 @@ export function updateChatPageListItem(data, options = {}) {
             shouldShowUnread ? data.unread_count : 0,
             'chat-unread-badge',
         )
-    })
 
-    if (moveToTop) {
-        moveChatListItemToTop(data.chat_id, data.is_group)
+        if (moveToTop) {
+            item.closest('.content-chats')?.prepend(item)
+        }
     }
 
     const sections = document.querySelectorAll('.chats-section .messages-container')
-    if (sections[0]) {
+    if (sections[0] && data.personal_unread_count !== undefined) {
         updateSectionBadge(sections[0], data.personal_unread_count)
     }
-    if (sections[1]) {
+    if (sections[1] && data.group_unread_count !== undefined) {
         updateSectionBadge(sections[1], data.group_unread_count)
     }
 }
-

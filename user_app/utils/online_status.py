@@ -58,13 +58,14 @@ def is_user_online(user_id):
 
 def get_online_user_ids(user_ids):
     if not user_ids:
-        return set()
+        return []
 
     keys = {user_id: _get_cache_key(user_id) for user_id in user_ids}
     cached = cache.get_many(keys.values())
 
-    return {
+    return [
         user_id
         for user_id, key in keys.items()
         if cached.get(key)
-    }
+    ]
+

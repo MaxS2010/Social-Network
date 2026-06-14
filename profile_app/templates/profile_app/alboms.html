@@ -8,8 +8,6 @@
 {% block links %}
     <link rel="stylesheet" href="{% static 'css/side_panel.css' %}">
     <link rel="stylesheet" href="{% static 'profile_app/css/alboms.css' %}">
-    <link rel="stylesheet" href="{% static 'profile_app/js/alboms.js' %}">
-    <link rel="stylesheet" href="{% static 'profile_app/js/settings.js' %}">
     <link rel="stylesheet" href="{% static 'profile_app/css/side_panel_settings.css' %}">
 {% endblock links %}
 
@@ -23,18 +21,16 @@
             <div class="edit-albom">
                 <p>Мої фото</p>
                 <div class="edit-albom-container" id="EditButton">
-                    <p>
+                    <label for="file-input">
                         <img src="{% static 'profile_app/icons/add-image.svg' %}" alt="">
-                    </p>
+                    </label>
                 </div>
-            </div>
-            <div class>
-
             </div>
         </div>
     </div>
 {% endblock content %}
 
 {% block scripts %}
-
+    <script src="{% static 'post_app/js/alboms.js' %}"></script>
+    <script src="{% static 'post_app/js/settings.js' %}"></script>
 {% endblock scripts %}

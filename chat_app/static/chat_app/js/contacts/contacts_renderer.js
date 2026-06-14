@@ -1,14 +1,16 @@
+import { escapeHTML } from "../utils/clear_html.js"
+
 export function groupByLetter(users) {
     return users.reduce((acc, user) => {
+        const name = (user?.username || '').trim()
+        if (!name) return acc
 
-        const letter = user.username[0].toUpperCase()
+        const letter = name[0].toUpperCase()
 
         if (!acc[letter]) {
             acc[letter] = []
         }
-
         acc[letter].push(user)
-
         return acc
     }, {})
 }
@@ -19,43 +21,50 @@ export function renderGroups(grouped, containerId = "contactsContainer") {
         console.warn(`renderGroups: container ${containerId} not found`, {grouped, containerId})
         return
     }
-    console.log(`renderGroups ${containerId}`, Object.keys(grouped).length)
+
+    const currentlyCheckedIds = new Set(
+        Array.from(container.querySelectorAll('.group-user-checkbox:checked')).map(cb => String(cb.value))
+    )
+
     container.innerHTML = ""
+    const mainFragment = document.createDocumentFragment()
 
     Object.keys(grouped)
         .sort()
         .forEach(letter => {
-
             const groupEl = document.createElement("div")
             groupEl.className = "contacts-group"
-
-            groupEl.innerHTML = `<p class="contacts-letter">${letter}</p>`
+            groupEl.innerHTML = `<p class="contacts-letter">${escapeHTML(letter)}</p>`
 
             grouped[letter].forEach(user => {
-
                 const el = document.createElement("div")
                 el.className = "people-contact-modal"
-                el.dataset.userId = user.id
+                el.dataset.userId = String(user.id)
                 el.dataset.chatUsername = user.username
 
+                const avatarUrl = user.avatar || '/static/chat_app/images/Avatar-1.png'
+                const isChecked = currentlyCheckedIds.has(String(user.id)) ? 'checked' : ''
+
                 el.innerHTML = `
-                    <img src="${user.avatar || '/static/chat_app/images/Avatar-1.png'}">
-                    <p class="contact-name">${user.username}</p>
+                    <img src="${escapeHTML(avatarUrl)}" alt="${escapeHTML(user.username)}">
+                    <p class="contact-name">${escapeHTML(user.username)}</p>
 
                     <div class="checkbox-container">
                         <label class="input-checkbox">
                             <input type="checkbox"
                                 class="group-user-checkbox"
                                 name="users[]"
-                                value="${user.id}"
-                                data-avatar="${user.avatar || '/static/chat_app/images/Avatar-1.png'}">
+                                value="${String(user.id)}"
+                                ${isChecked}
+                                data-avatar="${escapeHTML(avatarUrl)}">
                             <span class="checkmark"></span>
                         </label>
                     </div>
                 `
-
                 groupEl.appendChild(el)
             })
-            container.appendChild(groupEl)
+            mainFragment.appendChild(groupEl)
         })
+
+    container.appendChild(mainFragment)
 }

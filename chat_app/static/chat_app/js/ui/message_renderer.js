@@ -1,15 +1,18 @@
 import { ensureHistorySentinel } from "../chat_history.js"
 import { formatDateLabel, getDateKey } from "../utils/date.js"
 import { getCurrentUserUsername } from "../chat/state.js"
+import { escapeHTML } from "../utils/clear_html.js"
+
 
 const messagesContainer = document.getElementById("messages-users-container")
+
 
 export function createMessageElement(message) {
     const { sender, datetime, text, images, isNew } = getMessageData(message)
     const currentUserUsername = getCurrentUserUsername()
 
     const messageElement = document.createElement('div')
-    messageElement.classList.add('message')
+    messageElement.className = 'message'
     messageElement.dataset.date = getDateKey(datetime)
 
     if (sender === currentUserUsername) {
@@ -21,12 +24,14 @@ export function createMessageElement(message) {
         }
     }
 
-    const senderHtml = (sender === currentUserUsername) ? '' : `<p class="message-sender">${sender}</p>`
+    const escapedSender = escapeHTML(sender)
+    const senderHtml = (sender === currentUserUsername) ? '' : `<p class="message-sender">${escapedSender}</p>`
 
     const imagesHtml = images.map((src) => (
-        `<img class="message-image" src="${src}" alt="">`
+        `<img class="message-image" src="${escapeHTML(src)}" alt="">`
     )).join('')
-    const textHtml = text ? `<div class="message-text">${text}</div>` : ''
+    
+    const textHtml = text ? `<div class="message-text">${escapeHTML(text)}</div>` : ''
 
     messageElement.innerHTML = `
         <div class="message-content">
@@ -91,9 +96,13 @@ export function renderMessage(message, options = {}) {
         appendNewMessagesSeparatorIfNeeded()
     }
 
+    const isAtBottom = messagesContainer 
+        ? (messagesContainer.scrollHeight - messagesContainer.scrollTop - messagesContainer.clientHeight < 50)
+        : false
+
     messagesContainer.appendChild(createMessageElement(message))
 
-    if (!options.skipScroll) {
+    if (!options.skipScroll && (isAtBottom || messageData.sender === currentUserUsername)) {
         scrollToBottom()
     }
 }
@@ -124,8 +133,13 @@ export function renderMessages(messages) {
         messagesContainer.appendChild(createMessageElement(message))
     })
 
-    scrollToBottom(false)
+    setTimeout(() => {
+        requestAnimationFrame(() => {
+            scrollToBottom(false)
+        })
+    }, 10)
 }
+
 
 export function prependMessages(messages) {
     if (!messages?.length || !messagesContainer) return
@@ -141,20 +155,22 @@ export function prependMessages(messages) {
     const fragment = document.createDocumentFragment()
     let lastDateKey = null
 
-    messages.forEach((message, index) => {
+    messages.forEach((message) => {
         const { datetime } = getMessageData(message)
         const dateKey = getDateKey(datetime)
-        const isLastInBatch = index === messages.length - 1
-        const needsDateSep = dateKey !== lastDateKey
-            && !(isLastInBatch && dateKey === firstExistingDateKey)
 
-        if (needsDateSep) {
+        if (dateKey !== lastDateKey) {
             fragment.appendChild(createDateSeparator(datetime))
         }
 
         lastDateKey = dateKey
         fragment.appendChild(createMessageElement(message))
     })
+
+    if (firstExistingDateKey && lastDateKey === firstExistingDateKey) {
+        const duplicatedSeparator = messagesContainer.querySelector(`.chat-date-separator[data-date="${firstExistingDateKey}"]`)
+        duplicatedSeparator?.remove()
+    }
 
     messagesContainer.insertBefore(fragment, insertBeforeNode)
     messagesContainer.scrollTop = scrollTopBefore + (messagesContainer.scrollHeight - scrollHeightBefore)

@@ -1,6 +1,5 @@
 import { getCSRFToken, showErrors } from '/static/user_app/js/utils.js'
 
-// Відправляємо форму у фоновому режимі без перезавантаження сторінки.
 document.getElementById("post-create-form").addEventListener("submit", function (event) {
     event.preventDefault()
 
@@ -16,7 +15,6 @@ document.getElementById("post-create-form").addEventListener("submit", function 
         body: formData,
     })
     .then(async (response) => {
-        // Спочатку читаємо JSON, а потім перевіряємо HTTP-статус.
         const data = await response.json()
         console.log(data)
 
@@ -27,13 +25,11 @@ document.getElementById("post-create-form").addEventListener("submit", function 
         return data
     })
     .then((data) => {
-        // Після успішного створення переходимо на сторінку всіх постів.
         if (data.redirect_url) {
             window.location.href = data.redirect_url
         }
     })
     .catch((data) => {
-        // Якщо Django повернув помилки форми, показуємо їх над формою.
         if (data.errors) {
             console.log(data.errors)
             showErrors(data.errors)

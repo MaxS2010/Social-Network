@@ -23,8 +23,8 @@ if (sidePanelContainer) {
 window.applyChatUnreadStatus = applyUnreadStatus
 window.bumpChatInList = bumpChatInList
 
-connectPresenceWebSocket()
-startPresencePolling()
-connectNotificationWebSocket()
 pollOnlineStatus()
 pollUnreadStatus()
+
+connectPresenceWebSocket()
+connectNotificationWebSocket()

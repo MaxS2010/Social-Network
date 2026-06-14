@@ -1,3 +1,6 @@
+import { updateChatStatus } from "../chat/chat_open.js"
+import { getCurrentChatIsGroup, getCurrentChatId } from "../chat/state.js"
+
 const PING_INTERVAL_MS = 20000
 const STATUS_POLL_INTERVAL_MS = 30000
 const RECONNECT_DELAY_MS = 3000
@@ -54,12 +57,23 @@ export function clearPingTimer() {
     }
 }
 
-export function clearAllPresenceTimers() {
-    clearPingTimer()
-
+export function stopPresencePolling() {
     if (statusPollIntervalId) {
         clearInterval(statusPollIntervalId)
         statusPollIntervalId = null
+    }
+}
+
+export function clearAllPresenceTimers() {
+    clearPingTimer()
+    stopPresencePolling()
+}
+
+export function startPresencePolling() {
+    pollOnlineStatus() 
+    
+    if (!statusPollIntervalId) {
+        statusPollIntervalId = setInterval(pollOnlineStatus, STATUS_POLL_INTERVAL_MS)
     }
 }
 
@@ -68,6 +82,8 @@ export function connectPresenceWebSocket() {
     presenceSocket = new WebSocket(`${protocol}//${window.location.host}/presence/`)
 
     presenceSocket.onopen = () => {
+        stopPresencePolling()
+
         pingIntervalId = setInterval(() => {
             if (presenceSocket?.readyState === WebSocket.OPEN) {
                 presenceSocket.send(JSON.stringify({ type: 'ping' }))
@@ -80,11 +96,19 @@ export function connectPresenceWebSocket() {
 
         if (data.type === 'initial_status') {
             applyInitialStatus(data.online_user_ids)
+            
+            if (getCurrentChatIsGroup()) {
+                updateChatStatus(null, true)
+            }
             return
         }
 
         if (data.type === 'user_status') {
             updateUserOnlineStatus(data.user_id, Boolean(data.is_online))
+            
+            if (getCurrentChatIsGroup()) {
+                updateChatStatus(null, true)
+            }
         }
     }
 
@@ -92,6 +116,8 @@ export function connectPresenceWebSocket() {
         clearPingTimer()
 
         if (shouldReconnect) {
+            startPresencePolling()
+            
             setTimeout(connectPresenceWebSocket, RECONNECT_DELAY_MS)
         }
     }
@@ -105,9 +131,3 @@ window.addEventListener('beforeunload', () => {
         presenceSocket.close()
     }
 })
-
-export function startPresencePolling() {
-    if (!statusPollIntervalId) {
-        statusPollIntervalId = setInterval(pollOnlineStatus, STATUS_POLL_INTERVAL_MS)
-    }
-}

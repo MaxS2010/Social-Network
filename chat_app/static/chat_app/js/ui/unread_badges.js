@@ -47,13 +47,21 @@ export function updateSectionUnreadBadges() {
 
         let total = 0
         chatBadges.forEach((badge) => {
-            const value = badge.textContent.trim()
-            total += value.endsWith('+') ? 100 : Number(value) || 0
+            const exactCount = badge.dataset.rawCount 
+                ? Number(badge.dataset.rawCount) 
+                : null
+            
+            if (exactCount !== null) {
+                total += exactCount
+            } else {
+                const value = badge.textContent.trim()
+                total += value.endsWith('+') ? 100 : Number(value) || 0
+            }
         })
 
         if (total > 0) {
             if (sectionBadge) {
-                sectionBadge.textContent = total > 99 ? '99+' : String(total)
+                applyBadgeText(sectionBadge, total)
             }
             return
         }
@@ -67,85 +75,44 @@ export function applyBadgeText(badge, count) {
 
     const text = formatBadgeCount(count)
     badge.textContent = text
+    
+    badge.dataset.rawCount = String(count)
     badge.classList.toggle('count-badge--multi', text.length > 1)
 }
 
-export function setOrRemoveBadge(avatarWrapper, count, badgeClass) {
-    if (!avatarWrapper) return
+function manageBadgeLifecycle(container, count, badgeClass) {
+    if (!container) return
 
-    const existingBadge = avatarWrapper.querySelector(`.${badgeClass}`)
+    const existingBadge = container.querySelector(`.${badgeClass}`)
 
     if (count > 0) {
         const badge = existingBadge || document.createElement('span')
         badge.className = badgeClass
         applyBadgeText(badge, count)
         if (!existingBadge) {
-            avatarWrapper.appendChild(badge)
+            container.appendChild(badge)
         }
         return
     }
 
     existingBadge?.remove()
+}
+
+export function setOrRemoveBadge(avatarWrapper, count, badgeClass) {
+    manageBadgeLifecycle(avatarWrapper, count, badgeClass)
 }
 
 export function updateSectionBadge(section, count) {
-    if (!section) return
-
-    const wrapper = section.querySelector('.chat-section-icon-wrapper')
-    if (!wrapper) return
-
-    const existingBadge = wrapper.querySelector('.chat-section-icon-badge')
-
-    if (count > 0) {
-        const badge = existingBadge || document.createElement('span')
-        badge.className = 'chat-section-icon-badge'
-        applyBadgeText(badge, count)
-        if (!existingBadge) {
-            wrapper.appendChild(badge)
-        }
-        return
-    }
-
-    existingBadge?.remove()
+    const wrapper = section?.querySelector('.chat-section-icon-wrapper')
+    manageBadgeLifecycle(wrapper, count, 'chat-section-icon-badge')
 }
 
 export function updateHomeIconBadge(count) {
-    const block = document.getElementById('sidePanelMessages')
-    if (!block) return
-
-    const iconWrapper = block.querySelector('.side-panel-icon-wrapper')
-    if (!iconWrapper) return
-
-    const existingBadge = iconWrapper.querySelector('.side-panel-icon-badge')
-
-    if (count > 0) {
-        const badge = existingBadge || document.createElement('span')
-        badge.className = 'side-panel-icon-badge'
-        applyBadgeText(badge, count)
-        if (!existingBadge) {
-            iconWrapper.appendChild(badge)
-        }
-        return
-    }
-
-    existingBadge?.remove()
+    const iconWrapper = document.querySelector('#sidePanelMessages .side-panel-icon-wrapper')
+    manageBadgeLifecycle(iconWrapper, count, 'side-panel-icon-badge')
 }
 
 export function updateHeaderMessagesBadge(count) {
     const iconWrapper = document.getElementById('headerMessagesIcon')
-    if (!iconWrapper) return
-
-    const existingBadge = iconWrapper.querySelector('.header-icon-badge')
-
-    if (count > 0) {
-        const badge = existingBadge || document.createElement('span')
-        badge.className = 'header-icon-badge'
-        applyBadgeText(badge, count)
-        if (!existingBadge) {
-            iconWrapper.appendChild(badge)
-        }
-        return
-    }
-
-    existingBadge?.remove()
+    manageBadgeLifecycle(iconWrapper, count, 'header-icon-badge')
 }

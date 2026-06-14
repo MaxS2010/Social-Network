@@ -19,46 +19,55 @@ const contactsContainer = document.getElementById('contactsModalContainer')
 const contactsSearchInput = document.getElementById('contacts-search')
 let modalObserver = null
 
-console.log('modal_create root', contactsScroll)
-
 async function loadPage(p = 1) {
-    if (loading || !hasNext) return
+    if (loading || !hasNext) return false
 
     loading = true
 
-    const res = await fetch(`/chat/contacts-modal/?page=${p}`)
-    const data = await res.json()
+    try {
+        const res = await fetch(`/chat/contacts-modal/?page=${p}`)
+        const data = await res.json()
 
-    if (!data.success) {
+        if (!data.success) {
+            hasNext = false
+            return false
+        }
+
+        if (p == 1) {
+            allUsers = data.results || []
+        } else {
+            allUsers.push(...(data.results || []))
+        }
+
+        hasNext = Boolean(data.has_next)
+        page = p
+
+        saveCache(allUsers)
+        setContactsSearchUsers(allUsers)
+        renderModalContacts()
+        
+        return true
+    } catch (error) {
+        console.error('Failed to load modal contacts page:', error)
+        hasNext = false
+        return false
+    } finally {
         loading = false
-        return
     }
-
-    allUsers.push(...data.results)
-    
-
-    hasNext = data.has_next
-    page = p
-
-    saveCache(allUsers)
-
-    setContactsSearchUsers(allUsers)
-    renderModalContacts()
-
-    loading = false
 }
 
 async function loadAllModalContacts() {
-    while (hasNext && !loading) {
-        await loadPage(page + 1)
+    if (!hasNext || loading) return
+
+    while (hasNext) {
+        const success = await loadPage(page + 1)
+        if (!success) break
     }
 }
 
 initModalContactsSearch({ loadAllUsers: loadAllModalContacts })
 
 function openContactsModal() {
-    console.log('openContactsModal start')
-
     const groupContainer = document.querySelector(".group-container")
     if (groupContainer) {
         groupContainer.style.display = "flex"
@@ -70,9 +79,13 @@ function openContactsModal() {
 
     if (cached && cached.length) {
         allUsers = cached
-        hasNext = true
+        hasNext = false
+        
         setContactsSearchUsers(allUsers)
         renderModalContacts(contactsSearchInput?.value || '')
+        
+        const sentinel = document.getElementById('contactsModalSentinel')
+        if (sentinel) sentinel.style.display = 'none'
         return
     }
 
@@ -85,26 +98,24 @@ function openContactsModal() {
 
     const sentinel = document.getElementById('contactsModalSentinel')
     if (sentinel && contactsScroll) {
-        sentinel.style.display = 'block'
-        sentinel.style.width = '100%'
-        sentinel.style.height = '2px'
-        sentinel.style.minHeight = '2px'
-        sentinel.style.flexShrink = '0'
+        sentinel.style.cssText = 'display:block; width:100%; height:2px; min-height:2px; flex-shrink:0;'
 
-        if (!modalObserver) {
-            modalObserver = new IntersectionObserver(async ([entry]) => {
-                if (!entry.isIntersecting || loading || !hasNext) return
-                await loadPage(page + 1)
-            }, {
-                root: contactsScroll,
-                rootMargin: '150px'
-            })
+        if (modalObserver) {
+            modalObserver.disconnect()
+        }
 
-            try {
-                modalObserver.observe(sentinel)
-            } catch (error) {
-                console.warn('modal observer observe failed', error, sentinel)
-            }
+        modalObserver = new IntersectionObserver(async ([entry]) => {
+            if (!entry.isIntersecting || loading || !hasNext) return
+            await loadPage(page + 1)
+        }, {
+            root: contactsScroll,
+            rootMargin: '150px'
+        })
+
+        try {
+            modalObserver.observe(sentinel)
+        } catch (error) {
+            console.warn('modal observer observe failed', error, sentinel)
         }
     }
 
@@ -113,6 +124,7 @@ function openContactsModal() {
 
 document.addEventListener("click", (e) => {
     const modalContact = e.target.closest(".people-contact-modal")
+    
     if (modalContact) {
         e.stopPropagation()
 
@@ -120,14 +132,13 @@ document.addEventListener("click", (e) => {
         if (checkbox && e.target !== checkbox) {
             e.preventDefault()
             checkbox.checked = !checkbox.checked
+            
             checkbox.dispatchEvent(new Event("change", { bubbles: true }))
         }
-
         return
     }
 
     if (e.target.closest("#create-group-btn")) {
-        console.log('create-group-btn clicked', e.target)
         openContactsModal()
     }
 })

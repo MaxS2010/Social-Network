@@ -10,9 +10,9 @@
 {% block links %}
 <link rel="stylesheet" href="{% static 'css/side_panel.css' %}">
 <link rel="stylesheet" href="{% static 'profile_app/css/settings.css' %}">
-<link rel="stylesheet" href="{% static 'profile_app/js/settings.js' %}">
 <link rel="stylesheet" href="{% static 'profile_app/js/alboms.js' %}">
 <link rel="stylesheet" href="{% static 'profile_app/css/side_panel_settings.css' %}">
+<link rel="stylesheet" href="{% static 'profile_app/css/edit_profile_card.css' %}">
 {% endblock links %}
 
 {% block side_panel %}
@@ -20,15 +20,16 @@
 {% endblock side_panel %}
 
 {% block content %}
-<form action="" method="post" enctype="multipart/form-data">
+<form action="{% url 'settings' %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     
     <div class="settings-container">
-        <div class="profile-panel">
+        {% include 'profile_app/particles/edit_forms/edit_profile_card.html' %}
+        <div class="profile-panel" id="profilePanel">
             <div class="edit-info">
                 <p>Картка профілю</p>
                 <div class="edit-container">
-                    <button type="submit" id="EditButton">
+                    <button type="button" id="editButton">
                         <img src="{% static 'profile_app/icons/edit-info.svg' %}" alt="">
                     </button>
                 </div>
@@ -116,5 +117,5 @@
 {% endblock content %}
 
 {% block scripts %}
-
+<script src="{% static 'profile_app/js/settings.js' %}"></script>
 {% endblock scripts %}

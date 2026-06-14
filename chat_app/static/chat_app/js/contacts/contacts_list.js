@@ -1,138 +1,160 @@
 import { filterUsers } from "./contacts_search.js"
+import { escapeHTML } from "../utils/clear_html.js"
 
 const contactsScroll = document.querySelector('.contacts-scroll')
-const contactsContainer = contactsScroll?.querySelector('#contactsContainer')
 const contactsList = contactsScroll?.querySelector('#contactsList')
 const sentinel = contactsScroll?.querySelector('#contacts-sentinel')
 const contactsSearchInput = document.getElementById('contacts-list-search')
 
 if (sentinel) {
-    sentinel.style.display = 'block'
-    sentinel.style.width = '100%'
-    sentinel.style.height = '2px'
-    sentinel.style.minHeight = '2px'
-    sentinel.style.flexShrink = '0'
-    console.log('contacts-sentinel computed', getComputedStyle(sentinel).width, getComputedStyle(sentinel).height)
-} else {
-    console.warn('contacts-sentinel not found')
+    sentinel.style.cssText = 'display:block; width:100%; height:2px; min-height:2px; flex-shrink:0;'
 }
 
 let page = 1
 let loading = false
 let hasNext = true
 let allUsers = []
+let searchDebounceTimeout = null
 
 function createContactItem(user) {
     const item = document.createElement('div')
     item.className = 'people-contact-plain'
-    item.dataset.chatUser = user.id
+    item.dataset.chatUser = String(user.id)
     item.dataset.chatUsername = user.username
     item.innerHTML = `
         <div class="image-container">
-            <img src="${user.avatar || '/static/chat_app/images/Avatar-1.png'}" alt="${user.username}">
+            <img src="${escapeHTML(user.avatar || '/static/chat_app/images/Avatar-1.png')}" alt="${escapeHTML(user.username)}">
         </div>
         <div class="contact-info">
-            <p class="contact-name">${user.username}</p>
+            <p class="contact-name">${escapeHTML(user.username)}</p>
         </div>
     `
     return item
 }
 
 function render(users) {
-    console.log('rendering users', users.length)
-    if (!contactsList) {
-        console.warn('contactsList container not found')
-        return
-    }
+    if (!contactsList) return
+    
+    const fragment = document.createDocumentFragment()
+    users.forEach(user => fragment.appendChild(createContactItem(user)))
+    
     contactsList.innerHTML = ''
-    users.forEach(user => contactsList.appendChild(createContactItem(user)))
+    contactsList.appendChild(fragment)
 }
 
 function renderSearchResults() {
-    render(filterUsers(allUsers, contactsSearchInput?.value || ''))
+    const query = contactsSearchInput?.value?.trim() || ''
+    render(filterUsers(allUsers, query))
 }
 
-
 async function loadInitial() {
-    const res = await fetch(`/chat/contacts/?page=1`)
-    const data = await res.json()
+    try {
+        const res = await fetch(`/chat/contacts/?page=1`)
+        const data = await res.json()
 
-    if (!data.success) return
+        if (!data.success) return
 
-    allUsers = data.results
-    hasNext = data.has_next
-    page = 1
+        allUsers = data.results || []
+        hasNext = Boolean(data.has_next)
+        page = 1
 
-    renderSearchResults()
+        renderSearchResults()
+    } catch (err) {
+        console.warn('Initial contacts load failed', err)
+    }
 }
 
 async function loadPage(nextPage, { renderAfterLoad = true } = {}) {
-    console.log("FETCH PAGE:", nextPage, 'hasNext=', hasNext, 'loading=', loading)
-    if (loading || !hasNext) return
+    if (loading || !hasNext) return false
 
     loading = true
 
-    const res = await fetch(`/chat/contacts/?page=${nextPage}`)
-    const data = await res.json()
-    // console.log("BACKEND RESPONSE:", data)
+    try {
+        const res = await fetch(`/chat/contacts/?page=${nextPage}`)
+        const data = await res.json()
 
-    if (!data.success) {
+        if (!data.success) {
+            hasNext = false
+            return false
+        }
+
+        const newUsers = data.results || []
+        allUsers = [...allUsers, ...newUsers]
+        hasNext = Boolean(data.has_next)
+        page = nextPage
+
+        if (renderAfterLoad) {
+            if (contactsList && (!contactsSearchInput || !contactsSearchInput.value.trim())) {
+                const fragment = document.createDocumentFragment()
+                newUsers.forEach(user => fragment.appendChild(createContactItem(user)))
+                contactsList.appendChild(fragment)
+            } else {
+                renderSearchResults()
+            }
+        }
+        return true
+    } catch (error) {
+        console.error("Error loading contacts page:", error)
+        hasNext = false 
+        return false
+    } finally {
         loading = false
-        return
     }
-
-    allUsers = [...allUsers, ...data.results]
-    hasNext = data.has_next
-    page = nextPage
-    console.log("ALL USERS:", allUsers.length)
-    if (renderAfterLoad) {
-        renderSearchResults()
-    }
-
-    loading = false
 }
 
 async function loadAllContacts() {
-    while (hasNext && !loading) {
-        await loadPage(page + 1, { renderAfterLoad: false })
+    if (!hasNext || loading) return
+
+    while (hasNext) {
+        const success = await loadPage(page + 1, { renderAfterLoad: false })
+        if (!success) break 
     }
+    renderSearchResults()
 }
 
 const observer = new IntersectionObserver(async ([entry]) => {
     if (!entry.isIntersecting || loading || !hasNext) return
     
-    await loadPage(page + 1)
+    if (contactsSearchInput && contactsSearchInput.value.trim()) return
 
+    await loadPage(page + 1)
 }, {
     root: contactsScroll,
     rootMargin: '150px'
 })
 
-if (sentinel instanceof Element) {
-    console.log(sentinel.getBoundingClientRect())
+if (sentinel) {
     observer.observe(sentinel)
-} else {
-    console.warn('contacts-sentinel not found or not an Element', sentinel)
 }
 
 loadInitial()
 
-contactsSearchInput?.addEventListener('input', async (event) => {
-    if (event.target.value.trim()) {
-        await loadAllContacts()
+contactsSearchInput?.addEventListener('input', (event) => {
+    if (searchDebounceTimeout) {
+        clearTimeout(searchDebounceTimeout)
     }
 
-    renderSearchResults()
+    searchDebounceTimeout = setTimeout(async () => {
+        const value = event.target.value.trim()
+        if (value) {
+            await loadAllContacts()
+        } else {
+            renderSearchResults()
+        }
+    }, 350)
 })
 
 window.ensureContactVisible = async function(userId) {
     if (!contactsList) return null
 
     const find = () => contactsList.querySelector(`[data-chat-user="${userId}"]`)
-    if (find()) return find()
+    const target = find()
+    if (target) return target
 
     while (hasNext) {
-        await loadPage(page + 1)
+        const success = await loadPage(page + 1, { renderAfterLoad: true })
+        if (!success) break
+        
         const el = find()
         if (el) {
             requestAnimationFrame(() => {

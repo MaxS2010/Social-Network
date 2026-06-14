@@ -166,7 +166,6 @@ class FriendsView(LoginRequiredMixin, TemplateView):
     template_name = 'user_app/friends.html'
 
     def get_context_data(self, **kwargs):
-        # create_random_users_with_friendships(target_user_id=34, users_count= 10, without_friendship_ratio= 0.01) 
         context = super().get_context_data(**kwargs)
         context["sections"] = {
             "requests": {
@@ -305,7 +304,7 @@ class FriendProfileView(LoginRequiredMixin, View):
             "html": profile_html,
             "posts_html": posts_html,
             "has_next": page_obj.has_next(),
-            "user_id": user.id,
+            "user_id": user.id, # type: ignore
             "username": user.username,
         })
 

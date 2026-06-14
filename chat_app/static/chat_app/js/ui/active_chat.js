@@ -1,42 +1,51 @@
-export function findPersonalChatItem(userId) {
-    if (!userId) return null
+export function scrollElementIntoView(element) {
+    if (!element) return
 
-    const personalChatsList = document.querySelector(
-        '.chats-section .messages-container:first-child .content-chats'
-    )
-
-    return personalChatsList?.querySelector(`.container-chat[data-chat-user="${userId}"]`) ?? null
-}
-
-export function scrollChatIntoView(chatElement) {
-    if (!chatElement) return
-
-    chatElement.scrollIntoView({
+    element.scrollIntoView({
         block: 'nearest',
         behavior: 'smooth',
     })
 }
 
+export function scrollChatIntoView(chatElement) {
+    scrollElementIntoView(chatElement)
+}
+
+export function findPersonalChatItem(userId) {
+    if (!userId) return null
+    const personalChatsList = document.querySelector('.chats-section .messages-container .content-chats')
+
+    return personalChatsList?.querySelector(`.container-chat[data-chat-user="${userId}"]`) ?? null
+}
+
 export function setActiveChat(element) {
-    document.querySelectorAll('.content-chats .container-chat.active').forEach(chat => {
-        chat.classList.remove('active')
-    })
+    const currentActive = document.querySelector('.content-chats .container-chat.active')
+    if (currentActive === element) return
+
+    if (currentActive) {
+        currentActive.classList.remove('active')
+    }
 
     if (element) {
         element.classList.add('active')
-        scrollChatIntoView(element)
+        scrollElementIntoView(element)
     }
 }
 
 export function setActiveContact(userId) {
-    document.querySelectorAll('.people-contact-plain.active').forEach(contact => {
-        contact.classList.remove('active')
-    })
+    if (!userId) return
 
-    const contact = document.querySelector(`.people-contact-plain[data-chat-user="${userId}"]`)
-    if (contact) {
-        contact.classList.add('active')
-        contact.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+    const currentActive = document.querySelector('.people-contact-plain.active')
+    const nextActive = document.querySelector(`.people-contact-plain[data-chat-user="${userId}"]`)
+    
+    if (currentActive === nextActive) return
+
+    if (currentActive) {
+        currentActive.classList.remove('active')
+    }
+
+    if (nextActive) {
+        nextActive.classList.add('active')
+        scrollElementIntoView(nextActive)
     }
 }
-
