@@ -1,0 +1,19 @@
+.info-modal{
+    display: flex;
+    flex-direction: column;
+    justify-self: center;
+    align-items: flex-start;
+
+    width: 62vw; 
+    height: fit-content;
+}
+
+.own-profile-info{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+
+    width: 62vw;
+    height: 4.10vh;
+}

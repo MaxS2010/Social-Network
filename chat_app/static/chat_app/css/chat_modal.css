@@ -23,8 +23,6 @@
     justify-content: flex-start;
     align-items: center;
 
-    /* height: fit-content; */
-
     border-radius: 20px;
     padding: 24px 44px 44px 44px;
     gap: 24px;
@@ -40,43 +38,13 @@
     gap: 24px;
 }
 
-/* .group{
-    width: 34vw;
-    height: 81vh; 
-
-    
-} */
-
 .close-cross-container{
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: flex-end;
 
-    /* width: 47.7vw; */
     width: 100%;
-}
-
-.search-input-container{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-
-    width: 28vw;
-
-    padding: 10px 16px;
-    gap: 10px;
-
-    border-radius: 10px;
-    border: 1px solid rgba(205, 206, 210, 1);
-}
-
-.search-input-container input{
-    width: 100%;
-
-    border: none;
-    outline: none;
 }
 
 .group-members{

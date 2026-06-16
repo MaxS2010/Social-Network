@@ -52,18 +52,9 @@
     gap: 16px
 }
 
-/* .edit-info .edit-container{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-
-    width: 14.1vw;
-    height: 2.7vh;
-
-    border-radius: 1px;
-
-} */
+.edit-container button{
+    border: none;
+}
 
 .profile-panel .author-profile{
     display: flex;

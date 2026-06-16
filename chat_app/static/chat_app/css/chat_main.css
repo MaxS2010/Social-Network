@@ -97,6 +97,7 @@
     scrollbar-width: none;
 
 }
+
 .messages-users-container::-webkit-scrollbar {
     display: none;
 }
@@ -308,6 +309,7 @@
 }
 
 /* Image Preview Modal Styles */
+
 .image-preview-modal {
     position: fixed;
     top: 0;
