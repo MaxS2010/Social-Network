@@ -73,7 +73,7 @@ class PasswordForm(forms.ModelForm):
         model = User
         fields = ['password']
         widgets = {
-            'password': forms.TextInput(attrs={
+            'password': forms.PasswordInput(attrs={
                 'class': 'password-form',
                 'placeholder': 'введіть пароль',
                 'id': 'form-password',

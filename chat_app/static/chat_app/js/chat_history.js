@@ -30,9 +30,9 @@ export function ensureHistorySentinel() {
         sentinel = document.createElement('div')
         sentinel.id = 'messages-history-sentinel'
         sentinel.style.cssText = 'width:100%;height:1px;flex-shrink:0;'
-    }
-    
-    if (sentinel.parentElement !== messagesContainer) {
+        messagesContainer.prepend(sentinel)
+    } else if (sentinel.parentElement !== messagesContainer) {
+        // If sentinel exists but is not in the container, move it
         messagesContainer.prepend(sentinel)
     }
     return sentinel
@@ -116,13 +116,25 @@ export async function loadChatHistory(chatId, page = 1, { prepend = false } = {}
             setCurrentUserUsername(data.current_user)
         }
 
-        if (prepend) {
-            uiFunctions.prependMessages(data.messages || [])
-            historyState.page = data.page || page
-            historyState.hasOlder = Boolean(data.has_older)
-        } else {
-            uiFunctions.renderMessages(data.messages || [])
-            setupChatHistory(strChatId, data)
+        if (data.members) {
+            window.setCurrentChatMembers?.(data.members)
+        }
+
+        try {
+            if (prepend) {
+                uiFunctions.prependMessages(data.messages || [])
+                historyState.page = data.page || page
+                historyState.hasOlder = Boolean(data.has_older)
+            } else {
+                uiFunctions.renderMessages(data.messages || [])
+                setupChatHistory(strChatId, data)
+            }
+        } catch (renderErr) {
+            console.error('Error rendering messages:', renderErr)
+            if (!prepend) {
+                uiFunctions.renderMessages([])
+            }
+            return { success: false, error: renderErr }
         }
 
         return data

@@ -143,7 +143,7 @@ export function bumpChatInList(chatId, messageData, isGroup = null) {
         const preview = item.querySelector('.chat-info h3')
         const time = item.querySelector('.chat-info > div:last-child p')
 
-        if (preview) preview.textContent = messageData.text || ''
+        if (preview) preview.textContent = messageData.text || (messageData.images?.length ? 'Зображення' : '')
         if (time) time.textContent = formatChatTime(messageData.datetime)
 
         if (shouldShowUnread) {
@@ -192,5 +192,21 @@ export function updateChatPageListItem(data, options = {}) {
     }
     if (sections[1] && data.group_unread_count !== undefined) {
         updateSectionBadge(sections[1], data.group_unread_count)
+    }
+}
+
+export function updateChatListItemMetadata(chatId, data) {
+    const item = getChatListItem(chatId, true)
+    if (!item) return
+
+    const titleElement = item.querySelector('.chat-info h2')
+    const avatarElement = item.querySelector('.chat-avatar-wrapper img')
+
+    if (data.name && titleElement) {
+        titleElement.textContent = data.name
+    }
+
+    if (data.avatar && avatarElement) {
+        avatarElement.src = data.avatar
     }
 }

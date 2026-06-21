@@ -20,7 +20,7 @@
 
     <div class="users-block">
         {% for message in recent_messages %}
-            <a href="{% url 'chat' %}" class="user side-panel-user-link side-panel-chat-item" data-chat-id="{{ message.chat_id }}">
+            <a href="{% url 'chat' %}?user_id={{ message.user_id }}" class="user side-panel-user-link side-panel-chat-item" data-chat-id="{{ message.chat_id }}" data-user-id="{{ message.user_id }}">
                 <div class="img side-panel-chat-avatar">
                     {% if message.avatar %}
                         <img src="{{ message.avatar }}" alt="{{ message.username }}">

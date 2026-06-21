@@ -153,6 +153,7 @@ class ChatWithView(LoginRequiredMixin, View):
                 "chat_id": chat.id, # type: ignore
                 "username": other_user.username,
                 "current_user": request.user.username,
+                "is_admin": False,
                 **page_data,
             }   
         )
@@ -177,6 +178,22 @@ class GroupHistoryView(LoginRequiredMixin, View):
 
         total_members = chat.users.count() if chat.is_group else 2
 
+        group_members = []
+        if chat.is_group:
+            group_members = [
+                {
+                    "id": user.id,
+                    "username": user.username,
+                    "avatar": (
+                        user.profile.avatar.url
+                        if getattr(user, "profile", None) and user.profile.avatar
+                        else None
+                    ),
+                    "is_admin": user.id == chat.admin_id,
+                }
+                for user in chat.users.select_related("profile").all()
+            ]
+
         return JsonResponse({
             "success": True,
             "chat_id": chat.id, # type: ignore
@@ -185,7 +202,9 @@ class GroupHistoryView(LoginRequiredMixin, View):
             "username": other_user.username if other_user else chat.name,
             "avatar": chat.avatar.url if chat.is_group and chat.avatar else None,
             "total_members": total_members,
+            "members": group_members,
             "current_user": request.user.username,
+            "is_admin": request.user.id == chat.admin_id,
             **page_data,
         })
 
@@ -212,9 +231,9 @@ class ChatMessageUploadView(LoginRequiredMixin, View):
             return JsonResponse({"success": False, "error": "Not a member of this chat"}, status= 403)
 
         text = request.POST.get("message", "").strip()
-        image = request.FILES.get("image")
+        images = request.FILES.getlist("image")
 
-        if not text and not image:
+        if not text and not images:
             return JsonResponse({"success": False, "error": "Повідомлення порожнє"}, status= 400)
 
         message = Message.objects.create(
@@ -223,7 +242,7 @@ class ChatMessageUploadView(LoginRequiredMixin, View):
             sender= request.user,
         )
 
-        if image:
+        for image in images:
             MessageImage.objects.create(message= message, image= image)
 
         message = (
@@ -262,6 +281,121 @@ class ChatUnreadStatusView(LoginRequiredMixin, View):
             'success': True,
             **get_unread_status(request.user),
         })
+
+class ChatActionView(LoginRequiredMixin, View):
+    def post(self, request, chat_id, *args, **kwargs):
+        chat = get_object_or_404(Chat, id=chat_id)
+
+        if not chat.users.filter(id=request.user.id).exists():
+            return JsonResponse({"success": False, "error": "Ви не учасник цього чату"}, status=403)
+
+        action = request.POST.get('action', '').strip()
+
+        if action == 'leave_group':
+            if not chat.is_group:
+                return JsonResponse({"success": False, "error": "Ця дія доступна лише для групових чатів"}, status=400)
+            if chat.admin_id == request.user.id:
+                return JsonResponse({
+                    "success": False,
+                    "error": "Адміністратор не може залишити групу. Видаліть чат або змініть адміністратора."},
+                    status=403)
+            chat.users.remove(request.user)
+            return JsonResponse({"success": True})
+
+        if action == 'delete_chat':
+            if chat.is_group:
+                return JsonResponse({"success": False, "error": "Цю дію можна виконати лише для особистих чатів"}, status=400)
+            chat.delete()
+            return JsonResponse({"success": True})
+
+        if action == 'edit_group':
+            if not chat.is_group:
+                return JsonResponse({"success": False, "error": "Цю дію можна виконати лише для групових чатів"}, status=400)
+            if chat.admin_id != request.user.id:
+                return JsonResponse({"success": False, "error": "Тільки адміністратор може редагувати групу"}, status=403)
+
+            name = request.POST.get('name', '').strip()
+            avatar = request.FILES.get('avatar')
+
+            if name:
+                chat.name = name
+            if avatar:
+                chat.avatar = avatar
+            chat.save()
+
+            return JsonResponse({
+                "success": True,
+                "name": chat.name,
+                "avatar": chat.avatar.url if chat.avatar else None,
+            })
+
+        if action == 'add_participants':
+            if not chat.is_group:
+                return JsonResponse({"success": False, "error": "Цю дію можна виконати лише для групових чатів"}, status=400)
+            if chat.admin_id != request.user.id:
+                return JsonResponse({"success": False, "error": "Тільки адміністратор може додавати учасників"}, status=403)
+
+            user_ids = request.POST.getlist('users[]')
+            if not user_ids:
+                return JsonResponse({"success": False, "error": "Виберіть хоча б одного користувача"}, status=400)
+
+            users_to_add = User.objects.filter(id__in=user_ids)
+            friends = get_users_by_section(request.user, "friends").filter(id__in=user_ids).values_list("id", flat=True)
+
+            for user in users_to_add:
+                if user.id not in friends:
+                    return JsonResponse({
+                        "success": False,
+                        "error": f"Користувач {user.username} не є другом"
+                    }, status=403)
+
+            added_users = []
+            for user in users_to_add:
+                if not chat.users.filter(id=user.id).exists():
+                    chat.users.add(user)
+                    added_users.append({
+                        "id": user.id,
+                        "username": user.username,
+                        "avatar": (
+                            user.profile.avatar.url
+                            if getattr(user, "profile", None) and user.profile.avatar
+                            else None
+                        ),
+                        "is_admin": False,
+                    })
+
+            return JsonResponse({
+                "success": True,
+                "added_count": len(added_users),
+                "added_users": added_users,
+            })
+
+        if action == 'remove_participant':
+            if not chat.is_group:
+                return JsonResponse({"success": False, "error": "Цю дію можна виконати лише для групових чатів"}, status=400)
+            if chat.admin_id != request.user.id:
+                return JsonResponse({"success": False, "error": "Тільки адміністратор може видаляти учасників"}, status=403)
+
+            user_id = request.POST.get('user_id')
+            if not user_id:
+                return JsonResponse({"success": False, "error": "Користувач для видалення не вказаний"}, status=400)
+
+            try:
+                user = User.objects.get(id=user_id)
+            except User.DoesNotExist:
+                return JsonResponse({"success": False, "error": "Користувача не знайдено"}, status=404)
+
+            if user.id == request.user.id:
+                return JsonResponse({"success": False, "error": "Адміністратор не може видалити себе"}, status=403)
+
+            if not chat.users.filter(id=user.id).exists():
+                return JsonResponse({"success": False, "error": "Користувач не входить до групи"}, status=400)
+
+            chat.users.remove(user)
+            return JsonResponse({"success": True})
+
+        return JsonResponse({"success": False, "error": "Невідома дія"}, status=400)
+
 
 class GroupCreateFormView(LoginRequiredMixin, View):
 

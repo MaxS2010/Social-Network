@@ -108,7 +108,10 @@ export function updateSectionBadge(section, count) {
 }
 
 export function updateHomeIconBadge(count) {
-    const iconWrapper = document.querySelector('#sidePanelMessages .side-panel-icon-wrapper')
+    const sidePanelMessages = document.getElementById('sidePanelMessages')
+    if (!sidePanelMessages) return
+    
+    const iconWrapper = sidePanelMessages.querySelector('.side-panel-icon-wrapper')
     manageBadgeLifecycle(iconWrapper, count, 'side-panel-icon-badge')
 }
 

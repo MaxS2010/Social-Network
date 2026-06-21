@@ -4,6 +4,9 @@ ONLINE_TIMEOUT = 60
 ONLINE_CACHE_PREFIX = 'user_online:'
 CONNECTION_COUNT_SUFFIX = ':connections'
 
+FRIENDS_CACHE_PREFIX = 'user_friends:'
+FRIENDS_CACHE_TIMEOUT = 3600
+
 
 def _get_cache_key(user_id):
     return f'{ONLINE_CACHE_PREFIX}{user_id}'
@@ -69,3 +72,19 @@ def get_online_user_ids(user_ids):
         if cached.get(key)
     ]
 
+
+def _get_friends_cache_key(user_id):
+    return f'{FRIENDS_CACHE_PREFIX}{user_id}'
+
+def get_cached_friend_ids(user, fetch_from_db_func):
+    cache_key = _get_friends_cache_key(user.id)
+    friend_ids = cache.get(cache_key)
+    
+    if friend_ids is None:
+        friend_ids = fetch_from_db_func(user)
+        cache.set(cache_key, friend_ids, FRIENDS_CACHE_TIMEOUT)
+        
+    return friend_ids
+
+def invalidate_friends_cache(user_id):
+    cache.delete(_get_friends_cache_key(user_id))

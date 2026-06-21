@@ -14,10 +14,27 @@ let page = 1
 let loading = false
 let hasNext = true
 
-const contactsScroll = document.getElementById('contactsModalScroll')
-const contactsContainer = document.getElementById('contactsModalContainer')
-const contactsSearchInput = document.getElementById('contacts-search')
 let modalObserver = null
+
+function getActiveModal() {
+    return document.querySelector('.group[data-contacts-modal-type]:not([style*="display: none"])') || document.querySelector('.group[data-contacts-modal-type]')
+}
+
+function getContactsScroll() {
+    return getActiveModal()?.querySelector('.contacts-modal-scroll') || document.querySelector('.contacts-modal-scroll')
+}
+
+function getContactsContainer() {
+    return getActiveModal()?.querySelector('.contacts-modal-container') || document.querySelector('.contacts-modal-container')
+}
+
+function getContactsSearchInput() {
+    return getActiveModal()?.querySelector('.contacts-search') || document.querySelector('.contacts-search')
+}
+
+function getContactsSentinel() {
+    return getActiveModal()?.querySelector('.contacts-modal-sentinel') || document.querySelector('.contacts-modal-sentinel')
+}
 
 async function loadPage(p = 1) {
     if (loading || !hasNext) return false
@@ -82,9 +99,9 @@ function openContactsModal() {
         hasNext = false
         
         setContactsSearchUsers(allUsers)
-        renderModalContacts(contactsSearchInput?.value || '')
+        renderModalContacts(getContactsSearchInput()?.value || '')
         
-        const sentinel = document.getElementById('contactsModalSentinel')
+        const sentinel = getContactsSentinel()
         if (sentinel) sentinel.style.display = 'none'
         return
     }
@@ -94,10 +111,12 @@ function openContactsModal() {
     page = 1
     hasNext = true
 
+    const contactsContainer = getContactsContainer()
     if (contactsContainer) contactsContainer.innerHTML = ""
 
-    const sentinel = document.getElementById('contactsModalSentinel')
-    if (sentinel && contactsScroll) {
+    const sentinel = getContactsSentinel()
+    const scrollRoot = getContactsScroll()
+    if (sentinel && scrollRoot) {
         sentinel.style.cssText = 'display:block; width:100%; height:2px; min-height:2px; flex-shrink:0;'
 
         if (modalObserver) {
@@ -108,7 +127,7 @@ function openContactsModal() {
             if (!entry.isIntersecting || loading || !hasNext) return
             await loadPage(page + 1)
         }, {
-            root: contactsScroll,
+            root: scrollRoot,
             rootMargin: '150px'
         })
 
@@ -130,6 +149,7 @@ document.addEventListener("click", (e) => {
 
         const checkbox = modalContact.querySelector(".group-user-checkbox")
         if (checkbox && e.target !== checkbox) {
+            if (checkbox.disabled) return
             e.preventDefault()
             checkbox.checked = !checkbox.checked
             
@@ -142,3 +162,25 @@ document.addEventListener("click", (e) => {
         openContactsModal()
     }
 })
+
+export async function ensureContactsLoaded() {
+    const cached = loadCache()
+    if (cached && cached.length) {
+        allUsers = cached
+        hasNext = false
+        setContactsSearchUsers(allUsers)
+        renderModalContacts(getContactsSearchInput()?.value || '')
+        return
+    }
+
+    allUsers = []
+    setContactsSearchUsers(allUsers)
+    page = 1
+    hasNext = true
+
+    const contactsContainer = getContactsContainer()
+    if (contactsContainer) contactsContainer.innerHTML = ""
+    await loadPage(1)
+}
+
+window.ensureContactsLoaded = ensureContactsLoaded

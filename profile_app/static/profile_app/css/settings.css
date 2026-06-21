@@ -54,6 +54,7 @@
 
 .edit-container button{
     border: none;
+    background-color: transparent;
 }
 
 .profile-panel .author-profile{
@@ -114,6 +115,11 @@
     align-items: center;
 }
 
+.edit-info button{
+    border: none;
+    background-color: transparent;
+}
+
 .personal-info{
     display: flex;
     flex-direction: column;
@@ -171,14 +177,14 @@
     outline: none; */
 }
 
-.password-div {
+.password-container-div .password-div {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     
     width: 22vw;
-    min-height: 4.2vh;
+    max-height: 4.2vh;
     padding: 10px 16px 10px 10px;
     gap: 10px;
 
@@ -187,11 +193,13 @@
     background-color: #fff;
 }
 
-.password-div .password-form {
+.password-container-div .password-div input{
     width: 87%;
     border: none !important;       
     background: transparent !important; 
-    outline: none !important;      
+    outline: none !important;  
+    
+    gap: 6px;
 }
 
 .personal-password{
@@ -256,6 +264,12 @@
     height: 5.5vh;
 
     gap: 16px;
+}
+
+
+.signature-info-container input{
+    border: none;
+
 }
 
 .author-info .signature-information{

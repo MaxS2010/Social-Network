@@ -27,6 +27,7 @@
 
 .header-container button{
     border: none;
+    background-color: transparent;
 }
 
 .edit-photo{
@@ -51,7 +52,7 @@
 }
 
 .buttons-card-container button{
-    background-color: #FFFFFF;
+    background-color: transparent;
     border: none;
 }
 

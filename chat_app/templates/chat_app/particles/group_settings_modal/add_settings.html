@@ -7,16 +7,11 @@
     </div>
     <div class="avatar-container">
         <div class="group-avatar-preview-wrapper">
-            <img
-                id="group-avatar-preview"
-                src="{% static 'chat_app/icons/people.svg' %}"
-                data-default-src="{% static 'chat_app/icons/people.svg' %}"
-                alt="Аватар групи"
-            >
+            <img class="group-avatar-preview" src="{% static 'chat_app/icons/people.svg' %}" data-default-src="{% static 'chat_app/icons/people.svg' %}" alt="Аватар групи">
         </div>
-        <input type="file" id="group-avatar-input" name="avatar" accept="image/*" hidden>
         <div class="photo-action-container">
-            <label for="group-avatar-input" class="photo-action-label">
+            <label class="photo-action-label">
+                <input type="file" class="group-avatar-input" name="avatar" accept="image/*" hidden>
                 <img src="{% static 'chat_app/icons/add-image.svg' %}" alt="" class="image-icon">
                 <h3>Оберіть фото</h3>
             </label>
@@ -25,7 +20,12 @@
 
 
     <div class="group-members-list">
-        <h1>Учасники</h1>
+        <div class="group-members-list-header">
+            <h1>Учасники</h1>
+            {% if show_add_participant_button %}
+                <button type="button" id="open-add-participant" class="secondary-button">Додати учасника</button>
+            {% endif %}
+        </div>
         <div class="members-list-view">
         </div>
     </div>

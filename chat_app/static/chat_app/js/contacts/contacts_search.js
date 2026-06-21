@@ -1,9 +1,18 @@
 import { groupByLetter, renderGroups } from "./contacts_renderer.js"
 
-const searchInput = document.getElementById('contacts-search')
 let modalUsers = []
 let loadAllModalUsers = null
 let searchTimeoutId = null
+
+function getActiveContactsSearchInput() {
+    const visibleModal = document.querySelector('.group[data-contacts-modal-type]:not([style*="display: none"])')
+    return visibleModal?.querySelector('.contacts-search') || document.querySelector('.contacts-search')
+}
+
+function getActiveContactsContainer() {
+    const visibleModal = document.querySelector('.group[data-contacts-modal-type]:not([style*="display: none"])')
+    return visibleModal?.querySelector('.contacts-modal-container') || document.querySelector('.contacts-modal-container')
+}
 
 export function setContactsSearchUsers(users) {
     modalUsers = users || []
@@ -22,10 +31,14 @@ export function filterUsers(users, searchText) {
     })
 }
 
-export function renderModalContacts(searchText = searchInput?.value || '') {
+export function renderModalContacts(searchText = getActiveContactsSearchInput()?.value || '') {
+    const filteredUsers = filterUsers(modalUsers, searchText).filter((user) => {
+        return !window.currentGroupMemberIds?.has(String(user.id))
+    })
+
     renderGroups(
-        groupByLetter(filterUsers(modalUsers, searchText)),
-        'contactsModalContainer',
+        groupByLetter(filteredUsers),
+        getActiveContactsContainer(),
     )
 }
 
@@ -33,7 +46,9 @@ export function initModalContactsSearch({ loadAllUsers } = {}) {
     loadAllModalUsers = loadAllUsers || null
 }
 
-searchInput?.addEventListener('input', (e) => {
+document.addEventListener('input', (e) => {
+    if (!e.target.matches('.contacts-search')) return
+
     const targetValue = e.target.value
 
     renderModalContacts(targetValue)

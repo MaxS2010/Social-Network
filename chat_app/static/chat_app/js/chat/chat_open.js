@@ -1,15 +1,15 @@
 import { getCSRFToken } from "/static/user_app/js/utils.js"
-import { loadChatHistory } from "../chat_history.js"
+import { loadChatHistory, resetHistoryState } from "../chat_history.js"
 import { findPersonalChatItem, setActiveChat, setActiveContact } from "../ui/active_chat.js"
 import { getDefaultGroupAvatar } from "../ui/group_avatar.js"
-import { renderMessages } from "../ui/message_renderer.js"
+import { renderMessages, scrollToBottom } from "../ui/message_renderer.js"
 import { clearChatUnreadBadges, updateSectionUnreadBadges } from "../ui/unread_badges.js"
 import { connectWebSocket } from "./chat_socket.js"
-import { setCurrentChatIsGroup, setCurrentUserUsername, getCurrentChatId, getCurrentChatTotalMembers, setCurrentChatTotalMembers } from "./state.js"
+import { getChatSocket, setChatSocket, setCurrentChatId, setCurrentChatIsGroup, setCurrentUserUsername, getCurrentChatId, getCurrentChatTotalMembers, setCurrentChatTotalMembers } from "./state.js"
 
 const chatTitle = document.getElementById("chat-title")
 const chatStatus = document.getElementById("chat-status")
-const chatHeaderImage = document.querySelector('.chat-header img')
+const chatHeaderImage = document.getElementById('group-header-avatar')
 const DEFAULT_GROUP_AVATAR = getDefaultGroupAvatar()
 const DEFAULT_USER_AVATAR = '/static/chat_app/images/Avatar-1.png'
 const contactsContainer = document.getElementById('contactsContainer')
@@ -36,12 +36,12 @@ export function isUserOnline(userId) {
 }
 
 function getGroupOnlineCount() {
+    const members = Array.isArray(window.currentChatMembers) ? window.currentChatMembers : []
     let onlineCount = 0
-    const groupCheckboxes = document.querySelectorAll('.group-user-checkbox, [data-chat-user]')
     const countedUsers = new Set()
 
-    groupCheckboxes.forEach(el => {
-        const userId = el.value || el.dataset.chatUser
+    members.forEach(member => {
+        const userId = String(member?.id || member?.user_id || member)
         if (userId && !countedUsers.has(userId)) {
             countedUsers.add(userId)
             if (isUserOnline(userId)) {
@@ -89,6 +89,33 @@ function toggleChatContainers(showChat) {
     if (messagesContainer) messagesContainer.style.display = showChat ? "flex" : "none"
 }
 
+const backButtonHeaderChat = document.getElementById('back-button-header-chat')
+
+function closeChat() {
+    const socket = getChatSocket()
+    if (socket && socket.readyState === WebSocket.OPEN) {
+        socket.close()
+    }
+    setChatSocket(null)
+    resetHistoryState()
+    setCurrentChatId(null)
+    setCurrentChatIsGroup(false)
+    toggleChatContainers(false)
+
+    if (chatTitle) chatTitle.textContent = ''
+    if (chatStatus) {
+        chatStatus.textContent = ''
+        chatStatus.classList.remove("online")
+    }
+}
+
+if (backButtonHeaderChat) {
+    backButtonHeaderChat.addEventListener('click', function(event) {
+        event.preventDefault()
+        closeChat()
+    })
+}
+
 export async function openChatWithUser(userId, username) {
     const loadingTargetId = `user_${userId}`
     currentLoadingChatId = loadingTargetId
@@ -111,6 +138,8 @@ export async function openChatWithUser(userId, username) {
         if (chatTitle) chatTitle.textContent = `Чат з ${data.username || username}`
         updateChatStatus(userId, false)
         
+        window.currentChatIsAdmin = false
+
         if (data.current_user) {
             setCurrentUserUsername(data.current_user)
         }
@@ -183,6 +212,8 @@ export async function handleChatOpen(event) {
         if (chatTitle) chatTitle.textContent = title
         setChatHeaderAvatar(listAvatar, DEFAULT_GROUP_AVATAR)
         
+        window.currentChatIsAdmin = false
+        
         toggleChatContainers(true)
         setCurrentChatIsGroup(true)
         connectWebSocket(chatId, true)
@@ -194,6 +225,7 @@ export async function handleChatOpen(event) {
 
             if (data && data.success) {
                 setChatHeaderAvatar(data.avatar || listAvatar, DEFAULT_GROUP_AVATAR)
+                window.currentChatIsAdmin = Boolean(data.is_admin)
                 
                 if (data.current_user) {
                     setCurrentUserUsername(data.current_user)
@@ -219,13 +251,42 @@ export async function handleChatOpen(event) {
 
 if (contactsContainer) {
     contactsContainer.addEventListener("click", handleChatOpen)
+    contactsContainer.addEventListener("dblclick", handleChatDoubleClick)
 }
 
 if (chatsSection) {
     chatsSection.addEventListener("click", handleChatOpen)
+    chatsSection.addEventListener("dblclick", handleChatDoubleClick)
+}
+
+function handleChatDoubleClick(event) {
+    const target = event.target.closest('[data-chat-user]') || event.target.closest('.container-chat')
+    if (!target) return
+
+    const activeChatId = getCurrentChatId()
+    const chatId = target.dataset.chatId ? String(target.dataset.chatId).trim() : null
+    if (!chatId || !activeChatId || chatId !== String(activeChatId)) return
+
+    scrollToBottom(true)
 }
 
 export function setChatHeaderAvatar(avatarUrl, fallback = DEFAULT_GROUP_AVATAR) {
     if (!chatHeaderImage) return
     chatHeaderImage.src = avatarUrl || fallback
 }
+
+// Auto-open chat if user_id is provided in query parameters
+document.addEventListener('DOMContentLoaded', function() {
+    const params = new URLSearchParams(window.location.search)
+    const userId = params.get('user_id')
+    
+    if (userId) {
+        // Remove the query parameter from the URL
+        window.history.replaceState({}, document.title, window.location.pathname)
+        
+        // Open the chat with the user after a small delay to ensure everything is loaded
+        setTimeout(() => {
+            openChatWithUser(userId)
+        }, 100)
+    }
+})

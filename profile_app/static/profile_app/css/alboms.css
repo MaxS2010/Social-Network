@@ -5,7 +5,7 @@
     align-items: center;
 
     flex: 1;
-    width: 64vw;
+    width: 64.2vw;
     height: 94vh;
     max-height: 94vh;
     min-height: 0;
@@ -33,7 +33,7 @@
     justify-content: center;
     align-items: center;
     
-    width: 62vw;
+    width: 64.2vw;
     height: 26.8vh;
 
     gap: 1.6vh;
@@ -52,7 +52,7 @@
     gap: 16px
 }
 
-.alboms-container .alboms{
+.alboms-container .create-albom{
     display: flex-start;
     flex-direction: column;
     justify-content: center;
@@ -65,10 +65,11 @@
     border: 1px solid #CDCED2;
     background-color: #FFFFFF;
     border-radius: 10px;
+    padding: 16px;
 }
 
-.alboms-container .alboms .alboms-status{
-    display: flex-start;
+.alboms-container .create-albom .alboms-status{
+    display: flex;
     flex-direction: row;
     justify-content: space-between;
     align-items: center;

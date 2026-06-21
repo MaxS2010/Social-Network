@@ -1,3 +1,4 @@
+import asyncio
 import json
 
 from channels.db import database_sync_to_async
@@ -9,6 +10,8 @@ from user_app.utils.online_status import (
     refresh_presence,
     register_presence_connection,
     unregister_presence_connection,
+    is_user_online,
+    get_cached_friend_ids,
 )
 
 
@@ -38,6 +41,7 @@ class PresenceConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         fully_offline = False
+        
 
         if hasattr(self, 'user_id'):
             fully_offline = await database_sync_to_async(
@@ -47,8 +51,8 @@ class PresenceConsumer(AsyncWebsocketConsumer):
         if hasattr(self, 'room_group_name'):
             await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
-        if fully_offline and hasattr(self, 'friend_ids'):
-            await self.notify_friends(is_online=False)
+        if fully_offline:
+            asyncio.create_task(self.delayed_offline_notification())
 
     async def receive(self, text_data):
         data = json.loads(text_data)
@@ -56,9 +60,20 @@ class PresenceConsumer(AsyncWebsocketConsumer):
         if data.get('type') == 'ping' and hasattr(self, 'user_id'):
             await database_sync_to_async(refresh_presence)(self.user_id)
 
+    async def delayed_offline_notification(self):
+        await asyncio.sleep(5) 
+        
+        still_online = await database_sync_to_async(is_user_online)(self.user_id)
+        
+        if not still_online and hasattr(self, 'friend_ids'):
+            await self.notify_friends(is_online=False)
+
     async def notify_friends(self, is_online):
-        for friend_id in self.friend_ids:
-            await self.channel_layer.group_send(
+        if not self.friend_ids:
+            return
+        
+        tasks = [
+            self.channel_layer.group_send(
                 f'presence_{friend_id}',
                 {
                     'type': 'presence_update',
@@ -66,6 +81,9 @@ class PresenceConsumer(AsyncWebsocketConsumer):
                     'is_online': is_online,
                 },
             )
+            for friend_id in self.friend_ids
+        ]
+        await asyncio.gather(*tasks, return_exceptions=True)
 
     async def presence_update(self, event):
         await self.send(text_data=json.dumps({
@@ -77,5 +95,9 @@ class PresenceConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def get_friend_ids(self):
         user = self.scope.get('user')
-        friends = get_users_by_section(user, 'friends')
-        return list(friends.values_list('id', flat=True))
+
+        def _fetch_from_db(u):
+            friends_queryset = get_users_by_section(u, 'friends')
+            return list(friends_queryset.values_list('id', flat=True))
+
+        return get_cached_friend_ids(user, _fetch_from_db)

@@ -4,53 +4,123 @@ import { sendChatMessage } from "./chat_socket.js"
 
 const ChatForm = document.getElementById("form-chat")
 const imageInput = document.getElementById("message-image")
+const modalContainer = document.querySelector(".group-container")
 const imagePreviewModal = document.getElementById("image-preview-modal")
-const previewImage = document.getElementById("preview-image")
 const sendWithPreviewBtn = document.getElementById("send-with-preview")
 const cancelPreviewBtn = document.getElementById("cancel-preview")
 const closePreviewBtn = document.querySelector(".image-preview-close")
+const previewImagesContainer = document.getElementById("preview-images-container")
+const previewMessageText = document.getElementById("preview-message-text")
 
-let currentFile = null
+let currentFiles = []
 let isUploading = false
 
+function createImagePreviewItem(file, index) {
+    const container = document.createElement("div")
+    container.className = "img-preview-item"
+    if (!file.previewUrl) {
+        file.previewUrl = URL.createObjectURL(file)
+    }
+    container.style.backgroundImage = `url(${file.previewUrl})`
+    container.setAttribute("data-index", index)
+
+    const removeBtn = document.createElement("button")
+    removeBtn.type = "button"
+    removeBtn.className = "img-preview-remove-btn"
+    
+    removeBtn.addEventListener("click", (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        removeImagePreview(index)
+    })
+
+    container.appendChild(removeBtn)
+    return container
+}
+
+function removeImagePreview(indexToRemove) {
+    // Remove file from array
+    currentFiles.splice(indexToRemove, 1)
+    
+    // Re-render preview
+    renderPreviewImages()
+    
+    // Close modal if no images left
+    if (currentFiles.length === 0) {
+        closePreviewModal()
+    }
+}
+
+function renderPreviewImages() {
+    previewImagesContainer.innerHTML = ""
+    currentFiles.forEach((file, index) => {
+        const previewItem = createImagePreviewItem(file, index)
+        previewImagesContainer.appendChild(previewItem)
+    })
+}
+
 imageInput?.addEventListener("change", function(event) {
-    const file = event.target.files?.[0]
-    if (!file) return
+    const files = event.target.files
+    if (!files || files.length === 0) return
 
-    if (!file.type.startsWith('image/')) {
-        alert('Будь ласка, оберіть файл зображення')
-        imageInput.value = ""
-        return
+    // Validate all files are images
+    const validFiles = []
+    for (let file of files) {
+        if (!file.type.startsWith('image/')) {
+            alert('Будь ласка, оберіть файли зображення')
+            imageInput.value = ""
+            return
+        }
+        validFiles.push(file)
     }
 
-    currentFile = file
+    for (const file of validFiles) {
+        const exists = currentFiles.some(
+            f =>
+                f.name === file.name &&
+                f.size === file.size &&
+                f.lastModified === file.lastModified
+        )
 
-    if (previewImage.src.startsWith('blob:')) {
-        URL.revokeObjectURL(previewImage.src)
+        if (!exists) {
+            currentFiles.push(file)
+        }
     }
 
-    previewImage.src = URL.createObjectURL(file)
+    renderPreviewImages()
+
+    modalContainer.style.display = "flex"
     imagePreviewModal.style.display = "flex"
+    previewMessageText.focus()
+
+    imageInput.value = ""
 })
 
 function closePreviewModal() {
     if (imagePreviewModal) {
         imagePreviewModal.style.display = "none"
-    }
-    
-    if (previewImage && previewImage.src.startsWith('blob:')) {
-        URL.revokeObjectURL(previewImage.src)
-        previewImage.src = ""
+        modalContainer.style.display = "none"
     }
 
-    currentFile = null
+    // Clean up blob URLs
+    currentFiles.forEach(file => {
+        if (file.previewUrl) {
+            URL.revokeObjectURL(file.previewUrl)
+            delete file.previewUrl
+        }
+    })
+
+    currentFiles = []
+    previewImagesContainer.innerHTML = ""
+    previewMessageText.value = ""
+
     if (imageInput) {
         imageInput.value = ""
     }
     
     if (sendWithPreviewBtn) {
         sendWithPreviewBtn.disabled = false
-        sendWithPreviewBtn.textContent = "Надіслати"
+        sendWithPreviewBtn.textContent = "Відправити"
     }
     isUploading = false
 }
@@ -68,7 +138,7 @@ sendWithPreviewBtn?.addEventListener("click", async function(e) {
     e.preventDefault()
     e.stopPropagation()
 
-    if (!currentFile || isUploading) return
+    if (!currentFiles || currentFiles.length === 0 || isUploading) return
 
     const chatId = getCurrentChatId()
     if (!chatId || String(chatId) === "null") {
@@ -80,15 +150,15 @@ sendWithPreviewBtn?.addEventListener("click", async function(e) {
     this.disabled = true
     this.textContent = "Завантаження..."
 
-    const formData = new FormData(ChatForm)
-    formData.set("image", currentFile)
-    
-    const messageText = (formData.get("message") || "").trim()
-    if (!messageText) {
-        formData.set("message", "")
-    }
-
     try {
+        const messageText = (previewMessageText.value || "").trim()
+        const formData = new FormData()
+        currentFiles.forEach(file => {
+            formData.append("image", file)
+        })
+        formData.append("message", messageText || "")
+        formData.append("csrfmiddlewaretoken", ChatForm.querySelector('[name="csrfmiddlewaretoken"]')?.value || "")
+
         const response = await fetch(`/chat/message_upload/${String(chatId)}/`, {
             method: "POST",
             headers: {
@@ -100,21 +170,23 @@ sendWithPreviewBtn?.addEventListener("click", async function(e) {
 
         const data = await response.json()
 
-        if (response.ok && data.success) {
-            closePreviewModal()
-            ChatForm?.reset()
-        } else {
+        if (!response.ok || !data.success) {
             alert(`Помилка сервера: ${data.error || 'Невідома помилка'}`)
             isUploading = false
             this.disabled = false
-            this.textContent = "Надіслати"
+            this.textContent = "Відправити"
+            return
         }
+
+        closePreviewModal()
+        ChatForm?.reset()
+        
     } catch (error) {
         console.error('Image upload failed:', error)
-        alert('Не вдалося надіслати зображення. Перевірте з’єднання.')
+        alert('Не вдалося надіслати зображення. Перевірте з\'єднання.')
         isUploading = false
         this.disabled = false
-        this.textContent = "Надіслати"
+        this.textContent = "Відправити"
     }
 })
 

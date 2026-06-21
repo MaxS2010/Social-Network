@@ -17,7 +17,15 @@
         <div class="chat-info">
             <div>
                 <h2>{{ chat.name|default:"Груповий чат" }}</h2>
-                <h3>{{ chat.last_message_text|default:"Немає повідомлень" }}</h3>
+                <h3>
+                    {% if chat.last_message_text %}
+                        {{ chat.last_message_text }}
+                    {% elif chat.last_message_has_images %}
+                        зображення
+                    {% else %}
+                        Немає повідомлень
+                    {% endif %}
+                </h3>
             </div>
             <div>
                 <p>{{ chat.last_message_time|date:"H:i" }}</p>
@@ -44,7 +52,15 @@
                 <div class="chat-info">
                     <div>
                         <h2>{{ user.username }}</h2>
-                        <h3>{{ chat.last_message_text|default:"Немає повідомлень" }}</h3>
+                        <h3>
+                            {% if chat.last_message_text %}
+                                {{ chat.last_message_text }}
+                            {% elif chat.last_message_has_images %}
+                                Зображення
+                            {% else %}
+                                Немає повідомлень
+                            {% endif %}
+                        </h3>
                     </div>
                     <div>
                         <p>{{ chat.last_message_time|date:"H:i" }}</p>

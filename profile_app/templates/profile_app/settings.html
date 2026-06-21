@@ -68,19 +68,21 @@
                     {{ info_form.email }}   
                     <img src="{% static 'profile_app/icons/eye-info.svg' %}" alt= ''>
                 </div>
-                    
-                <div class = "personal-password">
-                    <p>Пароль</p>
-                    <div class="edit-info">
-                        <p>
-                            <img src="{% static 'profile_app/icons/edit-password.svg' %}" alt="">
-                        </p>
+                 
+                <div class="password-container-div">
+                    <div class = "personal-password">
+                        <p>Пароль</p>
+                        <div class="edit-info">
+                            <button type="button" id="editPasswordButton">
+                                <img src="{% static 'profile_app/icons/edit-password.svg' %}" alt="">
+                            </button>
+                        </div>
                     </div>
-                </div>
                 <label for="{{ password_form.password.id_for_label }}">Пароль</label>
-                <div class="password-div">
-                    {{ password_form.password }}
-                    <img src="{% static 'profile_app/icons/eye-info.svg' %}" alt="">
+                    <div class="password-div">
+                        {{ password_form.password }}
+                        <img src="{% static 'profile_app/icons/eye-info.svg' %}" alt="">
+                    </div>
                 </div>
             </div>           
         </div>
@@ -99,7 +101,7 @@
                     {{ signature_form.is_text_signature }}
                     <label for="pseudonym">Псевдонім автора</label>
                 </div>
-                <div class="{{ info_form.is_text_signature.id_for_label }}" style="border-color: transparent;">
+                <div class="signature-info-container" style="border-color: transparent;">
                     {{ info_form.first_name }}
                 </div>
                 <div class="signature-information">
@@ -107,7 +109,7 @@
                     <label for="{{ signature_form.is_text_signature.id_for_label }}">Мій електронний підпис</label>
                 </div>
                 <div class="signature-image">
-                    <p>    
+                    <p>
                         <img src="{% static 'profile_app/icons/Example-Second.png' %}" alt="Example-Second">
                     </p>
                 </div>

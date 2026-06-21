@@ -6,6 +6,11 @@ const editProfileButton = document.getElementById("editProfileButton")
 const saveProfileButton = document.getElementById("saveProfileButton")
 const infoModal= document.getElementById("infoModal")
 const personalInfo = document.getElementById("settingInfo")
+const editPassword = document.getElementById("editPasswordButton")
+const savePassword = document.getElementById("savePasswordButton")
+const passwordModal = document.getElementById("passwordModal")
+
+
 
 editButton.addEventListener("click", () => {
     modalWindow.style.display = "flex"

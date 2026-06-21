@@ -42,7 +42,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'daphne',
     'channels',
-    "user_app",
+    'user_app',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -50,9 +50,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'chat_app',
-    "post_app",
-    "home_app",
+    'post_app',
+    'home_app',
     'profile_app',
+    'cloudinary',
+    'cloudinary_storage'
 ]
 
 AUTH_USER_MODEL = 'user_app.User'
@@ -155,6 +157,20 @@ DATABASES = {
     'default': ALL_DATABASES[DB_MODE]
 }
 
+# CLOUDINARY_STORAGE = {
+#     "CLOUDINARY_CLOUD_NAME": env("CLOUDINARY_CLOUD_NAME"),
+#     "CLOUDINARY_API_KEY": env("CLOUDINARY_API_KEY"),
+#     "CLOUDINARY_API_SECRET": env("CLOUDINARY_API_SECRET"),
+# }
+
+# STORAGES = {
+#     "default": {
+#         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+#     },
+#     "staticfiles": {
+#         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
+#     },
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators

@@ -12,6 +12,7 @@ import "./contacts/contacts_search.js"
 import "./contacts/contacts_modal.js"
 import "./group/selected_users.js"
 import "./group/create_group.js"
+import "./group/edit_group.js"
 import "./chat/chat_open.js"
 import "./chat/chat_form.js"
 

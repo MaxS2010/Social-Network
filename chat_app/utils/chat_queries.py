@@ -50,6 +50,10 @@ def get_chats_with_unread(user, is_group=False):
             last_message.values('text')[:1],
             output_field=CharField(),
         ),
+        last_message_has_images=Subquery(
+            last_message.values('images__id')[:1],
+            output_field=IntegerField(),
+        ),
         last_message_time=Subquery(
             last_message.values('created_at')[:1],
             output_field=DateTimeField(),
@@ -201,7 +205,10 @@ def get_unread_status(user):
                 if chat.is_group and chat.avatar
                 else _user_avatar(other_user)
             ),
-            'last_message': chat.last_message_text, # type: ignore
+            'last_message': (
+                chat.last_message_text
+                or ('Зображення' if chat.last_message_has_images else '')
+            ), # type: ignore
             'last_message_time': (
                 chat.last_message_time.isoformat() # type: ignore
                 if chat.last_message_time # type: ignore

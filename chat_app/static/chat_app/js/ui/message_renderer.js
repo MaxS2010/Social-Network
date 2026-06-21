@@ -109,8 +109,13 @@ export function renderMessage(message, options = {}) {
 
 export function renderMessages(messages) {
     if (!messagesContainer) return
+    
     messagesContainer.innerHTML = ""
     ensureHistorySentinel()
+
+    if (!messages || messages.length === 0) {
+        return
+    }
 
     let lastDateKey = null
     let newSeparatorAdded = false
@@ -144,36 +149,50 @@ export function renderMessages(messages) {
 export function prependMessages(messages) {
     if (!messages?.length || !messagesContainer) return
 
-    const sentinel = ensureHistorySentinel()
-    const insertBeforeNode = sentinel.nextSibling
-    const scrollHeightBefore = messagesContainer.scrollHeight
-    const scrollTopBefore = messagesContainer.scrollTop
+    try {
+        const sentinel = ensureHistorySentinel()
+        if (!sentinel) return
 
-    const firstExistingMessage = messagesContainer.querySelector('.message')
-    const firstExistingDateKey = firstExistingMessage?.dataset.date
+        const scrollHeightBefore = messagesContainer.scrollHeight
+        const scrollTopBefore = messagesContainer.scrollTop
 
-    const fragment = document.createDocumentFragment()
-    let lastDateKey = null
+        const firstExistingMessage = messagesContainer.querySelector('.message')
+        const firstExistingDateKey = firstExistingMessage?.dataset.date
 
-    messages.forEach((message) => {
-        const { datetime } = getMessageData(message)
-        const dateKey = getDateKey(datetime)
+        const fragment = document.createDocumentFragment()
+        let lastDateKey = null
 
-        if (dateKey !== lastDateKey) {
-            fragment.appendChild(createDateSeparator(datetime))
+        messages.forEach((message) => {
+            const { datetime } = getMessageData(message)
+            const dateKey = getDateKey(datetime)
+
+            if (dateKey !== lastDateKey) {
+                fragment.appendChild(createDateSeparator(datetime))
+            }
+
+            lastDateKey = dateKey
+            fragment.appendChild(createMessageElement(message))
+        })
+
+        if (firstExistingDateKey && lastDateKey === firstExistingDateKey) {
+            const duplicatedSeparator = messagesContainer.querySelector(`.chat-date-separator[data-date="${firstExistingDateKey}"]`)
+            duplicatedSeparator?.remove()
         }
 
-        lastDateKey = dateKey
-        fragment.appendChild(createMessageElement(message))
-    })
+        // Insert after sentinel, or before first message, or at the end
+        const insertBeforeNode = sentinel.nextSibling
+        if (insertBeforeNode && messagesContainer.contains(insertBeforeNode)) {
+            messagesContainer.insertBefore(fragment, insertBeforeNode)
+        } else if (firstExistingMessage && messagesContainer.contains(firstExistingMessage)) {
+            messagesContainer.insertBefore(fragment, firstExistingMessage)
+        } else {
+            messagesContainer.appendChild(fragment)
+        }
 
-    if (firstExistingDateKey && lastDateKey === firstExistingDateKey) {
-        const duplicatedSeparator = messagesContainer.querySelector(`.chat-date-separator[data-date="${firstExistingDateKey}"]`)
-        duplicatedSeparator?.remove()
+        messagesContainer.scrollTop = scrollTopBefore + (messagesContainer.scrollHeight - scrollHeightBefore)
+    } catch (err) {
+        console.error('Error in prependMessages:', err)
     }
-
-    messagesContainer.insertBefore(fragment, insertBeforeNode)
-    messagesContainer.scrollTop = scrollTopBefore + (messagesContainer.scrollHeight - scrollHeightBefore)
 }
 
 export function scrollToBottom(smooth = true) {
