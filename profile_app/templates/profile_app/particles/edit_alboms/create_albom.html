@@ -1,0 +1,12 @@
+{% load static %}
+
+{% csrf_token %}
+
+<div class="create-album-modal" id="createAlbumModal" style="display: none;">
+    <div>
+        <p>Створити альбом</p>
+        <div>
+            {{ create_album_form }}
+        </div>
+    </div>
+</div>

@@ -68,8 +68,9 @@
                     {{ info_form.email }}   
                     <img src="{% static 'profile_app/icons/eye-info.svg' %}" alt= ''>
                 </div>
-                 
-                <div class="password-container-div">
+            
+                {% include 'profile_app/particles/edit_forms/edit_password.html' %}     
+                <div class="password-container-div" id="passwordContainerDiv">
                     <div class = "personal-password">
                         <p>Пароль</p>
                         <div class="edit-info">

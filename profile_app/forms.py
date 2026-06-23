@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from .models import Profile
+from .models import Profile, Album
 
 User = get_user_model()
 
@@ -102,4 +102,22 @@ class SignatureForm(forms.ModelForm):
             'is_image_signature': 'Показувати підпис як зображення',
             'is_text_signature': 'Показувати псевдонім як підпис',
         }
-        
+
+class CreateAlbumForm(forms.ModelForm):
+    class Meta:
+        model = Album
+        fields = ['name', 'theme']
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'album-name',
+                'placeholder': 'Введіть назву'
+            }),
+            'theme': forms.TextInput(attrs={
+                'class': 'album-theme',
+                'placeholder': 'Введіть тему'
+            })
+        }
+        labels = {
+            'name': 'Назва альбому',
+            'theme': 'Тема альбому'
+        }

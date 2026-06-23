@@ -9,6 +9,7 @@ const personalInfo = document.getElementById("settingInfo")
 const editPassword = document.getElementById("editPasswordButton")
 const savePassword = document.getElementById("savePasswordButton")
 const passwordModal = document.getElementById("passwordModal")
+const passwordContainer = document.getElementById("passwordContainerDiv")
 
 
 
@@ -32,5 +33,14 @@ saveProfileButton.addEventListener("click", () => {
     settingInfo.style.display = "flex"
 })
 
+editPassword.addEventListener('click', () => {
+    passwordModal.style.display = "flex"
+    passwordContainer.style.display = "none"
+})
+
+savePassword.addEventListener("click", () => {
+    passwordModal.style.display = "none"
+    passwordContainer.style.display = "flex"
+})
 
 
