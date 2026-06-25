@@ -15,7 +15,7 @@ import environ
 import os
 
 env = environ.Env(
-    DEBUG=(bool, True)
+    DEBUG=(bool, False)
 )
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -34,8 +34,9 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env.bool('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
+CSRF_TRUSTED_ORIGINS = ["https://*.up.railway.app"]
 
 # Application definition
 
@@ -61,6 +62,7 @@ AUTH_USER_MODEL = 'user_app.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -157,20 +159,21 @@ DATABASES = {
     'default': ALL_DATABASES[DB_MODE]
 }
 
-# CLOUDINARY_STORAGE = {
-#     "CLOUDINARY_CLOUD_NAME": env("CLOUDINARY_CLOUD_NAME"),
-#     "CLOUDINARY_API_KEY": env("CLOUDINARY_API_KEY"),
-#     "CLOUDINARY_API_SECRET": env("CLOUDINARY_API_SECRET"),
-# }
+CLOUDINARY_STORAGE = {
+    "CLOUDINARY_CLOUD_NAME": env("CLOUDINARY_CLOUD_NAME"),
+    "CLOUDINARY_API_KEY": env("CLOUDINARY_API_KEY"),
+    "CLOUDINARY_API_SECRET": env("CLOUDINARY_API_SECRET"),
+}
 
-# STORAGES = {
-#     "default": {
-#         "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
-#     },
-#     "staticfiles": {
-#         "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
-#     },
-# }
+STORAGES = {
+    "default": {
+        "BACKEND": "cloudinary_storage.storage.MediaCloudinaryStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+    # django.contrib.staticfiles.storage.StaticFilesStorage
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
@@ -215,6 +218,8 @@ STATICFILES_DIRS = [
     BASE_DIR / 'chat_app' / 'static',
     BASE_DIR / 'profile_app' / 'static',
 ]
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
