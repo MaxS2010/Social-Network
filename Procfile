@@ -1,1 +1,1 @@
-web: daphne Social_Network.asgi:application --port $PORT --bind 0.0.0.0
+web: daphne -p $PORT -b 0.0.0.0 Social_Network.asgi:application
